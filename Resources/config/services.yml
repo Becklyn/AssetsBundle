@@ -17,6 +17,7 @@ services:
         class: Becklyn\AssetsBundle\Service\TwigTemplateFinder
         arguments:
             - @kernel
+            - %kernel.root_dir%
 
     becklyn.assets.twig_assets_finder:
         class: Becklyn\AssetsBundle\Service\TwigAssetsFinder

@@ -44,11 +44,12 @@ class TwigTemplateFinder extends ContainerAware
      * TwigTemplateFinder constructor.
      *
      * @param Kernel $kernel
+     * @param string $appRootDirectory
      */
-    public function __construct (Kernel $kernel)
+    public function __construct (Kernel $kernel, $appRootDirectory)
     {
         $this->kernel           = $kernel;
-        $this->appRootDirectory = dirname($kernel->getRootDir());
+        $this->appRootDirectory = dirname($appRootDirectory);
     }
 
 
