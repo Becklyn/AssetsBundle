@@ -15,6 +15,9 @@ use Becklyn\AssetsBundle\Twig\Node\CacheableAssetNode;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Templating\TemplateNameParser;
 use Twig_Environment;
 use Twig_Error_Syntax;
@@ -24,6 +27,12 @@ use Twig_Parser;
 
 class TwigAssetsFinder
 {
+    /**
+     * @var Kernel
+     */
+    private $kernel;
+
+
     /**
      * @var Twig_Lexer
      */
@@ -51,12 +60,14 @@ class TwigAssetsFinder
     /**
      * TwigAssetsFinder constructor.
      *
+     * @param Kernel               $kernel
      * @param Twig_Environment     $twig
      * @param TemplateNameParser   $nameParser
      * @param FileLocatorInterface $fileLocator
      */
-    public function __construct (Twig_Environment $twig, TemplateNameParser $nameParser, FileLocatorInterface $fileLocator)
+    public function __construct (Kernel $kernel, Twig_Environment $twig, TemplateNameParser $nameParser, FileLocatorInterface $fileLocator)
     {
+        $this->kernel      = $kernel;
         $this->parser      = $twig->getParser();
         $this->lexer       = $twig->getLexer();
         $this->nameParser  = $nameParser;
@@ -195,7 +206,13 @@ class TwigAssetsFinder
 
         foreach ($node->getAssetReferences() as $templateReference)
         {
-            $assetReferences[] = new AssetReference($this->tryResolveRelativeAssetPath($templateReference), $templateReference);
+            // Try resolving the asset reference. If it contains wildcards such as * we may include multiple files at once
+            $resolvedAssetPaths = $this->tryResolveRelativeAssetPath($templateReference);
+
+            foreach ($resolvedAssetPaths as $assetPath)
+            {
+                $assetReferences[] = new AssetReference($assetPath, $templateReference);
+            }
         }
 
         return $assetReferences;
@@ -210,28 +227,138 @@ class TwigAssetsFinder
      *
      * @param string $assetReference
      *
-     * @return string
+     * @return string[]
      */
     private function tryResolveRelativeAssetPath ($assetReference)
     {
-        // Make sure to only expand paths that start with an @
-        // e.g. @AcmeDemoBundle/Resources/public/js/foo.js => /path/to/acme-demo-bundle/Resources/public/js/foo.js
-        if (strpos($assetReference, '@') === 0)
+        $resolvedAssetPaths = [];
+
+        // We only need to manipulate/resolve the asset reference paths if it fulfills any of the following:
+        // - contains a bundle reference (e.g. @AcmeDemoBundle/...)
+        // - contains a wildcard flag (e.g. ../some/path/**/with/*.wildcards)
+        // - all of them above
+
+        // Does the asset reference contain a wildcard?
+        if (strpos($assetReference, '*') !== false)
         {
-            try
+            $result = $this->resolveWildcardPath($assetReference);
+
+            if (!empty($result))
             {
-                $assetReference = $this->fileLocator->locate($this->nameParser->parse($assetReference));
-            }
-            catch (\RuntimeException $e)
-            {
-                // Swallow exception silently as this only occurs when the path contains '..' or other illegal chars
-            }
-            catch (\InvalidArgumentException $e)
-            {
-                // Swallow exception silently as this only occurs when the path is already absolute
+                $resolvedAssetPaths = $result;
             }
         }
+        // Does the asset reference contain a bundle reference?
+        else if (strpos($assetReference, '@') === 0)
+        {
+            $result = $this->resolveBundleReferencePath($assetReference);
 
-        return $assetReference;
+            if (!is_null($result))
+            {
+                $resolvedAssetPaths[] = $result;
+            }
+        }
+        // No additional actions required
+        else
+        {
+            $resolvedAssetPaths[] = $assetReference;
+        }
+
+        return $resolvedAssetPaths;
+    }
+
+
+    /**
+     * Resolves an asset path that includes a bundle reference such as @AcmeDemoBundle/Resources/public/js/foo.js
+     *
+     * @param string $assetReference
+     *
+     * @return string|null
+     */
+    private function resolveBundleReferencePath ($assetReference)
+    {
+        try
+        {
+            // Ask symfony if it can resolve the asset reference
+            return $this->fileLocator->locate($this->nameParser->parse($assetReference));
+        }
+        catch (\RuntimeException $e)
+        {
+            // Swallow exception silently as this only occurs when the path contains '..' or other illegal chars
+        }
+        catch (\InvalidArgumentException $e)
+        {
+            // Swallow exception silently as this only occurs when the path is already absolute
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Resolves wildcard asset references such as:
+     * - @AcmeDemoBundle/Resources/public/js/*.js
+     * - @AcmeDemoBundle/**\/public/css/*.css
+     * - ...
+     *
+     * to all matching files
+     *
+     * @param string $assetReference
+     *
+     * @return string[]
+     */
+    private function resolveWildcardPath ($assetReference)
+    {
+        $result = [];
+
+        if (strpos($assetReference, '*') === false)
+        {
+            return $result;
+        }
+
+        $extension = pathinfo($assetReference, PATHINFO_EXTENSION);
+
+        // If no extension is provided it means we could theoretically any asset type, which is not what we want
+        if (!$extension)
+        {
+            return $result;
+        }
+
+        // dirname() is smart enough to find the correct directory even for paths like
+        // @AcmeDemoBundle/Resources/public/js/*.js and @AcmeDemoBundle/**/public/js/*
+        $searchDirectory = dirname($assetReference) . '/';
+
+        // If the asset reference does contain a bundle reference we need to resolve it first
+        if (strpos($searchDirectory, '@') === 0)
+        {
+            // Extract the bundle name reference from the asset path
+            // @AcmeDemoBundle/Resources/public/js/*.js ==> @AcmeDemoBundle
+            $bundleNameReference = substr($searchDirectory, 0, strpos($searchDirectory, '/'));
+
+            // Let Symfony resolve the asset bundle path
+            $bundlePath = $this->kernel->locateResource($bundleNameReference);
+
+            // Now replace the bundle reference with its actual path
+            $searchDirectory = str_replace($bundleNameReference . '/', $bundlePath, $searchDirectory);
+        }
+
+        // Extract the file name, which could either be a real file name or a wildcard
+        $fileName = pathinfo($assetReference, PATHINFO_FILENAME);
+
+        $finder = new Finder();
+        $finder
+            ->files()
+            ->name("$fileName.$extension")
+            ->followLinks()
+            ->ignoreUnreadableDirs()
+            ->in($searchDirectory);
+
+        foreach ($finder as $file)
+        {
+            /** @var SplFileInfo $file */
+            $result[] = $file->getRealPath();
+        }
+
+        return $result;
     }
 }

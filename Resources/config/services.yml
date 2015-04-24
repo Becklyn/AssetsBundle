@@ -22,6 +22,7 @@ services:
     becklyn.assets.twig_assets_finder:
         class: Becklyn\AssetsBundle\Service\TwigAssetsFinder
         arguments:
+            - @kernel
             - @twig
             - @templating.name_parser
             - @templating.locator
