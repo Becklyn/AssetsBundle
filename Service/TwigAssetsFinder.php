@@ -218,7 +218,18 @@ class TwigAssetsFinder
         // e.g. @AcmeDemoBundle/Resources/public/js/foo.js => /path/to/acme-demo-bundle/Resources/public/js/foo.js
         if (strpos($assetReference, '@') === 0)
         {
-            $assetReference = $this->fileLocator->locate($this->nameParser->parse($assetReference));
+            try
+            {
+                $assetReference = $this->fileLocator->locate($this->nameParser->parse($assetReference));
+            }
+            catch (\RuntimeException $e)
+            {
+                // Swallow exception silently as this only occurs when the path contains '..' or other illegal chars
+            }
+            catch (\InvalidArgumentException $e)
+            {
+                // Swallow exception silently as this only occurs when the path is already absolute
+            }
         }
 
         return $assetReference;
