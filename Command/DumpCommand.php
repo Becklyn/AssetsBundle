@@ -251,16 +251,16 @@ class DumpCommand extends ContainerAwareCommand
 
         foreach ($outputDirectories as $outputDirectory)
         {
-            try
+            if ($fileSystem->exists($outputDirectory))
             {
-                if ($fileSystem->exists($outputDirectory))
+                try
                 {
                     $fileSystem->remove($outputDirectory);
                 }
-            }
-            catch (IOException $e)
-            {
-                // Swallow any exceptions
+                catch (IOException $e)
+                {
+                    // Swallow any exceptions
+                }
             }
         }
     }

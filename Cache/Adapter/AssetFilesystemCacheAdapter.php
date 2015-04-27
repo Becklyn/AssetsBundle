@@ -5,6 +5,7 @@ namespace Becklyn\AssetsBundle\Cache\Adapter;
 
 
 use Becklyn\AssetsBundle\Service\AssetConfigurationService;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
 class AssetFilesystemCacheAdapter implements AssetCacheAdapterInterface
@@ -174,9 +175,17 @@ class AssetsCache
     private function clearOutputDirectory ()
     {
         $fileSystem = new Filesystem();
+
         if ($fileSystem->exists(dirname($this->cacheTableFilePath)))
         {
-            $fileSystem->remove(dirname($this->cacheTableFilePath));
+            try
+            {
+                $fileSystem->remove(dirname($this->cacheTableFilePath));
+            }
+            catch (IOException $e)
+            {
+                // Swallow any exceptions
+            }
         }
     }
 }
