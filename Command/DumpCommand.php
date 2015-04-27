@@ -59,6 +59,7 @@ class DumpCommand extends ContainerAwareCommand
         $assetsDumper       = $this->getContainer()->get('becklyn.assets.assets_dumper');
         $cacheBuilder       = $this->getContainer()->get('becklyn.assets.cache.cache_builder');
         $formatterHelper    = $this->getHelper('formatter');
+        $progressHelper     = $this->getHelper('progress');
         $forceOverride      = $input->getOption('force');
         $clearOutput        = $input->getOption('clear');
         $silentOutput       = $input->getOption('silent');
@@ -97,7 +98,6 @@ class DumpCommand extends ContainerAwareCommand
 
             return 1;
         }
-        // TODO: Check for errors?
 
         // Optionally clear the output directory
         if ($clearOutput)
@@ -105,15 +105,31 @@ class DumpCommand extends ContainerAwareCommand
             $this->clearOutputDirectory();
         }
 
+        // Display some progress for a nicer output
+        if (!$silentOutput)
+        {
+            $output->writeln('<info>»»</info> Dumping assets...');
+            $progressHelper->setBarCharacter('<comment>=</comment>');
+            $progressHelper->start($output, count($assets['assets']));
+        }
 
         // #3: Dump all assets and create the static cache
         foreach ($assets['assets'] as $assetCollection)
         {
             $statusLog[] = $assetsDumper->dumpAssets($assetCollection, $forceOverride);
+
+            if (!$silentOutput)
+            {
+                $progressHelper->advance();
+            }
         }
 
         if (!$silentOutput)
         {
+            // Finish the progress indicator
+            $progressHelper->finish();
+            $output->writeln("\n");
+
             // Print the overview table showing which template assets have been dumped into which asset bundle
             $this->printStatusLogTable($output, $statusLog);
         }
