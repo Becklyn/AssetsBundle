@@ -52,7 +52,7 @@ class AssetReference
     /**
      * @inheritdoc
      */
-    function __toString ()
+    public function __toString ()
     {
         return $this->templateReference;
     }

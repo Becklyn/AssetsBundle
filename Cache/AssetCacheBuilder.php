@@ -45,9 +45,9 @@ class AssetCacheBuilder
      * Retrieves the stored value from the first CacheAdapter that returns a value
      *
      * @param string $key
-     * @param null   $defaultValue
+     * @param mixed  $defaultValue
      *
-     * @return mixed|null
+     * @return mixed
      */
     public function get ($key, $defaultValue = null)
     {

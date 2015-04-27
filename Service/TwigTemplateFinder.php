@@ -106,6 +106,8 @@ class TwigTemplateFinder extends ContainerAware
         // Only shorten the path when the target template path is inside the current Symfony %kernel.root_dir%
         if (strpos($templatePath, $this->appRootDirectory) === 0)
         {
+            // Replacing the appRootDirectory, which doesn't have a trailing /, results in a shorter path that starts with ./
+            // and is still a valid path on UNIX and Windows systems.
             $templatePath = str_replace($this->appRootDirectory, '.', $templatePath);
         }
 
@@ -126,9 +128,10 @@ class TwigTemplateFinder extends ContainerAware
             return $this->bundlePathsCache;
         }
 
-        $result = [];
-        // The app itself can contain global templates which also needs to be taken into account
-        $result['__global'] = 'app/Resources/views';
+        $result = [
+            // The app itself can contain global templates which also needs to be taken into account
+            '__global' => 'app/Resources/views',
+        ];
 
         foreach ($this->kernel->getBundles() as $key => $bundle)
         {

@@ -120,7 +120,7 @@ class TwigAssetsFinder
      *
      * @param string $templatePath
      *
-     * @return \Becklyn\AssetsBundle\Entity\AssetCollection[]
+     * @return AssetCollection[]
      *
      * @throws InvalidTwigTemplatePathException
      * @throws TwigTemplateParseException

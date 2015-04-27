@@ -90,7 +90,7 @@ class StatusMessage
     /**
      * @inheritdoc
      */
-    function __toString ()
+    public function __toString ()
     {
         return $this->subject . ': ' . $this->message;
     }

@@ -181,6 +181,7 @@ class AssetsDumper extends ContainerAware
      * @param AssetCollection $assetCollection
      *
      * @return string
+     *
      * @throws AssetFileNotFoundException
      */
     public function getAssetsOutputContent (AssetCollection $assetCollection)
