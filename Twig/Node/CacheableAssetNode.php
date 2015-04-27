@@ -62,50 +62,52 @@ abstract class CacheableAssetNode extends Twig_Node
             ->addDebugInfo($this);
 
         // if there are no files given - just compile to nothing
-        if (count($this->getNode('files')) > 0)
+        if (count($this->getNode('files')) === 0)
         {
-            // Generate the unique identifier for this node's asset references
-            $identifier = sha1(implode(':', $this->getAssetReferences()));
-            // Lookup in the cache (e.g. the Assets Cache Table) whether this node has been cached...
-            $assetUrl = $this->cacheBuilder->get($identifier);
-
-            // ..if it hasn't we simply ignore/skip it to not cause any further performance impacts
-            // by dynamically resolving it at runtime
-            if (is_null($assetUrl))
-            {
-                return;
-            }
-
-            // Finally let Twig know about our asset's URL so it can map {{ asset_url }} from within the node to the correct asset
-
-            $compiler
-                ->write('$context[')
-                // Retrieve the mapped variable: becklyn_assets_url ==> asset_url
-                ->repr($this->getAttribute("becklyn_asset_url"))
-                // Use the same implementation as {{ asset() }} does to resolve the correct asset URL at get_magic_quotes_runtime()
-                // as we don't have any clean way to retrieve the app's URL when executing from the CLI
-                ->raw("] = \$this->env->getExtension('assets')->getAssetUrl(")
-                ->repr($assetUrl)
-                ->raw(");\n")
-
-                // compile body
-                ->subcompile($this->getNode("body"))
-
-                // don't leak the variable in other regions
-                ->write('unset($context[')
-                ->repr($this->getAttribute("becklyn_asset_url"))
-                ->raw("]);\n");
-
-            // The resulting code should look like this:
-
-            /**
-             $context['asset_url'] = $this->env->getExtension('assets')->getAssetUrl('assets/js/1237634u7wegrweßr.js');
-
-             <<some voodoo to properly escape the node's body template (e.g. script or style tag) and obviously inserting our {{ asset_url }} value
-
-             unset($context["asset_url"]);
-             */
+            return;
         }
+
+        // Generate the unique identifier for this node's asset references
+        $identifier = sha1(implode(':', $this->getAssetReferences()));
+        // Lookup in the cache (e.g. the Assets Cache Table) whether this node has been cached...
+        $assetUrl = $this->cacheBuilder->get($identifier);
+
+        // ..if it hasn't we simply ignore/skip it to not cause any further performance impacts
+        // by dynamically resolving it at runtime
+        if (is_null($assetUrl))
+        {
+            return;
+        }
+
+        // Finally let Twig know about our asset's URL so it can map {{ asset_url }} from within the node to the correct asset
+
+        $compiler
+            ->write('$context[')
+            // Retrieve the mapped variable: becklyn_assets_url ==> asset_url
+            ->repr($this->getAttribute("becklyn_asset_url"))
+            // Use the same implementation as {{ asset() }} does to resolve the correct asset URL at get_magic_quotes_runtime()
+            // as we don't have any clean way to retrieve the app's URL when executing from the CLI
+            ->raw("] = \$this->env->getExtension('assets')->getAssetUrl(")
+            ->repr($assetUrl)
+            ->raw(");\n")
+
+            // compile body
+            ->subcompile($this->getNode("body"))
+
+            // don't leak the variable in other regions
+            ->write('unset($context[')
+            ->repr($this->getAttribute("becklyn_asset_url"))
+            ->raw("]);\n");
+
+        // The resulting code should look like this:
+
+        /**
+         $context['asset_url'] = $this->env->getExtension('assets')->getAssetUrl('assets/js/1237634u7wegrweßr.js');
+
+         <<some voodoo to properly escape the node's body template (e.g. script or style tag) and obviously inserting our {{ asset_url }} value>>
+
+         unset($context["asset_url"]);
+         */
     }
 
 
