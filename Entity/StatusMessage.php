@@ -19,6 +19,12 @@ class StatusMessage
     /**
      * @var string
      */
+    private $class;
+
+
+    /**
+     * @var string
+     */
     private $message;
 
 
@@ -32,12 +38,14 @@ class StatusMessage
      * StatusMessage constructor.
      *
      * @param string $subject
+     * @param string $class
      * @param string $message
      * @param int    $status
      */
-    public function __construct ($subject, $message, $status)
+    public function __construct ($subject, $class, $message, $status)
     {
         $this->subject = $subject;
+        $this->class   = $class;
         $this->message = $message;
         $this->status  = $status;
     }
@@ -49,6 +57,15 @@ class StatusMessage
     public function getSubject ()
     {
         return $this->subject;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getClass ()
+    {
+        return $this->class;
     }
 
 

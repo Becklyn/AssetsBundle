@@ -200,13 +200,14 @@ class DumpCommand extends ContainerAwareCommand
             $rows[] = [
                 $statusLog->getSubject(),
                 ($statusLog->getStatus() === 'success') ? "<info>{$statusLog->getStatus()}</info>" : "<error>{$statusLog->getStatus()}</error>",
+                strtoupper($statusLog->getClass()),
                 $statusLog->getMessage()
             ];
         }
 
         $output->writeln('<info>Asset Dumping Report:</info>');
         $this->getHelper('table')
-             ->setHeaders(['Template', 'Status', 'Message'])
+             ->setHeaders(['Template', 'Status', 'Type', 'Message'])
              ->setRows($rows)
              ->render($output);
     }

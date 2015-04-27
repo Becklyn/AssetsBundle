@@ -80,6 +80,7 @@ class AssetsDumper extends ContainerAware
             {
                 return new StatusMessage(
                     $assetCollection->getSourceTemplate(),
+                    $assetCollection->getType(),
                     "Found and re-used the cached {$assetCollection->getTypeExtension()} copy for {$assetCollection->getSourceTemplate()} at {$relativeWebPath}.",
                     StatusMessage::STATUS_SUCCESS
                 );
@@ -95,17 +96,18 @@ class AssetsDumper extends ContainerAware
 
             return new StatusMessage(
                 $assetCollection->getSourceTemplate(),
+                $assetCollection->getType(),
                 "Successfully dumped {$assetCollection->getTypeExtension()} assets for {$assetCollection->getSourceTemplate()} to {$relativeWebPath}.",
                 StatusMessage::STATUS_SUCCESS
             );
         }
         catch (AssetFileNotFoundException $e)
         {
-            return new StatusMessage($e->getTemplatePath(), $e->getMessage(), StatusMessage::STATUS_ERROR);
+            return new StatusMessage($e->getTemplatePath(), $assetCollection->getType(), $e->getMessage(), StatusMessage::STATUS_ERROR);
         }
         catch (IOException $e)
         {
-            return new StatusMessage($e->getFile(), $e->getMessage(), StatusMessage::STATUS_ERROR);
+            return new StatusMessage($e->getFile(), $assetCollection->getType(), $e->getMessage(), StatusMessage::STATUS_ERROR);
         }
     }
 
