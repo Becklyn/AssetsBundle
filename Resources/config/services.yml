@@ -1,0 +1,57 @@
+services:
+    # --------------------------------------------------------------------------------------------------------------
+    # Config
+    # --------------------------------------------------------------------------------------------------------------
+    becklyn.assets.configuration:
+        class: Becklyn\AssetsBundle\Service\AssetConfigurationService
+        arguments:
+            - null
+            - null
+            - null
+            - null
+
+    # --------------------------------------------------------------------------------------------------------------
+    # Twig Template & Asset Finder
+    # --------------------------------------------------------------------------------------------------------------
+    becklyn.assets.twig_template_finder:
+        class: Becklyn\AssetsBundle\Service\TwigTemplateFinder
+        arguments:
+            - @kernel
+            - %kernel.root_dir%
+
+    becklyn.assets.twig_assets_finder:
+        class: Becklyn\AssetsBundle\Service\TwigAssetsFinder
+        arguments:
+            - @kernel
+            - @twig
+            - @templating.name_parser
+            - @templating.locator
+
+
+    becklyn.assets.assets_dumper:
+        class: Becklyn\AssetsBundle\Service\AssetsDumper
+        arguments:
+            - @becklyn.assets.configuration
+            - @filesystem
+            - @becklyn.assets.cache.cache_builder
+
+
+    # --------------------------------------------------------------------------------------------------------------
+    # Caching
+    # --------------------------------------------------------------------------------------------------------------
+
+    # CacheBuilder
+    becklyn.assets.cache.cache_builder:
+        class: Becklyn\AssetsBundle\Cache\AssetCacheBuilder
+        arguments:
+            - null
+
+
+    # --------------------------------------------------------------------------------------------------------------
+    # Bundle Internal Twig Extensions
+    # --------------------------------------------------------------------------------------------------------------
+    becklyn.assets.twig_extension:
+        class: Becklyn\AssetsBundle\Twig\AssetsTwigExtension
+        arguments: [@service_container]
+        tags:
+            - { name: twig.extension }
