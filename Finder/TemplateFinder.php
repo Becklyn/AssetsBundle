@@ -31,7 +31,7 @@ class TemplateFinder
         /** @var \SplFileInfo $file */
         foreach ($finder as $file)
         {
-            $result[] = $file;
+            $result[] = $file->getPathname();
         }
 
         return $result;
