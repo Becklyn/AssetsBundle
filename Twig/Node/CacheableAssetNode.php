@@ -1,22 +1,21 @@
 <?php
 
-
 namespace Becklyn\AssetsBundle\Twig\Node;
 
-
-use Becklyn\AssetsBundle\Cache\AssetCacheBuilder;
+use Becklyn\AssetsBundle\Cache\AssetCache;
 use Twig_Compiler;
 use Twig_Node;
 use Twig_Node_Expression_Binary_Concat;
 use Twig_Node_Expression_Constant;
 use Twig_Node_Spaceless;
 
+
 abstract class CacheableAssetNode extends Twig_Node
 {
     /**
-     * @var AssetCacheBuilder
+     * @var AssetCache
      */
-    private $cacheBuilder;
+    private $assetCache;
 
 
     /**
@@ -44,11 +43,11 @@ abstract class CacheableAssetNode extends Twig_Node
     /**
      * Injects the AssetCacheBuilder
      *
-     * @param AssetCacheBuilder $cacheBuilder
+     * @param AssetCache $assetCache
      */
-    public function setCacheBuilder (AssetCacheBuilder $cacheBuilder)
+    public function setAssetCache (AssetCache $assetCache)
     {
-        $this->cacheBuilder = $cacheBuilder;
+        $this->assetCache = $assetCache;
     }
 
 
@@ -67,10 +66,12 @@ abstract class CacheableAssetNode extends Twig_Node
             return;
         }
 
+        // TODO: This section needs to be reworked again to emit the node's content for each asset reference
+
         // Generate the unique identifier for this node's asset references
         $identifier = sha1(implode(':', $this->getAssetReferences()));
         // Lookup in the cache (e.g. the Assets Cache Table) whether this node has been cached...
-        $assetUrl = $this->cacheBuilder->get($identifier);
+        $assetUrl = $this->assetCache->get($identifier);
 
         // ..if it hasn't we simply ignore/skip it to not cause any further performance impacts
         // by dynamically resolving it at runtime

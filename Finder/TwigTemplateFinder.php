@@ -1,16 +1,15 @@
 <?php
 
+namespace Becklyn\AssetsBundle\Finder;
 
-namespace Becklyn\AssetsBundle\Service;
-
-
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Becklyn\AssetsBundle\Entity\Asset;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
-class TwigTemplateFinder extends ContainerAware
+
+class TwigTemplateFinder
 {
     /**
      * Temporary dumb, cache for all loaded Bundles
@@ -41,24 +40,44 @@ class TwigTemplateFinder extends ContainerAware
 
 
     /**
+     * @var TwigAssetsFinder
+     */
+    private $assetsFinder;
+
+
+    /**
      * TwigTemplateFinder constructor.
      *
-     * @param Kernel $kernel
-     * @param string $appRootDirectory
+     * @param Kernel           $kernel
+     * @param TwigAssetsFinder $assetsFinder
      */
-    public function __construct (Kernel $kernel, $appRootDirectory)
+    public function __construct (Kernel $kernel, TwigAssetsFinder $assetsFinder)
     {
-        $this->kernel           = $kernel;
-        $this->appRootDirectory = dirname($appRootDirectory);
+        $this->kernel = $kernel;
+        $this->appRootDirectory = dirname($kernel->getRootDir());
+        $this->assetsFinder = $assetsFinder;
     }
 
 
     /**
-     * Searches all loaded bundles for .twig templates
+     * Searches all .html.twig templates and returns the used Assets
+     *
+     * @return Asset[]
+     */
+    public function getAllAssetPaths () : array
+    {
+        $templates = $this->getAllTemplatePaths();
+
+        return $this->assetsFinder->getAssetPaths($templates);
+    }
+
+
+    /**
+     * Searches all loaded bundles for .html.twig templates
      *
      * @return string[]
      */
-    public function getAllTemplatePaths ()
+    private function getAllTemplatePaths () : array
     {
         // If we have a cached version available we use it
         if (!empty($this->bundleTemplatePathsCache))
@@ -75,7 +94,7 @@ class TwigTemplateFinder extends ContainerAware
             $finder = new Finder();
             $finder
                 ->files()
-                ->name('*.twig')
+                ->name('*.html.twig')
                 ->contains('/{%\s*?(javascripts|stylesheets)/i')
                 ->followLinks()
                 ->ignoreUnreadableDirs()
@@ -101,7 +120,7 @@ class TwigTemplateFinder extends ContainerAware
      *
      * @return string
      */
-    private function shortenTemplatePath ($templatePath)
+    private function shortenTemplatePath ($templatePath) : string
     {
         // Only shorten the path when the target template path is inside the current Symfony %kernel.root_dir%
         if (strpos($templatePath, $this->appRootDirectory) === 0)
@@ -120,7 +139,7 @@ class TwigTemplateFinder extends ContainerAware
      *
      * @return string[]
      */
-    private function getBundlePaths ()
+    private function getBundlePaths () : array
     {
         // If we have a cached version available we use it
         if (!empty($this->bundlePathsCache))
@@ -128,6 +147,7 @@ class TwigTemplateFinder extends ContainerAware
             return $this->bundlePathsCache;
         }
 
+        // TODO: Move this into a config parameter
         $result = [
             // The app itself can contain global templates which also needs to be taken into account
             '__global' => 'app/Resources/views',

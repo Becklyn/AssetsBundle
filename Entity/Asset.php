@@ -1,10 +1,9 @@
 <?php
 
-
 namespace Becklyn\AssetsBundle\Entity;
 
 
-class AssetCollection implements \IteratorAggregate, \Countable
+class Asset
 {
     const TYPE_JAVASCRIPT = 'js';
     const TYPE_STYLESHEET = 'css';
@@ -17,9 +16,9 @@ class AssetCollection implements \IteratorAggregate, \Countable
 
 
     /**
-     * @var AssetReference[]
+     * @var string
      */
-    private $assets;
+    private $asset;
 
 
     /**
@@ -37,15 +36,16 @@ class AssetCollection implements \IteratorAggregate, \Countable
     /**
      * AssetReference constructor.
      *
-     * @param AssetReference[] $assets
-     * @param string           $type
-     * @param string           $sourceTemplate
+     * @param string $identifier
+     * @param string $asset
+     * @param string $type
+     * @param string $sourceTemplate
      */
-    public function __construct (array $assets, $type, $sourceTemplate)
+    public function __construct (string $identifier, string $asset, string $type, string $sourceTemplate)
     {
-        $this->assets         = $assets;
-        $this->identifier     = sha1(implode(':', $assets));
-        $this->type           = $type;
+        $this->asset = $asset;
+        $this->identifier = $identifier;
+        $this->type = $type;
         $this->sourceTemplate = $sourceTemplate;
     }
 
@@ -53,25 +53,25 @@ class AssetCollection implements \IteratorAggregate, \Countable
     /**
      * @return string
      */
-    public function getIdentifier ()
+    public function getIdentifier () : string
     {
         return $this->identifier;
     }
 
 
     /**
-     * @return AssetReference[]
+     * @return string
      */
-    public function getAssets ()
+    public function getAsset () : string
     {
-        return $this->assets;
+        return $this->asset;
     }
 
 
     /**
      * @return string
      */
-    public function getType ()
+    public function getType () : string
     {
         return $this->type;
     }
@@ -101,7 +101,7 @@ class AssetCollection implements \IteratorAggregate, \Countable
     /**
      * @return string
      */
-    public function getSourceTemplate ()
+    public function getSourceTemplate () : string
     {
         return $this->sourceTemplate;
     }
@@ -113,25 +113,5 @@ class AssetCollection implements \IteratorAggregate, \Countable
     public function setSourceTemplate ($sourceTemplate)
     {
         $this->sourceTemplate = $sourceTemplate;
-    }
-
-
-    // Add some syntactic sugar to support foreach (unfortunately without an automatic type hint for our AssetReference items) and count()
-
-    /**
-     * @inheritdoc
-     */
-    public function getIterator ()
-    {
-        return new \ArrayIterator($this->assets);
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    public function count ()
-    {
-        return iterator_count($this->getIterator());
     }
 }

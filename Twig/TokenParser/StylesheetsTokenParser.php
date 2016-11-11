@@ -6,6 +6,7 @@ use Becklyn\AssetsBundle\Twig\Node\StylesheetsNode;
 use Becklyn\AssetsBundle\Twig\Node\CacheableAssetNode;
 use Twig_Node;
 
+
 class StylesheetsTokenParser extends CacheableAssetTokenParser
 {
     /**

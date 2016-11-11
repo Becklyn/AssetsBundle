@@ -1,32 +1,31 @@
 <?php
 
-
 namespace Becklyn\AssetsBundle\Twig\TokenParser;
 
-
-use Becklyn\AssetsBundle\Cache\AssetCacheBuilder;
+use Becklyn\AssetsBundle\Cache\AssetCache;
 use Becklyn\AssetsBundle\Twig\Node\CacheableAssetNode;
 use Twig_Error_Syntax;
 use Twig_Node;
 use Twig_Token;
 use Twig_TokenParser;
 
+
 abstract class CacheableAssetTokenParser extends Twig_TokenParser
 {
     /**
-     * @var AssetCacheBuilder
+     * @var AssetCache
      */
-    protected $cacheBuilder;
+    protected $assetCache;
 
 
     /**
      * TwigCacheableAssetTokenParser constructor.
      *
-     * @param AssetCacheBuilder $cacheBuilder
+     * @param AssetCache $assetCache
      */
-    public function __construct (AssetCacheBuilder $cacheBuilder)
+    public function __construct (AssetCache $assetCache)
     {
-        $this->cacheBuilder = $cacheBuilder;
+        $this->assetCache = $assetCache;
     }
 
 
@@ -57,7 +56,7 @@ abstract class CacheableAssetTokenParser extends Twig_TokenParser
         $stream->expect(Twig_Token::BLOCK_END_TYPE);
 
         $node = $this->getCacheNode($files, $body, $token->getLine(), $this->getTag());
-        $node->setCacheBuilder($this->cacheBuilder);
+        $node->setAssetCache($this->assetCache);
 
         return $node;
     }

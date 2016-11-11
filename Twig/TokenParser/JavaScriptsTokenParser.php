@@ -6,6 +6,7 @@ use Becklyn\AssetsBundle\Twig\Node\JavaScriptsNode;
 use Becklyn\AssetsBundle\Twig\Node\CacheableAssetNode;
 use Twig_Node;
 
+
 class JavaScriptsTokenParser extends CacheableAssetTokenParser
 {
     /**
