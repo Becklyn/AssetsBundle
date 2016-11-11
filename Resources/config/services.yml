@@ -29,9 +29,7 @@ services:
     # Bundle Internal Twig Extensions
     # --------------------------------------------------------------------------------------------------------------
     becklyn.assets.twig_extension:
-        class: Becklyn\AssetsBundle\Twig\AssetsTwigExtension
-        arguments:
-            - '@service_container'
+        class: Becklyn\AssetsBundle\Twig\Extension\AssetsTwigExtension
         public: false
         tags:
             - { name: twig.extension }

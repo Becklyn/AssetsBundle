@@ -1,6 +1,6 @@
 <?php
 
-namespace Becklyn\AssetsBundle\Twig\Node;
+namespace Becklyn\AssetsBundle\Twig\Extension\Node;
 
 use Becklyn\AssetsBundle\Cache\AssetCache;
 use Twig_Compiler;
@@ -10,44 +10,25 @@ use Twig_Node_Expression_Constant;
 use Twig_Node_Spaceless;
 
 
-abstract class CacheableAssetNode extends Twig_Node
+abstract class AssetsNode extends Twig_Node
 {
     /**
-     * @var AssetCache
-     */
-    private $assetCache;
-
-
-    /**
-     * @param array     $files the file definitions
+     * @param string[]  $files the file definitions
      * @param Twig_Node $body  the body to compile to
      * @param int       $lineNo
      * @param string    $tag
      */
-    public function __construct (array $files = array(), Twig_Node $body, $lineNo = 0, $tag = null)
+    public function __construct (array $files, Twig_Node $body, int $lineNo, string $tag)
     {
         parent::__construct(
             [
                 'files' => new Twig_Node($files),
                 'body'  => new Twig_Node_Spaceless($body, $lineNo),
             ],
-            [
-                'becklyn_asset_url' => 'asset_url'
-            ],
+            [],
             $lineNo,
             $tag
         );
-    }
-
-
-    /**
-     * Injects the AssetCacheBuilder
-     *
-     * @param AssetCache $assetCache
-     */
-    public function setAssetCache (AssetCache $assetCache)
-    {
-        $this->assetCache = $assetCache;
     }
 
 
@@ -61,7 +42,7 @@ abstract class CacheableAssetNode extends Twig_Node
             ->addDebugInfo($this);
 
         // if there are no files given - just compile to nothing
-        if (count($this->getNode('files')) === 0)
+        if (empty($this->getNode('files')))
         {
             return;
         }
@@ -152,4 +133,13 @@ abstract class CacheableAssetNode extends Twig_Node
 
         return $assetPath;
     }
+
+
+
+    /**
+     * Returns the asset type
+     *
+     * @return string
+     */
+    abstract public function getAssetType () : string;
 }
