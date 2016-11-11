@@ -13,7 +13,7 @@ class TemplateFinder
     /**
      * @param string $directory
      *
-     * @return string[]
+     * @return \SplFileInfo[]
      */
     public function findInDirectory (string $directory) : array
     {
@@ -31,7 +31,7 @@ class TemplateFinder
         /** @var \SplFileInfo $file */
         foreach ($finder as $file)
         {
-            $result[] = $file->getPathname();
+            $result[] = $file;
         }
 
         return $result;
