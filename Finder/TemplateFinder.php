@@ -28,9 +28,9 @@ class TemplateFinder
             ->followLinks()
             ->ignoreUnreadableDirs();
 
+        /** @var \SplFileInfo $file */
         foreach ($finder as $file)
         {
-            /** @var \SplFileInfo $file */
             $result[] = $file->getPathname();
         }
 
