@@ -5,24 +5,25 @@
   "license":      "BSD-3-Clause",
   "type":         "symfony-bundle",
   "homepage":     "https://github.com/Becklyn/BecklynAssetsBundle",
-  "authors":      [
+  "authors": [
     {
       "name":     "Becklyn",
       "homepage": "http://becklyn.com/"
     }
   ],
-  "require":      {
-    "php": "~5.5",
-    "symfony/framework-bundle": "~2.5",
-    "symfony/filesystem": "~2.6",
-    "symfony/finder": "~2.6",
-    "symfony/console": "~2.6",
-    "symfony/config": "~2.6",
-    "twig/twig": "~1.18",
-    "twig/extensions": "~1.0",
-    "becklyn/rad-bundle": "~2.2"
+  "require": {
+    "php": "^7.0.7",
+    "symfony/http-kernel": "^3.1",
+    "symfony/filesystem": "^3.1",
+    "symfony/finder": "^3.1",
+    "symfony/console": "^3.1",
+    "symfony/config": "^3.1",
+    "symfony/cache": "^3.1",
+    "twig/twig": "^1.27",
+    "twig/extensions": "^1.4",
+    "becklyn/rad-bundle": "dev-master#c7c27dc961bb815b67a69297fe47c981f70dd836"
   },
-  "autoload":     {
+  "autoload": {
     "psr-4": { "Becklyn\\AssetsBundle\\": "" }
   }
 }
