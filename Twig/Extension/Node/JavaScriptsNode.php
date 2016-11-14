@@ -3,6 +3,7 @@
 namespace Becklyn\AssetsBundle\Twig\Extension\Node;
 
 use Becklyn\AssetsBundle\Data\AssetReference;
+use Becklyn\AssetsBundle\Data\DisplayableAssetInterface;
 
 
 /**
@@ -21,9 +22,24 @@ class JavaScriptsNode extends AssetsNode
     }
 
 
-
-    protected function writeHtmlTag (string $webRelativePath)
+    /**
+     * @inheritdoc
+     */
+    protected function writeHtmlTag (\Twig_Compiler $compiler, DisplayableAssetInterface $webRelativePath)
     {
-        return '<script src="' . $webRelativePath . '"></script>';
+        // <script
+        $compiler
+            ->write('echo \'<script');
+
+        // "src" attribute
+        $compiler
+            ->raw(' src="\' . $this->env->getExtension("asset")->getAssetUrl(')
+            ->repr($webRelativePath->getRelativeUrl())
+            ->raw(') . \'"');
+
+        // ></script>
+        $compiler
+            ->raw('></script>\';')
+            ->raw("\n");
     }
 }

@@ -4,7 +4,7 @@ namespace Becklyn\AssetsBundle\Path;
 
 use Becklyn\AssetsBundle\Cache\AssetCache;
 use Becklyn\AssetsBundle\Data\AssetReference;
-use Symfony\Component\Asset\Packages;
+use Becklyn\AssetsBundle\Data\DisplayableAssetInterface;
 
 
 class PathGenerator
@@ -16,12 +16,6 @@ class PathGenerator
 
 
     /**
-     * @var Packages
-     */
-    private $packages;
-
-
-    /**
      * @var bool
      */
     private $debug;
@@ -30,13 +24,11 @@ class PathGenerator
 
     /**
      * @param AssetCache $cache
-     * @param Packages   $packages
      * @param bool       $debug
      */
-    public function __construct (AssetCache $cache, Packages $packages, bool $debug)
+    public function __construct (AssetCache $cache, bool $debug)
     {
         $this->cache = $cache;
-        $this->packages = $packages;
         $this->debug = $debug;
     }
 
@@ -47,10 +39,16 @@ class PathGenerator
      *
      * @param AssetReference $reference
      *
-     * @return string
+     * @return DisplayableAssetInterface
      */
-    public function getRelativeUrl (AssetReference $reference)
+    public function getDisplayAssetReference (AssetReference $reference) : DisplayableAssetInterface
     {
-        return $reference->getReference();
+        // if debug mode, return the reference unchanged
+        if ($this->debug)
+        {
+            return $reference;
+        }
+
+        return $reference;
     }
 }

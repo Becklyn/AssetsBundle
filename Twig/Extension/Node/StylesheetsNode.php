@@ -3,6 +3,7 @@
 namespace Becklyn\AssetsBundle\Twig\Extension\Node;
 
 use Becklyn\AssetsBundle\Data\AssetReference;
+use Becklyn\AssetsBundle\Data\DisplayableAssetInterface;
 
 
 /**
@@ -22,8 +23,24 @@ class StylesheetsNode extends AssetsNode
 
 
 
-    protected function writeHtmlTag (string $webRelativePath)
+    /**
+     * @inheritdoc
+     */
+    protected function writeHtmlTag (\Twig_Compiler $compiler, DisplayableAssetInterface $webRelativePath)
     {
-        return '<link rel="stylesheet" href="' . $webRelativePath . '">';
+        // <link
+        $compiler
+            ->write('echo \'<link rel="stylesheet"');
+
+        // "href" attribute
+        $compiler
+            ->raw(' href="\' . $this->env->getExtension("asset")->getAssetUrl(')
+            ->repr($webRelativePath->getRelativeUrl())
+            ->raw(') . \'"');
+
+        // >
+        $compiler
+            ->raw('>\';')
+            ->raw("\n");
     }
 }

@@ -6,7 +6,7 @@ namespace Becklyn\AssetsBundle\Data;
 use Becklyn\AssetsBundle\Exception\InvalidAssetTypeException;
 
 
-class AssetReference
+class AssetReference implements DisplayableAssetInterface
 {
     const TYPE_JAVASCRIPT = 'js';
     const TYPE_STYLESHEET = 'css';
@@ -85,5 +85,15 @@ class AssetReference
             self::TYPE_JAVASCRIPT,
             self::TYPE_STYLESHEET,
         ];
+    }
+
+
+
+    /**
+     * @inheritdoc
+     */
+    public function getRelativeUrl () : string
+    {
+        return $this->getReference();
     }
 }

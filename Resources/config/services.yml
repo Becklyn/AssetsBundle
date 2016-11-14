@@ -31,7 +31,6 @@ services:
         class: Becklyn\AssetsBundle\Path\PathGenerator
         arguments:
             - '@becklyn.assets.cache'
-            - '@assets.packages'
             - '%kernel.debug%'
         public: false
 

@@ -4,6 +4,7 @@ namespace Becklyn\AssetsBundle\Twig\Extension\Node;
 
 use Becklyn\AssetsBundle\Cache\AssetCache;
 use Becklyn\AssetsBundle\Data\AssetReference;
+use Becklyn\AssetsBundle\Data\DisplayableAssetInterface;
 use Becklyn\AssetsBundle\Path\PathGenerator;
 use Twig_Compiler;
 use Twig_Node;
@@ -42,15 +43,6 @@ abstract class AssetsNode extends Twig_Node
     }
 
 
-
-    /**
-     * @param string $webRelativePath
-     *
-     * @return mixed
-     */
-    abstract protected function writeHtmlTag (string $webRelativePath);
-
-
     /**
      * {@inheritdoc}
      */
@@ -71,12 +63,8 @@ abstract class AssetsNode extends Twig_Node
         // dump all references
         foreach ($assetReferences as $reference)
         {
-            $webRelativePath = $this->pathGenerator->getRelativeUrl($reference);
-
-            $compiler
-                ->write('echo ')
-                ->repr($this->writeHtmlTag($webRelativePath))
-                ->write(";\n");
+            $displayAssetReference = $this->pathGenerator->getDisplayAssetReference($reference);
+            $this->writeHtmlTag($compiler, $displayAssetReference);
         }
     }
 
@@ -130,4 +118,12 @@ abstract class AssetsNode extends Twig_Node
      * @return string
      */
     abstract public function getAssetType () : string;
+
+
+
+    /**
+     * @param Twig_Compiler             $compiler
+     * @param DisplayableAssetInterface $webRelativePath
+     */
+    abstract protected function writeHtmlTag (Twig_Compiler $compiler, DisplayableAssetInterface $webRelativePath);
 }
