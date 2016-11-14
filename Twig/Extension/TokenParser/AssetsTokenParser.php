@@ -2,6 +2,7 @@
 
 namespace Becklyn\AssetsBundle\Twig\Extension\TokenParser;
 
+use Becklyn\AssetsBundle\Path\PathGenerator;
 use Becklyn\AssetsBundle\Twig\Extension\Node\AssetsNode;
 use Twig_Token;
 use Twig_TokenParser;
@@ -12,6 +13,21 @@ use Twig_TokenParser;
  */
 abstract class AssetsTokenParser extends Twig_TokenParser
 {
+    /**
+     * @var PathGenerator
+     */
+    protected $pathGenerator;
+
+
+
+    /**
+     * @param PathGenerator $pathGenerator
+     */
+    public function __construct (PathGenerator $pathGenerator)
+    {
+        $this->pathGenerator = $pathGenerator;
+    }
+
     /**
      * @inheritdoc
      */

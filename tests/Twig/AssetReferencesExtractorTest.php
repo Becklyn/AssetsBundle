@@ -3,6 +3,7 @@
 namespace Becklyn\AssetsBundle\tests\Twig;
 
 use Becklyn\AssetsBundle\Data\AssetReference;
+use Becklyn\AssetsBundle\Path\PathGenerator;
 use Becklyn\AssetsBundle\Twig\AssetReferencesExtractor;
 use Becklyn\AssetsBundle\Twig\Extension\AssetsTwigExtension;
 
@@ -11,16 +12,21 @@ class AssetReferencesExtractorTest extends \PHPUnit_Framework_TestCase
 {
     private $fixturesDir;
     private $twig;
+    private $loader;
+
 
     public function setUp ()
     {
         $this->fixturesDir = dirname(__DIR__) . "/fixtures/templates";
 
-        $this->twig = new \Twig_Environment(new \Twig_Loader_Array([]), [
+        $this->twig = new \Twig_Environment(new \Twig_Loader_Filesystem($this->fixturesDir), [
             "cache" => false,
         ]);
 
-        $this->twig->addExtension(new AssetsTwigExtension());
+        $pathGenerator = self::getMockBuilder(PathGenerator::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->twig->addExtension(new AssetsTwigExtension($pathGenerator));
     }
 
 
@@ -39,16 +45,8 @@ class AssetReferencesExtractorTest extends \PHPUnit_Framework_TestCase
 
     public function testInheritance ()
     {
-        $templateDir = dirname(__DIR__) . "/fixtures/templates/inheritance";
-
-        $loader = new \Twig_Loader_Filesystem($templateDir);
-        $twig = new \Twig_Environment($loader, [
-            "cache" => false,
-        ]);
-        $twig->addExtension(new AssetsTwigExtension());
-
-        $extractor = new AssetReferencesExtractor($twig);
-        $assets = $extractor->extractAssetsFromFile("{$templateDir}/inheritance.html.twig");
+        $extractor = new AssetReferencesExtractor($this->twig);
+        $assets = $extractor->extractAssetsFromFile("{$this->fixturesDir}/inheritance/inheritance.html.twig");
 
         self::assertCount(1, $assets);
 

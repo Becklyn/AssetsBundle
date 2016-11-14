@@ -16,7 +16,7 @@ class StylesheetsTokenParser extends AssetsTokenParser
      */
     protected function createAssetsNode ($files, $lineNo, $tag) : AssetsNode
     {
-        return new StylesheetsNode($files, $lineNo, $tag);
+        return new StylesheetsNode($this->pathGenerator, $files, $lineNo, $tag);
     }
 
 

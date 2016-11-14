@@ -19,4 +19,11 @@ class StylesheetsNode extends AssetsNode
     {
         return AssetReference::TYPE_STYLESHEET;
     }
+
+
+
+    protected function writeHtmlTag (string $webRelativePath)
+    {
+        return '<link rel="stylesheet" href="' . $webRelativePath . '">';
+    }
 }

@@ -19,4 +19,11 @@ class JavaScriptsNode extends AssetsNode
     {
         return AssetReference::TYPE_JAVASCRIPT;
     }
+
+
+
+    protected function writeHtmlTag (string $webRelativePath)
+    {
+        return '<script src="' . $webRelativePath . '"></script>';
+    }
 }

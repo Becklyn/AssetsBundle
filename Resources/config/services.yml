@@ -24,12 +24,24 @@ services:
             - '@templating.locator'
             - '@filesystem'
 
+    # --------------------------------------------------------------------------------------------------------------
+    # Path Generator
+    # --------------------------------------------------------------------------------------------------------------
+    becklyn.assets.path_generator:
+        class: Becklyn\AssetsBundle\Path\PathGenerator
+        arguments:
+            - '@becklyn.assets.cache'
+            - '@assets.packages'
+            - '%kernel.debug%'
+        public: false
 
     # --------------------------------------------------------------------------------------------------------------
     # Bundle Internal Twig Extensions
     # --------------------------------------------------------------------------------------------------------------
     becklyn.assets.twig_extension:
         class: Becklyn\AssetsBundle\Twig\Extension\AssetsTwigExtension
+        arguments:
+            - '@becklyn.assets.path_generator'
         public: false
         tags:
             - { name: twig.extension }
