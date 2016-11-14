@@ -57,10 +57,7 @@ class AssetReferencesExtractor
 
         if ($node instanceof AssetsNode)
         {
-            foreach ($node->getAssetReferences() as $reference)
-            {
-                $assets[] = new AssetReference($reference, $node->getAssetType());
-            }
+            $assets = $node->getAssetReferences();
         }
 
         foreach ($node as $childNode)
