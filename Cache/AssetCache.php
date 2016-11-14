@@ -51,7 +51,7 @@ class AssetCache
     /**
      * @param string               $rootDir
      * @param string               $cacheDir
-     * @param string               $relativeAssetsDir
+     * @param string               $relativeAssetsDir the path where the cached assets should be stored (relative to /web/)
      * @param LoggerInterface|null $logger
      *
      * @internal param KernelInterface $kernel
