@@ -4,6 +4,7 @@ namespace Becklyn\AssetsBundle\Path;
 
 use Becklyn\AssetsBundle\Cache\AssetCache;
 use Becklyn\AssetsBundle\Data\AssetReference;
+use Becklyn\AssetsBundle\Data\CachedReference;
 use Becklyn\AssetsBundle\Data\DisplayableAssetInterface;
 
 
@@ -39,9 +40,9 @@ class PathGenerator
      *
      * @param AssetReference $reference
      *
-     * @return DisplayableAssetInterface
+     * @return DisplayableAssetInterface|null
      */
-    public function getDisplayAssetReference (AssetReference $reference) : DisplayableAssetInterface
+    public function getDisplayAssetReference (AssetReference $reference)
     {
         // if debug mode, return the reference unchanged
         if ($this->debug)
@@ -49,6 +50,6 @@ class PathGenerator
             return $reference;
         }
 
-        return $reference;
+        return $this->cache->get($reference);
     }
 }

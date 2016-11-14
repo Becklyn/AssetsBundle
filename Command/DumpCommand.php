@@ -24,13 +24,13 @@ class DumpCommand extends ContainerAwareCommand
     /**
      * @inheritdoc
      */
-    protected function execute (InputInterface $input, OutputInterface $output)
+    protected function execute (InputInterface $input, OutputInterface $io)
     {
-        $output = new SymfonyStyle($input, $output);
+        $io = new SymfonyStyle($input, $io);
 
-        $output->title("Becklyn Assets Bundle");
+        $io->title("Becklyn Assets Bundle");
+        $this->getContainer()->get("becklyn.assets.handler")->regenerateCache($io);
 
-        dump($this->getContainer()->get("becklyn.assets.twig_template_finder")->getAllAssetPaths());
-        exit;
+        $io->success("All done.");
     }
 }

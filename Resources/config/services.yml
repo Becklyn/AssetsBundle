@@ -5,24 +5,34 @@ services:
     becklyn.assets.cache:
         class: Becklyn\AssetsBundle\Cache\AssetCache
         arguments:
+            - '%kernel.root_dir%'
             - '%kernel.cache_dir%'
+            - '/assets/'
+            - '@?logger'
+        public: false
 
     # --------------------------------------------------------------------------------------------------------------
     # Twig Template & Asset Finder
     # --------------------------------------------------------------------------------------------------------------
-    becklyn.assets.twig_template_finder:
-        class: Becklyn\AssetsBundle\Finder\TwigTemplateFinder
+    becklyn.assets.handler:
+        class: Becklyn\AssetsBundle\Handler\AssetHandler
         arguments:
             - '@kernel'
-            - '@becklyn.assets.twig_assets_finder'
+            - '@becklyn.assets.cache'
+            - '@becklyn.assets.template_finder'
+            - '@becklyn.assets.asset_references_extractor'
 
-    becklyn.assets.twig_assets_finder:
-        class: Becklyn\AssetsBundle\Finder\TwigAssetsFinder
+
+    becklyn.assets.template_finder:
+        class: Becklyn\AssetsBundle\Finder\TemplateFinder
+        public: false
+
+    becklyn.assets.asset_references_extractor:
+        class: Becklyn\AssetsBundle\Twig\AssetReferencesExtractor
+        public: false
         arguments:
             - '@twig'
-            - '@templating.name_parser'
-            - '@templating.locator'
-            - '@filesystem'
+            - '@?logger'
 
     # --------------------------------------------------------------------------------------------------------------
     # Path Generator

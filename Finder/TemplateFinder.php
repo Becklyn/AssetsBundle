@@ -25,6 +25,7 @@ class TemplateFinder
             ->files()
             ->name('*.html.twig')
             ->contains('/{%\s+?(javascripts|stylesheets) /i')
+            ->notPath('tests')
             ->followLinks()
             ->ignoreUnreadableDirs();
 

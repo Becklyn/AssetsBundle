@@ -64,7 +64,11 @@ abstract class AssetsNode extends Twig_Node
         foreach ($assetReferences as $reference)
         {
             $displayAssetReference = $this->pathGenerator->getDisplayAssetReference($reference);
-            $this->writeHtmlTag($compiler, $displayAssetReference);
+
+            if (null !== $displayAssetReference)
+            {
+                $this->writeHtmlTag($compiler, $displayAssetReference);
+            }
         }
     }
 

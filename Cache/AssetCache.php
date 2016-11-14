@@ -2,6 +2,10 @@
 
 namespace Becklyn\AssetsBundle\Cache;
 
+use Becklyn\AssetsBundle\Data\AssetReference;
+use Becklyn\AssetsBundle\Data\CachedReference;
+use Becklyn\AssetsBundle\Exception\InvalidCacheEntryException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 
@@ -10,29 +14,77 @@ class AssetCache
     /**
      * @var string
      */
-    private $assetsCacheTable = "assets_cache_table.php";
+    private $cacheStoragePath = "assets_cache_table.php";
 
 
     /**
-     * @var string[]
+     * @var array.<string, string>
      */
     private $assetsCache = null;
 
 
     /**
-     * @var array
+     * @var string
      */
-    private $tempAssetsCache = [];
+    private $webDir;
 
 
     /**
-     * AssetCache constructor.
-     *
-     * @param string $cacheDir
+     * @var string
      */
-    public function __construct (string $cacheDir)
+    private $assetsPath;
+
+
+    /**
+     * @var string
+     */
+    private $relativeAssetsDir;
+
+
+    /**
+     * @var LoggerInterface|null
+     */
+    private $logger;
+
+
+
+    /**
+     * @param string               $rootDir
+     * @param string               $cacheDir
+     * @param string               $relativeAssetsDir
+     * @param LoggerInterface|null $logger
+     *
+     * @internal param KernelInterface $kernel
+     */
+    public function __construct (string $rootDir, string $cacheDir, string $relativeAssetsDir, LoggerInterface $logger = null)
     {
-        $this->assetsCacheTable = "{$cacheDir}/assets_cache_table.php";
+        $this->webDir = dirname($rootDir) . "/web/";
+        $this->relativeAssetsDir = rtrim($relativeAssetsDir, "/");
+        $this->assetsPath = $this->webDir . ltrim($relativeAssetsDir, "/");
+        $this->cacheStoragePath = "{$cacheDir}/becklyn/assets/assets_mapping.php";
+        $this->assetsCache = $this->loadCache();
+        $this->logger = $logger;
+    }
+
+
+
+    /**
+     * Loads the current cache data
+     *
+     * @return array
+     */
+    private function loadCache () : array
+    {
+        $assetsCache = null;
+
+        if (is_file($this->cacheStoragePath))
+        {
+            $assetsCache = @include $this->cacheStoragePath;
+        }
+
+        return is_array($assetsCache)
+            ? $assetsCache
+            : [];
     }
 
 
@@ -40,99 +92,135 @@ class AssetCache
     /**
      * Adds the key-value pair to the temporary cache and upon calling build() to the file system
      *
-     * @param string $key
-     * @param mixed  $value
-     * @param bool   $override
-     *
-     * @return void
+     * @param AssetReference $reference
      */
-    public function add ($key, $value, $override = false)
+    public function add (AssetReference $reference)
     {
-        if (in_array($key, $this->tempAssetsCache) && !$override)
+        $filePath = $this->getFilePath($reference);
+
+        // file to cache does not exist
+        if (!is_file($filePath))
         {
+            if (null !== $this->logger)
+            {
+                $this->logger->warning("Can't add asset %asset% to cache, as the file was not found at %path%.", [
+                    "%asset%" => $reference->getReference(),
+                    "%path%" => $filePath,
+                ]);
+            }
+
             return;
         }
 
-        $this->tempAssetsCache[$key] = $value;
+        $hash = $this->hashFileContent($filePath);
+        $key = $reference->getReference();
+
+        // file is already cached, but under a different key
+        if (in_array($key, $this->assetsCache) && $this->assetsCache[$key] !== $hash)
+        {
+            throw new InvalidCacheEntryException($key);
+        }
+
+        // copy file
+        $this->copyFileToCache($reference, $hash);
+
+        // store value in cache
+        $this->assetsCache[$key] = $hash;
+        $this->writeCacheFile();
     }
+
+
+
+    /**
+     * @param AssetReference $reference
+     *
+     * @return string
+     */
+    private function getFilePath (AssetReference $reference)
+    {
+        return $this->webDir . ltrim($reference->getReference(), "/");
+    }
+
+
+
+    /**
+     * Returns the hash of the file content
+     *
+     * @param string $filePath
+     *
+     * @return string
+     */
+    private function hashFileContent (string $filePath) : string
+    {
+        return sha1_file($filePath);
+    }
+
+
+
+    /**
+     * Copies the given asset reference to the cache
+     *
+     * @param AssetReference $reference
+     * @param string         $hash
+     */
+    private function copyFileToCache (AssetReference $reference, string $hash)
+    {
+        $filesystem = new Filesystem();
+        $filesystem->copy(
+            $this->getFilePath($reference),
+            $this->assetsPath . $hash . "." . $reference->getTypeFileExtension()
+        );
+    }
+
 
 
     /**
      * Retrieves the cached value by key
      *
-     * @param string $key
-     * @param mixed  $defaultValue
+     * @param AssetReference $assetReference
      *
-     * @return mixed|null
+     * @return CachedReference|null
      */
-    public function get ($key, $defaultValue = null)
+    public function get (AssetReference $assetReference)
     {
-        $fileSystem = new Filesystem();
-        if (!$fileSystem->exists($this->assetsCacheTable))
+        if (isset($this->assetsCache[$assetReference->getReference()]))
         {
-            return $defaultValue;
+            $hash = $this->assetsCache[$assetReference->getReference()];
+            return new CachedReference(
+                "{$this->relativeAssetsDir}/{$hash}.{$assetReference->getTypeFileExtension()}",
+                $hash
+            );
         }
 
-        if (null === $this->assetsCache)
+        if (null !== $this->logger)
         {
-            $this->assetsCache = require_once $this->assetsCacheTable;
+            $this->logger->warning("No asset found for '%reference%'.", [
+                "%reference%" => $assetReference->getReference(),
+            ]);
         }
 
-        return $this->assetsCache[$key] ?? $defaultValue;
-    }
-
-
-    /**
-     * Checks whether the given key is already cached on the file system (Assets Cache Table)
-     *
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function isCached ($key)
-    {
-        return $this->get($key) !== null;
-    }
-
-
-    /**
-     * Writes the cached data to the file system
-     *
-     * @return void
-     */
-    public function build ()
-    {
-        $cacheContents = "<?php
-
-return [
-";
-
-        foreach ($this->tempAssetsCache as $key => $value)
-        {
-            $cacheContents .= "    '$key' => '$value',\n";
-        }
-
-        $cacheContents .= "];
-
-?>";
-
-        $this->writeCacheFile($cacheContents);
+        return null;
     }
 
 
     /**
      * Writes the content to the file system (Assets Cache Table)
-     *
-     * @param string $contents
      */
-    private function writeCacheFile ($contents)
+    private function writeCacheFile ()
     {
+        $cacheContents = '<?php return ' . var_export($this->assetsCache, true) . ';';
         $fileSystem = new Filesystem();
-        if (!$fileSystem->exists(dirname($this->assetsCacheTable)))
-        {
-            $fileSystem->mkdir(dirname($this->assetsCacheTable));
-        }
+        $fileSystem->dumpFile($this->cacheStoragePath, $cacheContents);
+    }
 
-        $fileSystem->dumpFile($this->assetsCacheTable, $contents);
+
+
+    /**
+     * Clears the cache
+     */
+    public function clear ()
+    {
+        $this->assetsCache = [];
+        $this->writeCacheFile();
     }
 }
