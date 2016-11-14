@@ -35,4 +35,25 @@ class AssetReferencesExtractorTest extends \PHPUnit_Framework_TestCase
         self::assertSame("a.css", $asset->getReference());
         self::assertSame(AssetReference::TYPE_STYLESHEET, $asset->getType());
     }
+
+
+    public function testInheritance ()
+    {
+        $templateDir = dirname(__DIR__) . "/fixtures/templates/inheritance";
+
+        $loader = new \Twig_Loader_Filesystem($templateDir);
+        $twig = new \Twig_Environment($loader, [
+            "cache" => false,
+        ]);
+        $twig->addExtension(new AssetsTwigExtension());
+
+        $extractor = new AssetReferencesExtractor($twig);
+        $assets = $extractor->extractAssetsFromFile("{$templateDir}/inheritance.html.twig");
+
+        self::assertCount(1, $assets);
+
+        $asset = $assets[0];
+        self::assertSame("b.css", $asset->getReference());
+        self::assertSame(AssetReference::TYPE_STYLESHEET, $asset->getType());
+    }
 }
