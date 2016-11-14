@@ -13,7 +13,7 @@ class TemplateFinder
     /**
      * @param string $directory
      *
-     * @return \SplFileInfo[]
+     * @return string[]
      */
     public function findInDirectory (string $directory) : array
     {
