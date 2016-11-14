@@ -3,7 +3,6 @@
 namespace Becklyn\AssetsBundle\Twig\Extension\TokenParser;
 
 use Becklyn\AssetsBundle\Twig\Extension\Node\AssetsNode;
-use Twig_Node;
 use Twig_Token;
 use Twig_TokenParser;
 
@@ -31,17 +30,8 @@ abstract class AssetsTokenParser extends Twig_TokenParser
         // %}
         $stream->expect(Twig_Token::BLOCK_END_TYPE);
 
-        // parse body between %} ... {%
-        $body = $this->parser->subparse([$this, 'decideIfSubparse']);
-
-        // expect end tag
-        $stream->expect(Twig_Token::NAME_TYPE, $this->getEndTag());
-
-        // %}
-        $stream->expect(Twig_Token::BLOCK_END_TYPE);
-
         // return created node
-        return $this->createAssetsNode($files, $body, $token->getLine(), $this->getTag());
+        return $this->createAssetsNode($files, $token->getLine(), $this->getTag());
     }
 
 
@@ -62,26 +52,13 @@ abstract class AssetsTokenParser extends Twig_TokenParser
     /**
      * Creates the asset node
      *
-     * @param array     $files the file definitions
-     * @param Twig_Node $body  the body to compile to
-     * @param int       $lineNo
-     * @param string    $tag
+     * @param array  $files the file definitions
+     * @param int    $lineNo
+     * @param string $tag
      *
      * @return AssetsNode
      */
-    protected abstract function createAssetsNode ($files, $body, $lineNo, $tag) : AssetsNode;
-
-
-
-    /**
-     * Returns the closing tag of this node
-     *
-     * @return string
-     */
-    public function getEndTag () : string
-    {
-        return "end{$this->getTag()}";
-    }
+    protected abstract function createAssetsNode ($files, $lineNo, $tag) : AssetsNode;
 
 
     /**

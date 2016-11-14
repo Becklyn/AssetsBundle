@@ -13,17 +13,15 @@ use Twig_Node_Spaceless;
 abstract class AssetsNode extends Twig_Node
 {
     /**
-     * @param string[]  $files the file definitions
-     * @param Twig_Node $body  the body to compile to
-     * @param int       $lineNo
-     * @param string    $tag
+     * @param string[] $files the file definitions
+     * @param int      $lineNo
+     * @param string   $tag
      */
-    public function __construct (array $files, Twig_Node $body, int $lineNo, string $tag)
+    public function __construct (array $files, int $lineNo, string $tag)
     {
         parent::__construct(
             [
                 'files' => new Twig_Node($files),
-                'body'  => new Twig_Node_Spaceless($body, $lineNo),
             ],
             [],
             $lineNo,

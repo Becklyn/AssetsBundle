@@ -14,9 +14,9 @@ class JavaScriptsTokenParser extends AssetsTokenParser
     /**
      * @inheritdoc
      */
-    protected function createAssetsNode ($files, $body, $lineNo, $tag) : AssetsNode
+    protected function createAssetsNode ($files, $lineNo, $tag) : AssetsNode
     {
-        return new JavascriptsNode($files, $body, $lineNo, $tag);
+        return new JavascriptsNode($files, $lineNo, $tag);
     }
 
 
