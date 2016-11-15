@@ -101,13 +101,10 @@ class AssetCache
         // file to cache does not exist
         if (!is_file($filePath))
         {
-            if (null !== $this->logger)
-            {
-                $this->logger->warning("Can't add asset %asset% to cache, as the file was not found at %path%.", [
-                    "%asset%" => $reference->getReference(),
-                    "%path%" => $filePath,
-                ]);
-            }
+            $this->writeLog("Can't add asset %asset% to cache, as the file was not found at %path%.", [
+                "%asset%" => $reference->getReference(),
+                "%path%" => $filePath,
+            ]);
 
             return;
         }
@@ -192,14 +189,26 @@ class AssetCache
             );
         }
 
-        if (null !== $this->logger)
-        {
-            $this->logger->warning("No asset found for '%reference%'.", [
-                "%reference%" => $assetReference->getReference(),
-            ]);
-        }
+        $this->writeLog("No asset found for '%reference%'.", [
+            "%reference%" => $assetReference->getReference(),
+        ]);
 
         return null;
+    }
+
+
+    /**
+     * Writes a message to the logging system if it's present
+     *
+     * @param string $message
+     * @param array  $parameters
+     */
+    private function writeLog (string $message, array $parameters = [])
+    {
+        if (null !== $this->logger)
+        {
+            $this->logger->warning($message, $parameters);
+        }
     }
 
 
