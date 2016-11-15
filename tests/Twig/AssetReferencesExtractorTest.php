@@ -4,20 +4,20 @@ namespace Becklyn\AssetsBundle\tests\Twig;
 
 use Becklyn\AssetsBundle\Data\AssetReference;
 use Becklyn\AssetsBundle\Path\PathGenerator;
+use Becklyn\AssetsBundle\tests\BaseTest;
 use Becklyn\AssetsBundle\Twig\AssetReferencesExtractor;
 use Becklyn\AssetsBundle\Twig\Extension\AssetsTwigExtension;
 
 
-class AssetReferencesExtractorTest extends \PHPUnit_Framework_TestCase
+class AssetReferencesExtractorTest extends BaseTest
 {
     private $fixturesDir;
     private $twig;
-    private $loader;
 
 
     public function setUp ()
     {
-        $this->fixturesDir = dirname(__DIR__) . "/fixtures/templates";
+        $this->fixturesDir = $this->getFixturesDirectory("templates");
 
         $this->twig = new \Twig_Environment(new \Twig_Loader_Filesystem($this->fixturesDir), [
             "cache" => false,
@@ -30,6 +30,9 @@ class AssetReferencesExtractorTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    /**
+     * @group asset-reference
+     */
     public function testExtraction ()
     {
         $extractor = new AssetReferencesExtractor($this->twig);
@@ -43,6 +46,9 @@ class AssetReferencesExtractorTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    /**
+     * @group asset-reference
+     */
     public function testInheritance ()
     {
         $extractor = new AssetReferencesExtractor($this->twig);
