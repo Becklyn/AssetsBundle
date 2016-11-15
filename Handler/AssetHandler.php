@@ -92,7 +92,7 @@ class AssetHandler
                 {
                     $io->text(sprintf(
                         "Template '%s': %d reference%s found",
-                        $this->filesystem->makePathRelative($template, $bundlePath),
+                        rtrim($this->filesystem->makePathRelative($template, $bundlePath), "/"),
                         count($assetReferences),
                         1 === count($assetReferences) ? "" : "s"
                     ));
