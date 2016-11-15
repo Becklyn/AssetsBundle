@@ -2,7 +2,6 @@
 
 namespace Becklyn\AssetsBundle\Twig\Extension\Node;
 
-use Becklyn\AssetsBundle\Cache\AssetCache;
 use Becklyn\AssetsBundle\Data\AssetReference;
 use Becklyn\AssetsBundle\Data\DisplayableAssetInterface;
 use Becklyn\AssetsBundle\Path\PathGenerator;
@@ -10,7 +9,6 @@ use Twig_Compiler;
 use Twig_Node;
 use Twig_Node_Expression_Binary_Concat;
 use Twig_Node_Expression_Constant;
-use Twig_Node_Spaceless;
 
 
 abstract class AssetsNode extends Twig_Node

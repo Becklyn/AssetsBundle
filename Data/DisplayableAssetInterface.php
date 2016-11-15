@@ -2,6 +2,7 @@
 
 namespace Becklyn\AssetsBundle\Data;
 
+
 /**
  * Interfaces that marks a displayable interface
  */
