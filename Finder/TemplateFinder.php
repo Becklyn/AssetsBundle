@@ -19,20 +19,27 @@ class TemplateFinder
     {
         $result = [];
 
-        $finder = new Finder();
-        $finder
-            ->in($directory)
-            ->files()
-            ->name('*.html.twig')
-            ->contains('/{%\s+?(javascripts|stylesheets) /i')
-            ->notPath('tests')
-            ->followLinks()
-            ->ignoreUnreadableDirs();
-
-        /** @var \SplFileInfo $file */
-        foreach ($finder as $file)
+        try
         {
-            $result[] = $file->getPathname();
+            $finder = new Finder();
+            $finder
+                ->in($directory)
+                ->files()
+                ->name('*.html.twig')
+                ->contains('/{%\s+?(javascripts|stylesheets) /i')
+                ->notPath('tests')
+                ->followLinks()
+                ->ignoreUnreadableDirs();
+
+            /** @var \SplFileInfo $file */
+            foreach ($finder as $file)
+            {
+                $result[] = $file->getPathname();
+            }
+        }
+        catch (\InvalidArgumentException $e)
+        {
+            // Swallow exception since we're returning an empty result
         }
 
         return $result;
