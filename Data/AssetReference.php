@@ -2,10 +2,12 @@
 
 namespace Becklyn\AssetsBundle\Data;
 
-
 use Becklyn\AssetsBundle\Exception\InvalidAssetTypeException;
 
 
+/**
+ * Represents a reference to an asset in the template
+ */
 class AssetReference implements DisplayableAssetInterface
 {
     const TYPE_JAVASCRIPT = 'js';

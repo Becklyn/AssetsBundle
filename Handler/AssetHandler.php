@@ -62,6 +62,11 @@ class AssetHandler
      */
     public function regenerateCache (SymfonyStyle $io = null)
     {
+        if (null !== $io)
+        {
+            $io->comment("Removing existing asset files");
+        }
+
         $this->assetCache->clear();
 
         foreach ($this->kernel->getBundles() as $bundle)

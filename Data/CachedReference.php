@@ -4,7 +4,7 @@ namespace Becklyn\AssetsBundle\Data;
 
 
 /**
- * A reference to a cached asset
+ * A cached asset that contains the path and additional important information about the asset
  */
 class CachedReference implements DisplayableAssetInterface
 {
@@ -20,15 +20,23 @@ class CachedReference implements DisplayableAssetInterface
     private $contentHash;
 
 
+    /**
+     * @var string|null
+     */
+    private $hashFunction;
+
+
 
     /**
-     * @param string      $relativeUrl
-     * @param string|null $contentHash
+     * @param string $relativeUrl
+     * @param string $contentHash
+     * @param string $hashFunction
      */
-    public function __construct (string $relativeUrl, string $contentHash = null)
+    public function __construct (string $relativeUrl, string $contentHash, string $hashFunction)
     {
         $this->relativeUrl = $relativeUrl;
         $this->contentHash = $contentHash;
+        $this->hashFunction = $hashFunction;
     }
 
 
@@ -44,10 +52,20 @@ class CachedReference implements DisplayableAssetInterface
 
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getContentHash ()
+    public function getContentHash () : string
     {
         return $this->contentHash;
+    }
+
+
+
+    /**
+     * @return string
+     */
+    public function getHashFunction () : string
+    {
+        return $this->hashFunction;
     }
 }

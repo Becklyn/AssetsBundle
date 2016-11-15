@@ -4,7 +4,6 @@ namespace Becklyn\AssetsBundle\Path;
 
 use Becklyn\AssetsBundle\Cache\AssetCache;
 use Becklyn\AssetsBundle\Data\AssetReference;
-use Becklyn\AssetsBundle\Data\CachedReference;
 use Becklyn\AssetsBundle\Data\DisplayableAssetInterface;
 
 

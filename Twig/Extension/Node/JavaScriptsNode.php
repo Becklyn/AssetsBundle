@@ -3,6 +3,7 @@
 namespace Becklyn\AssetsBundle\Twig\Extension\Node;
 
 use Becklyn\AssetsBundle\Data\AssetReference;
+use Becklyn\AssetsBundle\Data\CachedReference;
 use Becklyn\AssetsBundle\Data\DisplayableAssetInterface;
 
 
@@ -36,6 +37,13 @@ class JavaScriptsNode extends AssetsNode
             ->raw(' src="\' . $this->env->getExtension("asset")->getAssetUrl(')
             ->repr($webRelativePath->getRelativeUrl())
             ->raw(') . \'"');
+
+        if ($webRelativePath instanceof CachedReference)
+        {
+            // "integrity" attribute
+            $compiler
+                ->raw(' integrity="' . $webRelativePath->getHashFunction() . '-' . $webRelativePath->getContentHash() . '"');
+        }
 
         // ></script>
         $compiler

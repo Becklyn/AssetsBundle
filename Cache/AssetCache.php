@@ -2,10 +2,12 @@
 
 namespace Becklyn\AssetsBundle\Cache;
 
+use Becklyn\AssetsBundle\Data\AssetFile;
 use Becklyn\AssetsBundle\Data\AssetReference;
 use Becklyn\AssetsBundle\Data\CachedReference;
 use Becklyn\AssetsBundle\Exception\InvalidCacheEntryException;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem;
 
 
@@ -47,6 +49,25 @@ class AssetCache
     private $logger;
 
 
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+
+    /**
+     * The list of possible hash algorithms.
+     * The list is ordered, the first available algorithm is used.
+     *
+     * @var string[]
+     */
+    private static $hashAlgorithms = [
+        "sha512",
+        "sha382",
+        "sha256",
+    ];
+
+
 
     /**
      * @param string               $rootDir
@@ -64,6 +85,7 @@ class AssetCache
         $this->cacheStoragePath = "{$cacheDir}/becklyn/assets/assets_mapping.php";
         $this->assetsCache = $this->loadCache();
         $this->logger = $logger;
+        $this->filesystem = new Filesystem();
     }
 
 
@@ -96,60 +118,67 @@ class AssetCache
      */
     public function add (AssetReference $reference)
     {
-        $filePath = $this->getFilePath($reference);
-
-        // file to cache does not exist
-        if (!is_file($filePath))
+        try
         {
-            $this->writeLog("Can't add asset %asset% to cache, as the file was not found at %path%.", [
-                "%asset%" => $reference->getReference(),
-                "%path%" => $filePath,
-            ]);
+            $assetFile = $this->generateAssetFile($reference);
 
-            return;
+            $key = $assetFile->getReference();
+
+            // file is already cached, but under a different key
+            if (in_array($key, $this->assetsCache) && $this->assetsCache[$key] !== $assetFile->getContentHash())
+            {
+                throw new InvalidCacheEntryException($key);
+            }
+
+            // copy file
+            $this->copyFileToCache($assetFile);
+
+            // store value in cache
+            $this->assetsCache[$key] = [
+                "contentHash" => $assetFile->getContentHash(),
+                "hashFunction" => $assetFile->getHashAlgorithm(),
+                "fileName" => $assetFile->getNewFileName(),
+            ];
+            $this->writeCacheFile();
         }
-
-        $hash = $this->hashFileContent($filePath);
-        $key = $reference->getReference();
-
-        // file is already cached, but under a different key
-        if (in_array($key, $this->assetsCache) && $this->assetsCache[$key] !== $hash)
+        catch (FileNotFoundException $e)
         {
-            throw new InvalidCacheEntryException($key);
+            // file to cache does not exist
+            if (null !== $this->logger)
+            {
+                $this->logger->warning("Can't add asset %asset% to cache: %message%", [
+                    "%asset%" => $reference->getReference(),
+                    "%message%" => $e->getMessage(),
+                ]);
+            }
         }
-
-        // copy file
-        $this->copyFileToCache($reference, $hash);
-
-        // store value in cache
-        $this->assetsCache[$key] = $hash;
-        $this->writeCacheFile();
     }
 
 
 
     /**
+     * Generates an asset file from a reference
+     *
      * @param AssetReference $reference
      *
-     * @return string
+     * @return AssetFile
      */
-    private function getFilePath (AssetReference $reference)
+    private function generateAssetFile (AssetReference $reference) : AssetFile
     {
-        return $this->webDir . ltrim($reference->getReference(), "/");
-    }
+        $filePath = $this->webDir . ltrim($reference->getReference(), "/");
 
+        if (!is_file($filePath))
+        {
+            throw new FileNotFoundException(sprintf(
+                "The assets file '%s' could not be found at path '%s'.",
+                $reference->getReference(),
+                $filePath
+            ));
+        }
 
-
-    /**
-     * Returns the hash of the file content
-     *
-     * @param string $filePath
-     *
-     * @return string
-     */
-    private function hashFileContent (string $filePath) : string
-    {
-        return sha1_file($filePath);
+        $newFilename = sha1_file($filePath);
+        $contentHash = base64_encode(hash_file(AssetFile::INTEGRITY_HASH_FUNCTION, $filePath, true));
+        return new AssetFile($reference, $filePath, $contentHash, $newFilename);
     }
 
 
@@ -157,15 +186,13 @@ class AssetCache
     /**
      * Copies the given asset reference to the cache
      *
-     * @param AssetReference $reference
-     * @param string         $hash
+     * @param AssetFile $file
      */
-    private function copyFileToCache (AssetReference $reference, string $hash)
+    private function copyFileToCache (AssetFile $file)
     {
-        $filesystem = new Filesystem();
-        $filesystem->copy(
-            $this->getFilePath($reference),
-            $this->assetsPath . $hash . "." . $reference->getTypeFileExtension()
+        $this->filesystem->copy(
+            $file->getFilePath(),
+            $this->assetsPath . $file->getNewFileName()
         );
     }
 
@@ -182,33 +209,26 @@ class AssetCache
     {
         if (isset($this->assetsCache[$assetReference->getReference()]))
         {
-            $hash = $this->assetsCache[$assetReference->getReference()];
+            $file = $this->assetsCache[$assetReference->getReference()];
+            $hash = $file["contentHash"];
+            $hashFunction = $file["hashFunction"];
+            $fileName = $file["fileName"];
+
             return new CachedReference(
-                "{$this->relativeAssetsDir}/{$hash}.{$assetReference->getTypeFileExtension()}",
-                $hash
+                "{$this->relativeAssetsDir}/{$fileName}",
+                $hash,
+                $hashFunction
             );
         }
 
-        $this->writeLog("No asset found for '%reference%'.", [
-            "%reference%" => $assetReference->getReference(),
-        ]);
-
-        return null;
-    }
-
-
-    /**
-     * Writes a message to the logging system if it's present
-     *
-     * @param string $message
-     * @param array  $parameters
-     */
-    private function writeLog (string $message, array $parameters = [])
-    {
         if (null !== $this->logger)
         {
-            $this->logger->warning($message, $parameters);
+            $this->logger->warning("No asset found for '%reference%'.", [
+                "%reference%" => $assetReference->getReference(),
+            ]);
         }
+
+        return null;
     }
 
 
@@ -218,8 +238,7 @@ class AssetCache
     private function writeCacheFile ()
     {
         $cacheContents = '<?php return ' . var_export($this->assetsCache, true) . ';';
-        $fileSystem = new Filesystem();
-        $fileSystem->dumpFile($this->cacheStoragePath, $cacheContents);
+        $this->filesystem->dumpFile($this->cacheStoragePath, $cacheContents);
     }
 
 
@@ -229,6 +248,7 @@ class AssetCache
      */
     public function clear ()
     {
+        $this->filesystem->remove($this->assetsPath);
         $this->assetsCache = [];
         $this->writeCacheFile();
     }
