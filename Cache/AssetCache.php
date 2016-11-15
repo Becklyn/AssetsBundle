@@ -55,19 +55,6 @@ class AssetCache
     private $filesystem;
 
 
-    /**
-     * The list of possible hash algorithms.
-     * The list is ordered, the first available algorithm is used.
-     *
-     * @var string[]
-     */
-    private static $hashAlgorithms = [
-        "sha512",
-        "sha382",
-        "sha256",
-    ];
-
-
 
     /**
      * @param string               $rootDir
