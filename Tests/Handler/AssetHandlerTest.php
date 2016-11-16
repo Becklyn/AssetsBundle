@@ -154,6 +154,9 @@ class AssetHandlerTest extends BaseTest
         //endregion
 
         //region AssetCache
+        $this->assetCache
+            ->expects($this->once())
+            ->method("clear");
 
         $this->assetCache
             ->expects($this->exactly(4))
