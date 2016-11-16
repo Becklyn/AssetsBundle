@@ -17,10 +17,10 @@ class TemplateFinder
      */
     public function findInDirectory (string $directory) : array
     {
-        $result = [];
-
         try
         {
+            $result = [];
+
             $finder = new Finder();
             $finder
                 ->in($directory)
@@ -36,12 +36,13 @@ class TemplateFinder
             {
                 $result[] = $file->getPathname();
             }
+
+            return $result;
         }
         catch (\InvalidArgumentException $e)
         {
-            // Swallow exception since we're returning an empty result
+            // silently ignore missing directories
+            return [];
         }
-
-        return $result;
     }
 }
