@@ -32,6 +32,7 @@ class AssetReferencesExtractorTest extends BaseTest
 
     /**
      * @group asset-reference
+     * @group twig
      */
     public function testExtraction ()
     {
@@ -48,6 +49,7 @@ class AssetReferencesExtractorTest extends BaseTest
 
     /**
      * @group asset-reference
+     * @group twig
      */
     public function testInheritance ()
     {
