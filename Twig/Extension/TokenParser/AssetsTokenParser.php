@@ -52,20 +52,6 @@ abstract class AssetsTokenParser extends Twig_TokenParser
 
 
     /**
-     * Determines whether or not the node's body contents needs to be parsed
-     *
-     * @param Twig_Token $token
-     *
-     * @return bool
-     */
-    public function decideIfSubparse (Twig_Token $token)
-    {
-        return $token->test([$this->getEndTag()]);
-    }
-
-
-
-    /**
      * Creates the asset node
      *
      * @param array  $files the file definitions
