@@ -31,6 +31,7 @@ class AssetReferencesExtractorTest extends BaseTest
 
 
     /**
+     * @group asset-reference-extractor
      * @group asset-reference
      * @group twig
      */
@@ -48,6 +49,7 @@ class AssetReferencesExtractorTest extends BaseTest
 
 
     /**
+     * @group asset-reference-extractor
      * @group asset-reference
      * @group twig
      */

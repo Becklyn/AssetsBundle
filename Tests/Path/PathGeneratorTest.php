@@ -14,6 +14,8 @@ class PathGeneratorTest extends BaseTest
 {
     /**
      * @group path-generator
+     * @group asset-reference
+     * @group asset-cache
      */
     public function testGetDoesNotUseCacheInDebug ()
     {
@@ -38,6 +40,9 @@ class PathGeneratorTest extends BaseTest
 
     /**
      * @group path-generator
+     * @group asset-reference
+     * @group cached-reference
+     * @group asset-cache
      */
     public function testGetUsesCacheInProd ()
     {
@@ -45,8 +50,8 @@ class PathGeneratorTest extends BaseTest
         $cachedReferenced = new CachedReference("a.js", "hash", AssetFile::INTEGRITY_HASH_FUNCTION);
 
         $assetCache = self::getMockBuilder(AssetCache::class)
-                          ->disableOriginalConstructor()
-                          ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $assetCache->expects($this->once())
             ->method("get")
