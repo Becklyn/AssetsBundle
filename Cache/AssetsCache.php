@@ -64,7 +64,7 @@ class AssetsCache
         try
         {
             $assetFile = $this->assetFileGenerator->generateAssetFile($reference);
-            $existingCacheReference = $this->mappingCache->get($reference);
+            $existingCacheReference = $this->mappingCache->get($reference->getReference());
 
             // file is already cached, but under a different key
             if (null !== $existingCacheReference && $existingCacheReference->getContentHash() !== $assetFile->getContentHash())
