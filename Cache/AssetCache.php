@@ -16,7 +16,7 @@ class AssetCache
     /**
      * @var string
      */
-    private $cacheStoragePath = "assets_cache_table.php";
+    private $cacheStoragePath;
 
 
     /**
