@@ -49,6 +49,7 @@ class AssetHandlerTest extends BaseTest
     public function setUp ()
     {
         $this->kernel = self::getMockBuilder(KernelInterface::class)
+            ->disableOriginalConstructor()
             ->getMock();
 
         $this->assetCache = self::getMockBuilder(AssetCache::class)
