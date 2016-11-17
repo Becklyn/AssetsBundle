@@ -44,7 +44,7 @@ class MappingCache
      */
     public function __construct (string $relativeAssetsDir, MappingCacheIO $cacheIO)
     {
-        $this->relativeAssetsDir = trim($relativeAssetsDir, "/");
+        $this->relativeAssetsDir = trim($relativeAssetsDir, "/") . "/";
         $this->cacheIO = $cacheIO;
         $this->referenceMapping = $this->cacheIO->load();
     }
