@@ -5,7 +5,7 @@ namespace Becklyn\AssetsBundle\tests\Twig\TokenParser;
 use Becklyn\AssetsBundle\Data\AssetReference;
 use Becklyn\AssetsBundle\Path\PathGenerator;
 use Becklyn\AssetsBundle\tests\BaseTest;
-use Becklyn\AssetsBundle\Tests\Twig\TestableTwigParser;
+use Becklyn\AssetsBundle\tests\Twig\TestableTwigParser;
 use Becklyn\AssetsBundle\Twig\Extension\AssetsTwigExtension;
 use Becklyn\AssetsBundle\Twig\Extension\TokenParser\JavaScriptsTokenParser;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;

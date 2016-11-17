@@ -1,6 +1,6 @@
 <?php
 
-namespace Becklyn\AssetsBundle\Tests\Twig;
+namespace Becklyn\AssetsBundle\tests\Twig;
 
 use Twig_Environment;
 use Twig_ExpressionParser;
