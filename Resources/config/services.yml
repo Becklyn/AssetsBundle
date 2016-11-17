@@ -15,7 +15,7 @@ services:
     # Twig Template & Asset Finder
     # --------------------------------------------------------------------------------------------------------------
     becklyn.assets.handler:
-        class: Becklyn\AssetsBundle\Handler\AssetHandler
+        class: Becklyn\AssetsBundle\Assets\AssetsManager
         arguments:
             - '@kernel'
             - '@becklyn.assets.cache'

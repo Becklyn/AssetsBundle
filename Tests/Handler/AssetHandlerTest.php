@@ -2,10 +2,10 @@
 
 namespace Becklyn\AssetsBundle\tests\Handler;
 
+use Becklyn\AssetsBundle\Assets\AssetsManager;
 use Becklyn\AssetsBundle\Cache\AssetCache;
 use Becklyn\AssetsBundle\Data\AssetReference;
 use Becklyn\AssetsBundle\Finder\TemplateFinder;
-use Becklyn\AssetsBundle\Handler\AssetHandler;
 use Becklyn\AssetsBundle\tests\BaseTest;
 use Becklyn\AssetsBundle\Twig\AssetReferencesExtractor;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -85,7 +85,7 @@ class AssetHandlerTest extends BaseTest
             ->method("comment")
             ->with("Removing existing asset files");
 
-        $assetHandler = new AssetHandler($this->kernel, $this->assetCache, $this->templateFinder, $this->assetReferenceExtractor);
+        $assetHandler = new AssetsManager($this->kernel, $this->assetCache, $this->templateFinder, $this->assetReferenceExtractor);
 
         $assetHandler->regenerateCache($this->symfonyStyle);
     }
@@ -180,7 +180,7 @@ class AssetHandlerTest extends BaseTest
             ->method("text")
             ->with($expectedTemplateResult);
 
-        $assetHandler = new AssetHandler($this->kernel, $this->assetCache, $this->templateFinder, $this->assetReferenceExtractor);
+        $assetHandler = new AssetsManager($this->kernel, $this->assetCache, $this->templateFinder, $this->assetReferenceExtractor);
         $assetHandler->regenerateCache($this->symfonyStyle);
     }
 }

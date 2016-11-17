@@ -1,6 +1,6 @@
 <?php
 
-namespace Becklyn\AssetsBundle\Handler;
+namespace Becklyn\AssetsBundle\Assets;
 
 use Becklyn\AssetsBundle\Cache\AssetCache;
 use Becklyn\AssetsBundle\Finder\TemplateFinder;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 /**
  *
  */
-class AssetHandler
+class AssetsManager
 {
     /**
      * @var KernelInterface
