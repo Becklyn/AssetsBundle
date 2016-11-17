@@ -2,7 +2,7 @@
 
 namespace Becklyn\AssetsBundle\Path;
 
-use Becklyn\AssetsBundle\Cache\AssetCache;
+use Becklyn\AssetsBundle\Cache\AssetsCache;
 use Becklyn\AssetsBundle\Data\AssetReference;
 use Becklyn\AssetsBundle\Data\DisplayableAssetInterface;
 
@@ -10,7 +10,7 @@ use Becklyn\AssetsBundle\Data\DisplayableAssetInterface;
 class PathGenerator
 {
     /**
-     * @var AssetCache
+     * @var AssetsCache
      */
     private $cache;
 
@@ -23,10 +23,10 @@ class PathGenerator
 
 
     /**
-     * @param AssetCache $cache
-     * @param bool       $debug
+     * @param AssetsCache $cache
+     * @param bool        $debug
      */
-    public function __construct (AssetCache $cache, bool $debug)
+    public function __construct (AssetsCache $cache, bool $debug)
     {
         $this->cache = $cache;
         $this->debug = $debug;

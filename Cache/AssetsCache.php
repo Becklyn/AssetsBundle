@@ -2,7 +2,6 @@
 
 namespace Becklyn\AssetsBundle\Cache;
 
-use Becklyn\AssetsBundle\Data\AssetFile;
 use Becklyn\AssetsBundle\Data\AssetReference;
 use Becklyn\AssetsBundle\Data\CachedReference;
 use Becklyn\AssetsBundle\Exception\InvalidCacheEntryException;
@@ -11,7 +10,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 
-class AssetCache
+class AssetsCache
 {
     /**
      * @var LoggerInterface|null

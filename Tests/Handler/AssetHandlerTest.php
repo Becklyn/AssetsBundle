@@ -3,7 +3,7 @@
 namespace Becklyn\AssetsBundle\tests\Handler;
 
 use Becklyn\AssetsBundle\Assets\AssetsManager;
-use Becklyn\AssetsBundle\Cache\AssetCache;
+use Becklyn\AssetsBundle\Cache\AssetsCache;
 use Becklyn\AssetsBundle\Data\AssetReference;
 use Becklyn\AssetsBundle\Finder\TemplateFinder;
 use Becklyn\AssetsBundle\tests\BaseTest;
@@ -23,7 +23,7 @@ class AssetHandlerTest extends BaseTest
 
 
     /**
-     * @var MockObject|AssetCache
+     * @var MockObject|AssetsCache
      */
     private $assetCache;
 
@@ -52,7 +52,7 @@ class AssetHandlerTest extends BaseTest
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->assetCache = self::getMockBuilder(AssetCache::class)
+        $this->assetCache = self::getMockBuilder(AssetsCache::class)
             ->disableOriginalConstructor()
             ->getMock();
 

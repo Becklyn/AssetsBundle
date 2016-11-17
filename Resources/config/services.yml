@@ -3,7 +3,7 @@ services:
     # Cache
     # --------------------------------------------------------------------------------------------------------------
     becklyn.assets.cache:
-        class: Becklyn\AssetsBundle\Cache\AssetCache
+        class: Becklyn\AssetsBundle\Cache\AssetsCache
         arguments:
             - '%kernel.root_dir%'
             - '@becklyn.assets.cache.file'

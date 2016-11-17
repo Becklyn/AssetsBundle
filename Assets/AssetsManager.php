@@ -2,7 +2,7 @@
 
 namespace Becklyn\AssetsBundle\Assets;
 
-use Becklyn\AssetsBundle\Cache\AssetCache;
+use Becklyn\AssetsBundle\Cache\AssetsCache;
 use Becklyn\AssetsBundle\Finder\TemplateFinder;
 use Becklyn\AssetsBundle\Twig\AssetReferencesExtractor;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -22,7 +22,7 @@ class AssetsManager
 
 
     /**
-     * @var AssetCache
+     * @var AssetsCache
      */
     private $assetCache;
 
@@ -48,11 +48,11 @@ class AssetsManager
 
     /**
      * @param KernelInterface          $kernel
-     * @param AssetCache               $assetCache
+     * @param AssetsCache              $assetCache
      * @param TemplateFinder           $templateFinder
      * @param AssetReferencesExtractor $assetReferencesExtractor
      */
-    public function __construct (KernelInterface $kernel, AssetCache $assetCache, TemplateFinder $templateFinder, AssetReferencesExtractor $assetReferencesExtractor)
+    public function __construct (KernelInterface $kernel, AssetsCache $assetCache, TemplateFinder $templateFinder, AssetReferencesExtractor $assetReferencesExtractor)
     {
         $this->kernel = $kernel;
         $this->assetCache = $assetCache;

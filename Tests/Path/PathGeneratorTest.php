@@ -2,7 +2,7 @@
 
 namespace Becklyn\AssetsBundle\tests\Path;
 
-use Becklyn\AssetsBundle\Cache\AssetCache;
+use Becklyn\AssetsBundle\Cache\AssetsCache;
 use Becklyn\AssetsBundle\Data\AssetFile;
 use Becklyn\AssetsBundle\Data\AssetReference;
 use Becklyn\AssetsBundle\Data\CachedReference;
@@ -20,7 +20,7 @@ class PathGeneratorTest extends BaseTest
     public function testGetDoesNotUseCacheInDebug ()
     {
         $assetReference = new AssetReference("a.js", AssetReference::TYPE_JAVASCRIPT);
-        $assetCache = self::getMockBuilder(AssetCache::class)
+        $assetCache = self::getMockBuilder(AssetsCache::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -49,7 +49,7 @@ class PathGeneratorTest extends BaseTest
         $assetReference = new AssetReference("a.js", AssetReference::TYPE_JAVASCRIPT);
         $cachedReferenced = new CachedReference("a.js", "hash", AssetFile::INTEGRITY_HASH_FUNCTION);
 
-        $assetCache = self::getMockBuilder(AssetCache::class)
+        $assetCache = self::getMockBuilder(AssetsCache::class)
             ->disableOriginalConstructor()
             ->getMock();
 
