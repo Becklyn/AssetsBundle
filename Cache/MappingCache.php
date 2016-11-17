@@ -2,6 +2,7 @@
 
 namespace Becklyn\AssetsBundle\Cache;
 
+use Becklyn\AssetsBundle\Cache\MappingCache\MappingCacheIO;
 use Becklyn\AssetsBundle\Data\AssetFile;
 use Becklyn\AssetsBundle\Data\CachedReference;
 use Symfony\Component\Filesystem\Filesystem;
@@ -31,44 +32,21 @@ class MappingCache
 
 
     /**
-     * @var Filesystem
+     * @var MappingCacheIO
      */
-    private $filesystem;
+    private $cacheIO;
 
 
 
     /**
-     * @param string     $cacheDir
-     * @param string     $relativeAssetsDir
-     * @param Filesystem $filesystem
+     * @param string         $relativeAssetsDir
+     * @param MappingCacheIO $cacheIO
      */
-    public function __construct (string $cacheDir, string $relativeAssetsDir, Filesystem $filesystem)
+    public function __construct (string $relativeAssetsDir, MappingCacheIO $cacheIO)
     {
-        $this->cacheFile = $cacheDir . "/becklyn/assets/assets_mapping.php";
         $this->relativeAssetsDir = trim($relativeAssetsDir, "/");
-        $this->filesystem = $filesystem;
-        $this->referenceMapping = $this->loadFromCache();
-    }
-
-
-
-    /**
-     * Loads the mapping from the cache
-     *
-     * @return array
-     */
-    private function loadFromCache () : array
-    {
-        $assetsCache = null;
-
-        if (is_file($this->cacheFile))
-        {
-            $assetsCache = @include $this->cacheFile;
-        }
-
-        return is_array($assetsCache)
-            ? $assetsCache
-            : [];
+        $this->cacheIO = $cacheIO;
+        $this->referenceMapping = $this->cacheIO->load();
     }
 
 
@@ -129,7 +107,6 @@ class MappingCache
      */
     private function writeCacheFile ()
     {
-        $cacheContents = '<?php return ' . var_export($this->referenceMapping, true) . ';';
-        $this->filesystem->dumpFile($this->cacheFile, $cacheContents);
+        $this->cacheIO->write($this->referenceMapping);
     }
 }

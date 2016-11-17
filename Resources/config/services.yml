@@ -22,8 +22,14 @@ services:
     becklyn.assets.cache.mapping:
         class: Becklyn\AssetsBundle\Cache\MappingCache
         arguments:
-            - '%kernel.cache_dir%'
             - '/assets/'
+            - '@becklyn.assets.cache.mapping.io'
+        public: false
+
+    becklyn.assets.cache.mapping.io:
+        class: Becklyn\AssetsBundle\Cache\MappingCache\MappingCacheIO
+        arguments:
+            - '%kernel.cache_dir%'
             - '@filesystem'
         public: false
 
