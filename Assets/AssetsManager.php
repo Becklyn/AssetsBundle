@@ -46,6 +46,12 @@ class AssetsManager
 
 
 
+    /**
+     * @param KernelInterface          $kernel
+     * @param AssetCache               $assetCache
+     * @param TemplateFinder           $templateFinder
+     * @param AssetReferencesExtractor $assetReferencesExtractor
+     */
     public function __construct (KernelInterface $kernel, AssetCache $assetCache, TemplateFinder $templateFinder, AssetReferencesExtractor $assetReferencesExtractor)
     {
         $this->kernel = $kernel;
