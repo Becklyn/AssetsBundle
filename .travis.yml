@@ -1,0 +1,16 @@
+language: php
+
+git:
+    depth: 1
+
+php:
+    - 7.0
+
+before_install:
+    - composer self-update --stable
+
+install:
+    - composer install
+
+script:
+    - ./vendor/bin/phpunit -c phpunit.xml --coverage-text
