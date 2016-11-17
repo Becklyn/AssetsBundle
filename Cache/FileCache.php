@@ -31,7 +31,7 @@ class FileCache
      */
     public function __construct (string $rootPath, string $relativeAssetsDir, Filesystem $filesystem)
     {
-        $this->assetsPath = dirname($rootPath) . "/web/" . ltrim($relativeAssetsDir, "/");
+        $this->assetsPath = dirname($rootPath) . "/web/" . trim($relativeAssetsDir, "/") . "/";
         $this->filesystem = $filesystem;
     }
 
