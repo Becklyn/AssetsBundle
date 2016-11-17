@@ -6,10 +6,39 @@ services:
         class: Becklyn\AssetsBundle\Cache\AssetCache
         arguments:
             - '%kernel.root_dir%'
-            - '%kernel.cache_dir%'
-            - '/assets/'
+            - '@becklyn.assets.cache.file'
+            - '@becklyn.assets.cache.mapping'
             - '@?logger'
         public: false
+
+    becklyn.assets.cache.file:
+        class: Becklyn\AssetsBundle\Cache\FileCache
+        arguments:
+            - '%kernel.root_dir%'
+            - '/assets/'
+            - '@filesystem'
+        public: false
+
+    becklyn.assets.cache.mapping:
+        class: Becklyn\AssetsBundle\Cache\MappingCache
+        arguments:
+            - '%kernel.cache_dir%'
+            - '/assets/'
+            - '@filesystem'
+        public: false
+
+
+
+    # --------------------------------------------------------------------------------------------------------------
+    # File
+    # --------------------------------------------------------------------------------------------------------------
+    becklyn.assets.asset_file_generator:
+        class: Becklyn\AssetsBundle\File\AssetFileGenerator
+        arguments:
+            - '%kernel.root_dir%'
+        public: false
+
+
 
     # --------------------------------------------------------------------------------------------------------------
     # Twig Template & Asset Finder
