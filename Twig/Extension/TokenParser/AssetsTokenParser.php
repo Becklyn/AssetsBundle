@@ -35,12 +35,22 @@ abstract class AssetsTokenParser extends Twig_TokenParser
     {
         $stream = $this->parser->getStream();
 
+
         $files = [];
 
         // parse all parameters
         while (!$stream->test(Twig_Token::BLOCK_END_TYPE))
         {
             $files[] = $this->parser->getExpressionParser()->parseExpression();
+        }
+
+        if (empty($files))
+        {
+            throw new \Twig_Error_Syntax(
+                sprintf("No files were specified in the '%s' block.", $this->getTag()),
+                $stream->getCurrent()->getLine(),
+                $stream->getSourceContext()->getName()
+            );
         }
 
         // %}

@@ -47,6 +47,9 @@ class JavaScriptsTokenParserTest extends BaseTest
      * @group token-parser
      * @group javascript
      * @group twig
+     *
+     * @expectedException \Twig_Error_Syntax
+     * @expectedExceptionMessageRegExp /^No files were specified in the 'javascripts' block/
      */
     public function testParseEmptyFiles ()
     {
@@ -68,9 +71,6 @@ class JavaScriptsTokenParserTest extends BaseTest
         $tokenParser->setParser($parser);
 
         $assetNode = $tokenParser->parse($token);
-
-        self::assertSame(AssetReference::TYPE_JAVASCRIPT, $assetNode->getAssetType());
-        self::assertCount(0, $assetNode->getAssetReferences());
     }
 
 

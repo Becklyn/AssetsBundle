@@ -47,6 +47,10 @@ class StylesheetsTokenParserTest extends BaseTest
      * @group token-parser
      * @group stylesheet
      * @group twig
+     *
+     *
+     * @expectedException \Twig_Error_Syntax
+     * @expectedExceptionMessageRegExp /^No files were specified in the 'stylesheets' block/
      */
     public function testParseEmptyFiles ()
     {
@@ -68,9 +72,6 @@ class StylesheetsTokenParserTest extends BaseTest
         $tokenParser->setParser($parser);
 
         $assetNode = $tokenParser->parse($token);
-
-        self::assertSame(AssetReference::TYPE_STYLESHEET, $assetNode->getAssetType());
-        self::assertCount(0, $assetNode->getAssetReferences());
     }
 
 
