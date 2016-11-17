@@ -92,11 +92,41 @@ class AssetHandlerTest extends BaseTest
 
 
     /**
-     * @group asset-handler
+     * @return array
      */
-    public function testRegenerateIndexesBundle ()
+    public function dpRegenerateIndexesBundle ()
     {
-        //region Kernel + Bundles
+        $assetReferenceA = new AssetReference("a.js", AssetReference::TYPE_JAVASCRIPT);
+        $assetReferenceB = new AssetReference("b.css", AssetReference::TYPE_STYLESHEET);
+        $assetReferenceC = new AssetReference("c.js", AssetReference::TYPE_JAVASCRIPT);
+        $assetReferenceD = new AssetReference("d.css", AssetReference::TYPE_STYLESHEET);
+
+        return [
+            // Indexes:
+            //   1: Template name
+            //   2: Asset References
+            //   3: Expected Output
+            "No Tags" => ["no-tags.html.twig", [], "Template '../no-tags.html.twig': 0 references found"],
+            "JavaScript Tag" => ["javascript-tag.html.twig", [$assetReferenceA], "Template '../javascript-tag.html.twig': 1 reference found"],
+            "Stylesheet Tag" => ["stylesheet-tag.html.twig", [$assetReferenceB], "Template '../stylesheet-tag.html.twig': 1 reference found"],
+            "Both Tags" => ["both-tags.html.twig", [$assetReferenceC, $assetReferenceD], "Template '../both-tags.html.twig': 2 references found"],
+        ];
+    }
+
+
+    /**
+     * @dataProvider dpRegenerateIndexesBundle
+     * @group asset-handler
+     * @group bundle
+     * @group template-finder
+     * @group asset-cache
+     *
+     * @param string           $templateName
+     * @param AssetReference[] $assetReferences
+     * @param string           $expectedTemplateResult
+     */
+    public function testRegenerateIndexesBundle (string $templateName, array $assetReferences, string $expectedTemplateResult)
+    {
         $bundle = self::getMockBuilder(BundleInterface::class)
             ->getMock();
 
@@ -110,82 +140,45 @@ class AssetHandlerTest extends BaseTest
             ->method("getName")
             ->willReturn("name");
 
-        $bundles = [$bundle];
-
         $this->kernel
             ->expects($this->once())
             ->method("getBundles")
-            ->willReturn($bundles);
-        //endregion
+            ->willReturn([$bundle]);
 
-        //region TemplateFinder
         $this->templateFinder
             ->expects($this->once())
             ->method("findInDirectory")
             ->with("path")
-            ->willReturn([
-                "no-tags.html.twig",
-                "javascript-tag.html.twig",
-                "stylesheet-tag.html.twig",
-                "both-tags.html.twig",
-            ]);
-        //endregion
-
-        //region AssetReferenceExtractor
-        $assetReferenceA = new AssetReference("a.js", AssetReference::TYPE_JAVASCRIPT);
-        $assetReferenceB = new AssetReference("b.css", AssetReference::TYPE_STYLESHEET);
-        $assetReferenceC = new AssetReference("c.js", AssetReference::TYPE_JAVASCRIPT);
-        $assetReferenceD = new AssetReference("d.css", AssetReference::TYPE_STYLESHEET);
+            ->willReturn([$templateName]);
 
         $this->assetReferenceExtractor
-            ->expects($this->exactly(4))
-            ->method("extractAssetsFromFile")
-            ->withConsecutive(
-                ["no-tags.html.twig"],
-                ["javascript-tag.html.twig"],
-                ["stylesheet-tag.html.twig"],
-                ["both-tags.html.twig"]
-            )
-            ->willReturnOnConsecutiveCalls(
-                [],
-                [$assetReferenceA],
-                [$assetReferenceB],
-                [$assetReferenceC, $assetReferenceD]
-            );
-        //endregion
-
-        //region AssetCache
-        $this->assetCache
             ->expects($this->once())
+            ->method("extractAssetsFromFile")
+            ->with($templateName)
+            ->willReturn($assetReferences);
+
+        $this->assetCache
+            ->expects($this->at(0))
             ->method("clear");
 
-        $this->assetCache
-            ->expects($this->exactly(4))
-            ->method("add")
-            ->withConsecutive(
-                [$assetReferenceA],
-                [$assetReferenceB],
-                [$assetReferenceC],
-                [$assetReferenceD]
-            );
-        //endregion
+        for ($i = 0; $i < count($assetReferences); $i++)
+        {
+            $this->assetCache
+                // Increment the "at"-index to circumvent the following problem: http://stackoverflow.com/a/3425552
+                ->expects($this->at($i + 1))
+                ->method("add")
+                ->with($assetReferences[$i]);
+        }
 
-        //region SymfonyStyle
         $this->symfonyStyle
             ->expects($this->once())
             ->method("comment")
             ->with("Removing existing asset files");
 
         $this->symfonyStyle
-            ->expects($this->exactly(4))
+            ->expects($this->once())
             ->method("text")
-            ->withConsecutive(
-                ["Template '../no-tags.html.twig': 0 references found"],
-                ["Template '../javascript-tag.html.twig': 1 reference found"],
-                ["Template '../stylesheet-tag.html.twig': 1 reference found"],
-                ["Template '../both-tags.html.twig': 2 references found"]
-            );
-        //endregion
+            ->with($expectedTemplateResult);
 
         $assetHandler = new AssetHandler($this->kernel, $this->assetCache, $this->templateFinder, $this->assetReferenceExtractor);
         $assetHandler->regenerateCache($this->symfonyStyle);
