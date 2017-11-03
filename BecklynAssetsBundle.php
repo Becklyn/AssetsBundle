@@ -2,9 +2,15 @@
 
 namespace Becklyn\AssetsBundle;
 
-use Becklyn\RadBundle\AppBundle\Bundle;
+use Becklyn\AssetsBundle\DependencyInjection\BecklynAssetsExtension;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 
 class BecklynAssetsBundle extends Bundle
 {
+    public function getContainerExtension ()
+    {
+        return new BecklynAssetsExtension();
+    }
+
 }

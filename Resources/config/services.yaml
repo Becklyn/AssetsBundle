@@ -1,0 +1,29 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+
+    Becklyn\AssetsBundle\Asset\AssetsCache: ~
+
+    Becklyn\AssetsBundle\Asset\AssetGenerator:
+        bind:
+            $projectDir: '%kernel.project_dir%'
+
+    Becklyn\AssetsBundle\Cache\CacheWarmer: ~
+
+    Becklyn\AssetsBundle\Command\AssetsCacheCommand:
+        tags:
+            - { name: console.command, command: becklyn:assets:reset }
+
+    Becklyn\AssetsBundle\Finder\AssetsFinder:
+        bind:
+            $projectDir: '%kernel.project_dir%'
+
+    Becklyn\AssetsBundle\Html\AssetHtmlGenerator:
+        public: true
+        bind:
+            $isDebug: '%kernel.debug%'
+
+    Becklyn\AssetsBundle\Twig\AssetsTwigExtension: ~
+
