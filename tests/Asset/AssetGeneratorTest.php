@@ -1,6 +1,6 @@
 <?php
 
-namespace Becklyn\AssetsBundle\tests\Asset;
+namespace Tests\Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Asset\AssetGenerator;
 use PHPUnit\Framework\TestCase;

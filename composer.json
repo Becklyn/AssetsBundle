@@ -29,5 +29,8 @@
     "minimum-stability": "beta",
     "autoload": {
         "psr-4": {"Becklyn\\AssetsBundle\\": ""}
+    },
+    "autoload-dev": {
+        "psr-4": {"Tests\\Becklyn\\AssetsBundle\\": "tests/"}
     }
 }
