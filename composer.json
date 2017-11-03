@@ -19,7 +19,8 @@
         "symfony/dependency-injection": "^4.0.0",
         "symfony/filesystem": "^4.0.0",
         "symfony/finder": "^4.0.0",
-        "symfony/http-kernel": "^4.0.0"
+        "symfony/http-kernel": "^4.0.0",
+        "twig/twig": "^1.27|^2.1"
     },
     "minimum-stability": "beta",
     "autoload": {
