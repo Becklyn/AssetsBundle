@@ -26,6 +26,10 @@ class AssetGeneratorTest extends TestCase
      */
     private $outDir;
 
+
+    /**
+     * @inheritdoc
+     */
     public function setUp ()
     {
         $this->fixtures = dirname(__DIR__) . "/fixtures";
@@ -37,7 +41,9 @@ class AssetGeneratorTest extends TestCase
         $fs->remove($this->outDir);
     }
 
-
+    /**
+     * @inheritdoc
+     */
     protected function tearDown ()
     {
         $fs = new Filesystem();
