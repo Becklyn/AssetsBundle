@@ -157,7 +157,7 @@ class AssetHtmlGenerator
         foreach ($this->fetchAssets($assetPaths) as $assetPath => $asset)
         {
             $html .= sprintf(
-                '<link href="%s" integrity="%s" rel="stylesheet">',
+                '<link rel="stylesheet" href="%s" integrity="%s">',
                 $this->packages->getUrl($asset->getOutputFilePath()),
                 "sha256-{$asset->getDigest()}"
             );
