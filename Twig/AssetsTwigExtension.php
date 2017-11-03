@@ -27,7 +27,7 @@ class AssetsTwigExtension extends \Twig_Extension
      * @return string
      * @throws \Becklyn\AssetsBundle\Exception\AssetsException
      */
-    public function referenceCss (array $assetPaths) : string
+    public function cssAssets (array $assetPaths) : string
     {
         return $this->htmlReferences->linkAssets(AssetHtmlGenerator::TYPE_CSS, $assetPaths);
     }
@@ -38,7 +38,7 @@ class AssetsTwigExtension extends \Twig_Extension
      * @return string
      * @throws \Becklyn\AssetsBundle\Exception\AssetsException
      */
-    public function referenceJavaScript (array $assetPaths) : string
+    public function jsAssets (array $assetPaths) : string
     {
         return $this->htmlReferences->linkAssets(AssetHtmlGenerator::TYPE_JAVASCRIPT, $assetPaths);
     }
@@ -50,8 +50,8 @@ class AssetsTwigExtension extends \Twig_Extension
     public function getFunctions ()
     {
         return [
-            new \Twig_Function("referenceCss", [$this, "referenceCss"], ["is_safe" => ["html"]]),
-            new \Twig_Function("referenceJavaScript", [$this, "referenceJavaScript"], ["is_safe" => ["html"]]),
+            new \Twig_Function("cssAssets", [$this, "cssAssets"], ["is_safe" => ["html"]]),
+            new \Twig_Function("jsAssets", [$this, "jsAssets"], ["is_safe" => ["html"]]),
         ];
     }
 }
