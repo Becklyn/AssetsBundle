@@ -22,6 +22,9 @@
         "symfony/http-kernel": "^4.0.0",
         "twig/twig": "^1.27|^2.1"
     },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^4.0.0"
+    },
     "minimum-stability": "beta",
     "autoload": {
         "psr-4": {"Becklyn\\AssetsBundle\\": ""}
