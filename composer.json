@@ -1,7 +1,7 @@
 {
     "name": "becklyn/assets-bundle",
-    "description": "This bundle is a replacement for Assetic. It mimics most of its syntax to preserve IDE support but comes with a lot more flexibility",
-    "keywords": ["becklyn", "asset", "assets", "assetic", "symfony"],
+    "description": "High-performance asset handling for symfony projects.",
+    "keywords": ["becklyn", "asset", "assets", "symfony"],
     "license": "BSD-3-Clause",
     "type": "symfony-bundle",
     "homepage": "https://github.com/Becklyn/BecklynAssetsBundle",
