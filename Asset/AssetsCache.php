@@ -35,7 +35,6 @@ class AssetsCache
         $this->cacheItem = $pool->getItem(self::CACHE_KEY);
         $this->cachePool = $pool;
         $this->assets = $this->cacheItem->isHit() ? $this->cacheItem->get() : [];
-
     }
 
 
