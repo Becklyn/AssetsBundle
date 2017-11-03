@@ -29,7 +29,7 @@ class Asset
      */
     public function __construct (string $outputDirectory, string $filePath, string $hash)
     {
-        $this->outputDirectory = $outputDirectory;
+        $this->outputDirectory = trim($outputDirectory, "/");
         $this->digest = $hash;
         $this->outputFileName = $this->generateOutputFileName($filePath, $hash);
     }
