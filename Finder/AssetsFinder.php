@@ -32,7 +32,8 @@ class AssetsFinder
 
         $finder
             ->files()
-            ->in("{$this->searchDir}/" . self::BUNDLES_DIR);
+            ->in("{$this->searchDir}/" . self::BUNDLES_DIR)
+            ->name("~\.(js|css)$~");
 
         $files = [];
 
