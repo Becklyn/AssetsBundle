@@ -3,6 +3,7 @@
 namespace Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Exception\AssetsException;
+use Becklyn\AssetsBundle\Path\AssetPathHelper;
 use Psr\Cache\CacheItemPoolInterface;
 
 
@@ -27,14 +28,18 @@ class AssetsCache
 
 
     /**
-     * @param string $rootDir
+     * @param CacheItemPoolInterface $pool
+     * @param AssetGenerator         $generator
+     * @param AssetPathHelper        $pathHelper
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function __construct (CacheItemPoolInterface $pool, AssetGenerator $generator)
+    public function __construct (CacheItemPoolInterface $pool, AssetGenerator $generator, AssetPathHelper $pathHelper)
     {
         $this->generator = $generator;
         $this->cacheItem = $pool->getItem(self::CACHE_KEY);
         $this->cachePool = $pool;
         $this->assets = $this->cacheItem->isHit() ? $this->cacheItem->get() : [];
+        $this->assetPathHelper = $pathHelper;
     }
 
 
@@ -68,6 +73,45 @@ class AssetsCache
         $this->cachePool->save($this->cacheItem);
 
         return $asset;
+    }
+
+
+    /**
+     * Adds all assets to the cache
+     *
+     * @param array         $assetPaths
+     * @param callable|null $progress
+     * @throws AssetsException
+     */
+    public function addAll (array $assetPaths, ?callable $progress)
+    {
+        $cssFiles = [];
+
+        foreach ($assetPaths as $assetPath)
+        {
+            // if this is a CSS file, save it for later processing
+            if ($this->assetPathHelper->isCssFile($assetPath))
+            {
+                $cssFiles[] = $assetPath;
+                continue;
+            }
+
+            // if this is any other asset except a CSS file, just process it directly
+            $this->add($assetPath);
+
+            if (null !== $progress)
+            {
+                $progress();
+            }
+        }
+
+        foreach ($cssFiles as $cssFile)
+        {
+            if (null !== $progress)
+            {
+                $progress();
+            }
+        }
     }
 
 

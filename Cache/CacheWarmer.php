@@ -91,14 +91,13 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
             $progressBar = $io->createProgressBar(count($files));
         }
 
-        foreach ($files as $file)
+        if (null !== $progressBar)
         {
-            $this->cache->add($file);
-
-            if (null !== $progressBar)
-            {
-                $progressBar->advance();
-            }
+            $this->cache->addAll($files, [$progressBar, "advance"]);
+        }
+        else
+        {
+            $this->cache->addAll($files);
         }
 
         if (null !== $io)
