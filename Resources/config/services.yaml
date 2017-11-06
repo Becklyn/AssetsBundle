@@ -25,5 +25,6 @@ services:
         bind:
             $isDebug: '%kernel.debug%'
 
+    Becklyn\AssetsBundle\Path\AssetPathHelper: ~
     Becklyn\AssetsBundle\Twig\AssetsTwigExtension: ~
 
