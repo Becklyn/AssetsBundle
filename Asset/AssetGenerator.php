@@ -80,7 +80,7 @@ class AssetGenerator
 
         if (null !== $processor)
         {
-            $fileContent = $processor->process($fileContent);
+            $fileContent = $processor->process($assetPath, $fileContent);
         }
 
         $hash = \base64_encode(\hash("sha256", $fileContent, true));
