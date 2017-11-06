@@ -3,6 +3,7 @@
 namespace Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Exception\AssetsException;
+use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
 use Symfony\Component\Filesystem\Filesystem;
 
 
@@ -11,6 +12,18 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class AssetGenerator
 {
+    /**
+     * @var AssetsCache
+     */
+    private $cache;
+
+
+    /**
+     * @var ProcessorRegistry
+     */
+    private $processorRegistry;
+
+
     /**
      * @var string
      */
@@ -30,11 +43,15 @@ class AssetGenerator
 
 
     /**
-     * @param string $projectDir
-     * @param string $outputDir     the output dir relative to the public/ directory
+     * @param AssetsCache       $cache
+     * @param ProcessorRegistry $processorRegistry
+     * @param string            $projectDir
+     * @param string            $outputDir the output dir relative to the public/ directory
      */
-    public function __construct (string $projectDir, string $outputDir = "assets")
+    public function __construct (AssetsCache $cache, ProcessorRegistry $processorRegistry, string $projectDir, string $outputDir = "assets")
     {
+        $this->cache = $cache;
+        $this->processorRegistry = $processorRegistry;
         $this->webPath = "{$projectDir}/public";
         $this->outputDir = trim($outputDir, "/");
         $this->filesystem = new Filesystem();
@@ -58,7 +75,15 @@ class AssetGenerator
             ));
         }
 
-        $hash = \base64_encode(\hash_file("sha256", $filePath, true));
+        $processor = $this->processorRegistry->get($assetPath);
+        $fileContent = \file_get_contents($filePath);
+
+        if (null !== $processor)
+        {
+            $fileContent = $processor->process($fileContent);
+        }
+
+        $hash = \base64_encode(\hash("sha256", $fileContent, true));
         $asset = new Asset($this->getOutputDirectory($assetPath), $filePath, $hash);
 
         $outputPath = "{$this->webPath}/{$asset->getOutputFilePath()}";
@@ -67,7 +92,7 @@ class AssetGenerator
         $this->filesystem->mkdir(dirname($outputPath));
 
         // copy file
-        $this->filesystem->copy($filePath, $outputPath);
+        $this->filesystem->dumpFile($outputPath, $fileContent);
 
         return $asset;
     }

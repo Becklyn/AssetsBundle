@@ -2,8 +2,7 @@
 
 namespace Becklyn\AssetsBundle\Cache;
 
-
-use Becklyn\AssetsBundle\Asset\AssetsCache;
+use Becklyn\AssetsBundle\Asset\AssetsRegistry;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Finder\AssetsFinder;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -14,9 +13,9 @@ use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
 {
     /**
-     * @var AssetsCache
+     * @var AssetsRegistry
      */
-    private $cache;
+    private $registry;
 
 
     /**
@@ -26,16 +25,14 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
 
 
     /**
-     * @param AssetsCache $cache
+     * @param AssetsRegistry $registry
+     * @param AssetsFinder   $finder
      */
-    public function __construct (AssetsCache $cache, AssetsFinder $finder)
+    public function __construct (AssetsRegistry $registry, AssetsFinder $finder)
     {
-        $this->cache = $cache;
+        $this->registry = $registry;
         $this->finder = $finder;
     }
-
-
-
 
 
     /**
@@ -43,7 +40,7 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
      */
     public function clearCache (?SymfonyStyle $io)
     {
-        $this->cache->clear();
+        $this->registry->clear();
 
         if (null !== $io)
         {
@@ -91,14 +88,11 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
             $progressBar = $io->createProgressBar(count($files));
         }
 
-        if (null !== $progressBar)
-        {
-            $this->cache->addAll($files, [$progressBar, "advance"]);
-        }
-        else
-        {
-            $this->cache->addAll($files);
-        }
+        $progressCallback = (null !== $progressBar)
+            ? [$progressBar, "advance"]
+            : null;
+
+        $this->registry->add($files, $progressCallback);
 
         if (null !== $io)
         {

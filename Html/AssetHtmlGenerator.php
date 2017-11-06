@@ -5,6 +5,7 @@ namespace Becklyn\AssetsBundle\Html;
 
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
+use Becklyn\AssetsBundle\Asset\AssetsRegistry;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Symfony\Component\Asset\Packages;
 
@@ -14,10 +15,11 @@ class AssetHtmlGenerator
     const TYPE_CSS = "css";
     const TYPE_JAVASCRIPT = "js";
 
+
     /**
-     * @var AssetsCache
+     * @var AssetsRegistry
      */
-    private $cache;
+    private $registry;
 
 
     /**
@@ -33,13 +35,13 @@ class AssetHtmlGenerator
 
 
     /**
-     * @param AssetsCache $cache
-     * @param Packages    $packages
-     * @param bool        $isDebug
+     * @param AssetsRegistry $registry
+     * @param Packages       $packages
+     * @param bool           $isDebug
      */
-    public function __construct (AssetsCache $cache, Packages $packages, bool $isDebug)
+    public function __construct (AssetsRegistry $registry, Packages $packages, bool $isDebug)
     {
-        $this->cache = $cache;
+        $this->registry = $registry;
         $this->packages = $packages;
         $this->isDebug = $isDebug;
     }
@@ -180,7 +182,7 @@ class AssetHtmlGenerator
 
         foreach ($assetPaths as $assetPath)
         {
-            $assets[$assetPath] = $this->cache->get($assetPath);
+            $assets[$assetPath] = $this->registry->get($assetPath);
         }
 
         return $assets;
