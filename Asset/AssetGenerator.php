@@ -13,12 +13,6 @@ use Symfony\Component\Filesystem\Filesystem;
 class AssetGenerator
 {
     /**
-     * @var AssetsCache
-     */
-    private $cache;
-
-
-    /**
      * @var ProcessorRegistry
      */
     private $processorRegistry;
@@ -43,14 +37,12 @@ class AssetGenerator
 
 
     /**
-     * @param AssetsCache       $cache
      * @param ProcessorRegistry $processorRegistry
      * @param string            $projectDir
      * @param string            $outputDir the output dir relative to the public/ directory
      */
-    public function __construct (AssetsCache $cache, ProcessorRegistry $processorRegistry, string $projectDir, string $outputDir = "assets")
+    public function __construct (ProcessorRegistry $processorRegistry, string $projectDir, string $outputDir = "assets")
     {
-        $this->cache = $cache;
         $this->processorRegistry = $processorRegistry;
         $this->webPath = "{$projectDir}/public";
         $this->outputDir = trim($outputDir, "/");
