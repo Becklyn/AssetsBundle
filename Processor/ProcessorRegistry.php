@@ -15,7 +15,7 @@ class ProcessorRegistry
      *
      * @param AssetProcessor[] $processors
      */
-    public function __construct (array $processors = [])
+    public function __construct (array $processors)
     {
         $this->processors = $processors;
     }
