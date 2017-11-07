@@ -30,7 +30,7 @@ class BecklynAssetsExtension extends Extension
 
         // update services config with configuration values
         $container->getDefinition(AssetGenerator::class)
-            ->setArgument('$publicPath', rtrim($config["public_path"])
+            ->setArgument('$publicPath', rtrim($config["public_path"]))
             ->setArgument('$outputDir', $config["output_dir"]);
 
         $container->getDefinition(AssetsFinder::class)
