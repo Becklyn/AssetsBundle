@@ -38,7 +38,6 @@ class AssetGeneratorTest extends TestCase
         $this->fixtures = dirname(__DIR__) . "/fixtures/public";
         $this->generator = new AssetGenerator(new ProcessorRegistry([]), $this->fixtures, "assets");
 
-
         $this->outDir = "{$this->fixtures}/assets";
         $fs = new Filesystem();
         $fs->remove($this->outDir);
