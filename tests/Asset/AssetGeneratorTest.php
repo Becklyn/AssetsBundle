@@ -36,7 +36,7 @@ class AssetGeneratorTest extends TestCase
     public function setUp ()
     {
         $this->fixtures = dirname(__DIR__) . "/fixtures";
-        $this->generator = new AssetGenerator(new ProcessorRegistry([]), $this->fixtures);
+        $this->generator = new AssetGenerator(new ProcessorRegistry([]), $this->fixtures, "output");
 
 
         $this->outDir = "{$this->fixtures}/public/assets";
@@ -111,7 +111,7 @@ class AssetGeneratorTest extends TestCase
 
         $generator = new AssetGenerator(new ProcessorRegistry([
             "css" => $processor
-        ]), $this->fixtures);
+        ]), $this->fixtures, "output");
 
         $processor
             ->expects(self::once())
@@ -128,7 +128,7 @@ class AssetGeneratorTest extends TestCase
 
         $generator = new AssetGenerator(new ProcessorRegistry([
             "css" => $processor
-        ]), $this->fixtures);
+        ]), $this->fixtures, "output");
 
         $processor
             ->expects(self::never())

@@ -41,7 +41,7 @@ class AssetGenerator
      * @param string            $projectDir
      * @param string            $outputDir the output dir relative to the public/ directory
      */
-    public function __construct (ProcessorRegistry $processorRegistry, string $projectDir, string $outputDir = "assets")
+    public function __construct (ProcessorRegistry $processorRegistry, string $projectDir, string $outputDir)
     {
         $this->processorRegistry = $processorRegistry;
         $this->webPath = "{$projectDir}/public";
