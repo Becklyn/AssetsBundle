@@ -5,7 +5,11 @@ services:
 
 
     Becklyn\AssetsBundle\Asset\AssetsCache: ~
-    Becklyn\AssetsBundle\Asset\AssetGenerator: ~
+
+    Becklyn\AssetsBundle\Asset\AssetGenerator:
+        $projectPath: "%kernel.project_dir%/public"
+        $outputDir: "assets"
+
     Becklyn\AssetsBundle\Asset\AssetsRegistry: ~
     Becklyn\AssetsBundle\Processor\CssProcessor: ~
     Becklyn\AssetsBundle\Cache\CacheWarmer: ~
