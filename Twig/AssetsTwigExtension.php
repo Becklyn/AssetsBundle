@@ -50,9 +50,9 @@ class AssetsTwigExtension extends \Twig_Extension
     public function getFunctions ()
     {
         return [
-            new \Twig_Function("cssAssets", [$this, "cssAssets"], ["is_safe" => ["html"]]),
-            new \Twig_Function("jsAssets", [$this, "jsAssets"], ["is_safe" => ["html"]]),
-            new \Twig_Function("assetPath", [$this, "getAssetUrlPath"]),
+            new \Twig_SimpleFunction("cssAssets", [$this, "cssAssets"], ["is_safe" => ["html"]]),
+            new \Twig_SimpleFunction("jsAssets", [$this, "jsAssets"], ["is_safe" => ["html"]]),
+            new \Twig_SimpleFunction("assetPath", [$this, "getAssetUrlPath"]),
         ];
     }
 }
