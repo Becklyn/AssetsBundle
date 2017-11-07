@@ -19,7 +19,7 @@ services:
             - { name: console.command, command: becklyn:assets:reset }
 
     Becklyn\AssetsBundle\Finder\AssetsFinder:
-        $projectDir: '%kernel.project_dir%'
+        $publicPath: '%kernel.project_dir%'
 
     Becklyn\AssetsBundle\Html\AssetHtmlGenerator:
         public: true
