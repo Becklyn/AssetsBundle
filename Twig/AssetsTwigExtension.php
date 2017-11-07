@@ -52,7 +52,7 @@ class AssetsTwigExtension extends \Twig_Extension
         return [
             new \Twig_SimpleFunction("cssAssets", [$this, "cssAssets"], ["is_safe" => ["html"]]),
             new \Twig_SimpleFunction("jsAssets", [$this, "jsAssets"], ["is_safe" => ["html"]]),
-            new \Twig_SimpleFunction("assetPath", [$this, "getAssetUrlPath"]),
+            new \Twig_SimpleFunction("assetPath", [$this->htmlReferences, "getAssetUrlPath"]),
         ];
     }
 }
