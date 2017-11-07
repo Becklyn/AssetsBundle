@@ -24,7 +24,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                     ->info("The absolute path to the `public/` (or `web/`) directory.")
                 ->end()
                 ->scalarNode("output_dir")
-                    ->defaultValue('output')
+                    ->defaultValue('assets')
                     ->info("The relative path to the assets output dir (relative to `public_path`).")
                 ->end()
             ->end();
