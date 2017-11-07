@@ -4,6 +4,7 @@ namespace Becklyn\AssetsBundle\DependencyInjection;
 
 
 use Becklyn\AssetsBundle\Asset\AssetGenerator;
+use Becklyn\AssetsBundle\Finder\AssetsFinder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -28,9 +29,11 @@ class BecklynAssetsExtension extends Extension
         $loader->load("services.yaml");
 
         // update services config with configuration values
-        $assetGenerator = $container->getDefinition(AssetGenerator::class);
-        $assetGenerator
-            ->setArgument('$publicPath', $config["public_path"])
+        $container->getDefinition(AssetGenerator::class)
+            ->setArgument('$publicPath', rtrim($config["public_path"])
             ->setArgument('$outputDir', $config["output_dir"]);
+
+        $container->getDefinition(AssetsFinder::class)
+            ->setArgument('$publicPath', $config["public_path"]);
     }
 }

@@ -14,12 +14,17 @@ class AssetsFinder
 
 
     /**
-     *
-     * @param string $projectDir
+     * @var string
      */
-    public function __construct (string $projectDir)
+    private $publicPath;
+
+
+    /**
+     * @param string $publicPath
+     */
+    public function __construct (string $publicPath)
     {
-        $this->searchDir = "{$projectDir}/public";
+        $this->publicPath = rtrim($publicPath, "/");
     }
 
 
@@ -33,7 +38,7 @@ class AssetsFinder
         $finder
             ->files()
             ->followLinks()
-            ->in("{$this->searchDir}/" . self::BUNDLES_DIR);
+            ->in("{$this->publicPath}/" . self::BUNDLES_DIR);
 
         $files = [];
 
