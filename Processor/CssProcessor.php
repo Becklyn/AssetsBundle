@@ -3,7 +3,6 @@
 namespace Becklyn\AssetsBundle\Processor;
 
 use Becklyn\AssetsBundle\Asset\AssetsCache;
-use Symfony\Component\Filesystem\Filesystem;
 
 
 /**
@@ -95,7 +94,7 @@ class CssProcessor implements AssetProcessor
             return $import;
         }
 
-        $segments = explode("/", $import);
+        $segments = explode("/", rtrim($import, "/"));
         $dir = dirname($file);
 
         while ("/" !== $dir && !empty($segments) && (".." === $segments[0] || "." === $segments[0]))
@@ -109,15 +108,9 @@ class CssProcessor implements AssetProcessor
         }
 
         // if the import has to many levels up
-        if ("/" === $dir)
+        if ("/" === $dir || empty($segments))
         {
             return $import;
-        }
-
-        // if the import is only dots
-        if (empty($segments))
-        {
-            return $dir;
         }
 
         return $dir . "/" . implode("/", $segments);
