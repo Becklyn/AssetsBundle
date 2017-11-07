@@ -7,7 +7,7 @@ services:
     Becklyn\AssetsBundle\Asset\AssetsCache: ~
 
     Becklyn\AssetsBundle\Asset\AssetGenerator:
-        $projectPath: "%kernel.project_dir%/public"
+        $publicPath: "%kernel.project_dir%/public"
         $outputDir: "assets"
 
     Becklyn\AssetsBundle\Asset\AssetsRegistry: ~
