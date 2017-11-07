@@ -19,19 +19,18 @@ services:
             - { name: console.command, command: becklyn:assets:reset }
 
     Becklyn\AssetsBundle\Finder\AssetsFinder:
-        bind:
-            $projectDir: '%kernel.project_dir%'
+        $projectDir: '%kernel.project_dir%'
 
     Becklyn\AssetsBundle\Html\AssetHtmlGenerator:
         public: true
-        bind:
+        arguments:
             $isDebug: '%kernel.debug%'
 
     Becklyn\AssetsBundle\Path\AssetPathHelper: ~
     Becklyn\AssetsBundle\Processor\CssProcessor: ~
 
     Becklyn\AssetsBundle\Processor\ProcessorRegistry:
-        bind:
+        arguments:
             $processors:
                 css: '@Becklyn\AssetsBundle\Processor\CssProcessor'
 
