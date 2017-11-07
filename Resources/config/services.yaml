@@ -7,13 +7,11 @@ services:
     Becklyn\AssetsBundle\Asset\AssetsCache: ~
 
     Becklyn\AssetsBundle\Asset\AssetGenerator:
-        bind:
-            $projectDir: '%kernel.project_dir%'
+        $publicPath: "%kernel.project_dir%/public"
+        $outputDir: "assets"
 
-    Becklyn\AssetsBundle\Asset\AssetsRegistry:
-
-    Becklyn\AssetsBundle\Processor\CssProcessor:
-
+    Becklyn\AssetsBundle\Asset\AssetsRegistry: ~
+    Becklyn\AssetsBundle\Processor\CssProcessor: ~
     Becklyn\AssetsBundle\Cache\CacheWarmer: ~
 
     Becklyn\AssetsBundle\Command\AssetsCacheCommand:
@@ -21,20 +19,18 @@ services:
             - { name: console.command, command: becklyn:assets:reset }
 
     Becklyn\AssetsBundle\Finder\AssetsFinder:
-        bind:
-            $projectDir: '%kernel.project_dir%'
+        $projectDir: '%kernel.project_dir%'
 
     Becklyn\AssetsBundle\Html\AssetHtmlGenerator:
         public: true
-        bind:
+        arguments:
             $isDebug: '%kernel.debug%'
 
     Becklyn\AssetsBundle\Path\AssetPathHelper: ~
-
-    Becklyn\AssetsBundle\Processor\CssProcessor:
+    Becklyn\AssetsBundle\Processor\CssProcessor: ~
 
     Becklyn\AssetsBundle\Processor\ProcessorRegistry:
-        bind:
+        arguments:
             $processors:
                 css: '@Becklyn\AssetsBundle\Processor\CssProcessor'
 

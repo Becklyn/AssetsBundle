@@ -35,11 +35,11 @@ class AssetGeneratorTest extends TestCase
      */
     public function setUp ()
     {
-        $this->fixtures = dirname(__DIR__) . "/fixtures";
-        $this->generator = new AssetGenerator(new ProcessorRegistry([]), $this->fixtures);
+        $this->fixtures = dirname(__DIR__) . "/fixtures/public";
+        $this->generator = new AssetGenerator(new ProcessorRegistry([]), $this->fixtures, "assets");
 
 
-        $this->outDir = "{$this->fixtures}/public/assets";
+        $this->outDir = "{$this->fixtures}/assets";
         $fs = new Filesystem();
         $fs->remove($this->outDir);
     }
@@ -57,7 +57,7 @@ class AssetGeneratorTest extends TestCase
     public function testGenerate ()
     {
         $expectedOutputFilePath = "assets/other/test/css/app2.zu_-RiyZqaqqHgSHa3Xv.css";
-        $outputPath = "{$this->fixtures}/public/{$expectedOutputFilePath}";
+        $outputPath = "{$this->fixtures}/{$expectedOutputFilePath}";
 
         self::assertFileNotExists($outputPath);
         $asset = $this->generator->generateAsset("other/test/css/app2.css");
@@ -67,7 +67,7 @@ class AssetGeneratorTest extends TestCase
         self::assertSame($expectedOutputFilePath, $asset->getOutputFilePath());
 
         self::assertFileEquals(
-            "{$this->fixtures}/public/other/test/css/app2.css",
+            "{$this->fixtures}/other/test/css/app2.css",
             $outputPath
         );
     }
@@ -111,7 +111,7 @@ class AssetGeneratorTest extends TestCase
 
         $generator = new AssetGenerator(new ProcessorRegistry([
             "css" => $processor
-        ]), $this->fixtures);
+        ]), $this->fixtures, "output");
 
         $processor
             ->expects(self::once())
@@ -128,7 +128,7 @@ class AssetGeneratorTest extends TestCase
 
         $generator = new AssetGenerator(new ProcessorRegistry([
             "css" => $processor
-        ]), $this->fixtures);
+        ]), $this->fixtures, "output");
 
         $processor
             ->expects(self::never())

@@ -20,7 +20,7 @@ class AssetsTwigExtensionTest extends TestCase
 
         $extension = new AssetsTwigExtension($htmlReferences);
         $functions = \array_map(
-            function (\Twig_Function $f)
+            function (\Twig_SimpleFunction $f)
             {
                 return $f->getName();
             },
