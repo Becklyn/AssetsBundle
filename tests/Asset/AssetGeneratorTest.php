@@ -3,6 +3,7 @@
 namespace Tests\Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Asset\AssetGenerator;
+use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -33,7 +34,7 @@ class AssetGeneratorTest extends TestCase
     public function setUp ()
     {
         $this->fixtures = dirname(__DIR__) . "/fixtures";
-        $this->generator = new AssetGenerator($this->fixtures);
+        $this->generator = new AssetGenerator(new ProcessorRegistry([]), $this->fixtures);
 
 
         $this->outDir = "{$this->fixtures}/public/assets";
