@@ -110,7 +110,7 @@ class AssetGeneratorTest extends TestCase
 
         $generator = new AssetGenerator(new ProcessorRegistry([
             "css" => $processor
-        ]), $this->fixtures, "output");
+        ]), $this->fixtures, "assets");
 
         $processor
             ->expects(self::once())
@@ -127,7 +127,7 @@ class AssetGeneratorTest extends TestCase
 
         $generator = new AssetGenerator(new ProcessorRegistry([
             "css" => $processor
-        ]), $this->fixtures, "output");
+        ]), $this->fixtures, "assets");
 
         $processor
             ->expects(self::never())
