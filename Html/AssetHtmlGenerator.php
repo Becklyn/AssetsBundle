@@ -87,7 +87,7 @@ class AssetHtmlGenerator
         foreach ($assetPaths as $assetPath)
         {
             $html .= sprintf(
-                '<script src="%s"%s></script>',
+                '<script defer src="%s"%s></script>',
                 $this->getAssetUrlPath($assetPath),
                 $this->getIntegrityHtml($assetPath)
             );

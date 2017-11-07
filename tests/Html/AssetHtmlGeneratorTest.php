@@ -65,7 +65,7 @@ class AssetHtmlGeneratorTest extends TestCase
 
         $html = $generator->linkAssets("js", ["a/first.js", "b/second.js"]);
         self::assertEquals(
-            '<script src="a/first.js"></script><script src="b/second.js"></script>',
+            '<script defer src="a/first.js"></script><script defer src="b/second.js"></script>',
             $html
         );
     }
@@ -126,7 +126,7 @@ class AssetHtmlGeneratorTest extends TestCase
 
         $html = $generator->linkAssets("js", ["a/first.js", "b/second.js"]);
         self::assertEquals(
-            '<script src="out/first.hash.js" integrity="sha256-hash"></script><script src="out/second.hash.js" integrity="sha256-hash"></script>',
+            '<script defer src="out/first.hash.js" integrity="sha256-hash"></script><script defer src="out/second.hash.js" integrity="sha256-hash"></script>',
             $html
         );
     }
