@@ -32,6 +32,7 @@ class AssetsFinder
 
         $finder
             ->files()
+            ->followLinks()
             ->in("{$this->searchDir}/" . self::BUNDLES_DIR);
 
         $files = [];
