@@ -10,6 +10,10 @@ services:
         bind:
             $projectDir: '%kernel.project_dir%'
 
+    Becklyn\AssetsBundle\Asset\AssetsRegistry:
+
+    Becklyn\AssetsBundle\Processor\CssProcessor:
+
     Becklyn\AssetsBundle\Cache\CacheWarmer: ~
 
     Becklyn\AssetsBundle\Command\AssetsCacheCommand:
@@ -24,6 +28,15 @@ services:
         public: true
         bind:
             $isDebug: '%kernel.debug%'
+
+    Becklyn\AssetsBundle\Path\AssetPathHelper: ~
+
+    Becklyn\AssetsBundle\Processor\CssProcessor:
+
+    Becklyn\AssetsBundle\Processor\ProcessorRegistry:
+        bind:
+            $processors:
+                css: '@Becklyn\AssetsBundle\Processor\CssProcessor'
 
     Becklyn\AssetsBundle\Twig\AssetsTwigExtension: ~
 

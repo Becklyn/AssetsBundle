@@ -5,6 +5,7 @@ namespace Becklyn\AssetsBundle\Html;
 
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
+use Becklyn\AssetsBundle\Asset\AssetsRegistry;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Symfony\Component\Asset\Packages;
 
@@ -14,10 +15,11 @@ class AssetHtmlGenerator
     const TYPE_CSS = "css";
     const TYPE_JAVASCRIPT = "js";
 
+
     /**
-     * @var AssetsCache
+     * @var AssetsRegistry
      */
-    private $cache;
+    private $registry;
 
 
     /**
@@ -33,13 +35,13 @@ class AssetHtmlGenerator
 
 
     /**
-     * @param AssetsCache $cache
-     * @param Packages    $packages
-     * @param bool        $isDebug
+     * @param AssetsRegistry $registry
+     * @param Packages       $packages
+     * @param bool           $isDebug
      */
-    public function __construct (AssetsCache $cache, Packages $packages, bool $isDebug)
+    public function __construct (AssetsRegistry $registry, Packages $packages, bool $isDebug)
     {
-        $this->cache = $cache;
+        $this->registry = $registry;
         $this->packages = $packages;
         $this->isDebug = $isDebug;
     }
@@ -57,14 +59,10 @@ class AssetHtmlGenerator
         switch ($type)
         {
             case self::TYPE_JAVASCRIPT:
-                return $this->isDebug
-                    ? $this->linkDebugJavaScript($assetPaths)
-                    : $this->linkProductionJavaScript($assetPaths);
+                return $this->linkJavaScript($assetPaths);
 
             case self::TYPE_CSS:
-                return $this->isDebug
-                    ? $this->linkDebugCss($assetPaths)
-                    : $this->linkProductionCss($assetPaths);
+                return $this->linkCss($assetPaths);
 
             default:
                 throw new AssetsException(sprintf(
@@ -80,40 +78,18 @@ class AssetHtmlGenerator
      *
      * @param string[] $assetPaths
      * @return string
+     * @throws AssetsException
      */
-    private function linkDebugJavaScript (array $assetPaths) : string
+    private function linkJavaScript (array $assetPaths) : string
     {
         $html = "";
 
         foreach ($assetPaths as $assetPath)
         {
             $html .= sprintf(
-                '<script src="%s"></script>',
-                $this->packages->getUrl($assetPath)
-            );
-        }
-
-        return $html;
-    }
-
-
-    /**
-     * Generates HTML to link to JavaScript files
-     *
-     * @param string[] $assetPaths
-     * @return string
-     * @throws AssetsException
-     */
-    private function linkProductionJavaScript (array $assetPaths) : string
-    {
-        $html = "";
-
-        foreach ($this->fetchAssets($assetPaths) as $assetPath => $asset)
-        {
-            $html .= sprintf(
-                '<script src="%s" integrity="%s"></script>',
-                $this->packages->getUrl($asset->getOutputFilePath()),
-                "sha256-{$asset->getDigest()}"
+                '<script src="%s"%s></script>',
+                $this->getAssetUrlPath($assetPath),
+                $this->getIntegrityHtml($assetPath)
             );
         }
 
@@ -126,16 +102,18 @@ class AssetHtmlGenerator
      *
      * @param string[] $assetPaths
      * @return string
+     * @throws AssetsException
      */
-    private function linkDebugCss (array $assetPaths) : string
+    private function linkCss (array $assetPaths) : string
     {
         $html = "";
 
         foreach ($assetPaths as $assetPath)
         {
             $html .= sprintf(
-                '<link rel="stylesheet" href="%s">',
-                $this->packages->getUrl($assetPath)
+                '<link rel="stylesheet" href="%s"%s>',
+                $this->getAssetUrlPath($assetPath),
+                $this->getIntegrityHtml($assetPath)
             );
         }
 
@@ -144,45 +122,36 @@ class AssetHtmlGenerator
 
 
     /**
-     * Generates HTML to link to CSS files
+     * Returns the asset url
      *
-     * @param string[] $assetPaths
+     * @param string $assetPath
      * @return string
      * @throws AssetsException
      */
-    private function linkProductionCss (array $assetPaths) : string
+    public function getAssetUrlPath (string $assetPath) : string
     {
-        $html = "";
+        $path = $this->isDebug
+            ? $assetPath
+            : $this->registry->get($assetPath)->getOutputFilePath();
 
-        foreach ($this->fetchAssets($assetPaths) as $assetPath => $asset)
-        {
-            $html .= sprintf(
-                '<link rel="stylesheet" href="%s" integrity="%s">',
-                $this->packages->getUrl($asset->getOutputFilePath()),
-                "sha256-{$asset->getDigest()}"
-            );
-        }
-
-        return $html;
+        return $this->packages->getUrl($path);
     }
 
 
     /**
-     * Fetches assets for the given asset paths
+     * Returns the integrity HTML snippet
      *
-     * @param string[] $assetPaths
-     * @return Asset[]
+     * @param string $assetPath
+     * @return string
      * @throws AssetsException
      */
-    private function fetchAssets (array $assetPaths) : array
+    private function getIntegrityHtml (string $assetPath) : string
     {
-        $assets = [];
-
-        foreach ($assetPaths as $assetPath)
-        {
-            $assets[$assetPath] = $this->cache->get($assetPath);
-        }
-
-        return $assets;
+        return $this->isDebug
+            ? ""
+            : sprintf(
+                ' integrity="sha256-%s"',
+                $this->registry->get($assetPath)->getDigest()
+            );
     }
 }

@@ -4,6 +4,7 @@ namespace Tests\Becklyn\AssetsBundle\Html;
 
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
+use Becklyn\AssetsBundle\Asset\AssetsRegistry;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Asset\Packages;
@@ -31,7 +32,7 @@ class AssetHtmlGeneratorTest extends TestCase
 
     protected function buildGenerator (bool $isDebug)
     {
-        $cache = self::getMockBuilder(AssetsCache::class)
+        $registry = self::getMockBuilder(AssetsRegistry::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -39,22 +40,17 @@ class AssetHtmlGeneratorTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $generator = new AssetHtmlGenerator($cache, $packages, $isDebug);
-        return [$generator, $cache, $packages];
+        $generator = new AssetHtmlGenerator($registry, $packages, $isDebug);
+        return [$generator, $registry, $packages];
     }
 
 
     public function testDebugJS ()
     {
-        /**
-         * @type AssetHtmlGenerator $generator
-         * @type \PHPUnit_Framework_MockObject_MockObject $cache
-         * @type \PHPUnit_Framework_MockObject_MockObject $packages
-         */
-        [$generator, $cache, $packages] = $this->buildGenerator(true);
+        [$generator, $registry, $packages] = $this->buildGenerator(true);
 
-        // the cache must not be called in debug mode
-        $cache
+        // the registry must not be called in debug mode
+        $registry
             ->expects(self::never())
             ->method("get");
 
@@ -79,13 +75,13 @@ class AssetHtmlGeneratorTest extends TestCase
     {
         /**
          * @type AssetHtmlGenerator $generator
-         * @type \PHPUnit_Framework_MockObject_MockObject $cache
+         * @type \PHPUnit_Framework_MockObject_MockObject $registry
          * @type \PHPUnit_Framework_MockObject_MockObject $packages
          */
-        [$generator, $cache, $packages] = $this->buildGenerator(true);
+        [$generator, $registry, $packages] = $this->buildGenerator(true);
 
-        // the cache must not be called in debug mode
-        $cache
+        // the registry must not be called in debug mode
+        $registry
             ->expects(self::never())
             ->method("get");
 
@@ -110,18 +106,13 @@ class AssetHtmlGeneratorTest extends TestCase
     {
         /**
          * @type AssetHtmlGenerator $generator
-         * @type \PHPUnit_Framework_MockObject_MockObject $cache
+         * @type \PHPUnit_Framework_MockObject_MockObject $registry
          * @type \PHPUnit_Framework_MockObject_MockObject $packages
          */
-        [$generator, $cache, $packages] = $this->buildGenerator(false);
+        [$generator, $registry, $packages] = $this->buildGenerator(false);
 
-        $cache
-            ->expects(self::exactly(2))
+        $registry
             ->method("get")
-            ->withConsecutive(
-                ["a/first.js"],
-                ["b/second.js"]
-            )
             ->willReturnCallback(
                 function ($url)
                 {
@@ -130,7 +121,6 @@ class AssetHtmlGeneratorTest extends TestCase
             );
 
         $packages
-            ->expects(self::exactly(2))
             ->method("getUrl")
             ->willReturnArgument(0);
 
@@ -146,18 +136,13 @@ class AssetHtmlGeneratorTest extends TestCase
     {
         /**
          * @type AssetHtmlGenerator $generator
-         * @type \PHPUnit_Framework_MockObject_MockObject $cache
+         * @type \PHPUnit_Framework_MockObject_MockObject $registry
          * @type \PHPUnit_Framework_MockObject_MockObject $packages
          */
-        [$generator, $cache, $packages] = $this->buildGenerator(false);
+        [$generator, $registry, $packages] = $this->buildGenerator(false);
 
-        $cache
-            ->expects(self::exactly(2))
+        $registry
             ->method("get")
-            ->withConsecutive(
-                ["a/first.css"],
-                ["b/second.css"]
-            )
             ->willReturnCallback(
                 function ($url)
                 {
@@ -166,7 +151,6 @@ class AssetHtmlGeneratorTest extends TestCase
             );
 
         $packages
-            ->expects(self::exactly(2))
             ->method("getUrl")
             ->willReturnArgument(0);
 

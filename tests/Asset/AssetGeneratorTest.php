@@ -3,6 +3,9 @@
 namespace Tests\Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Asset\AssetGenerator;
+use Becklyn\AssetsBundle\Processor\AssetProcessor;
+use Becklyn\AssetsBundle\Processor\CssProcessor;
+use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -33,7 +36,7 @@ class AssetGeneratorTest extends TestCase
     public function setUp ()
     {
         $this->fixtures = dirname(__DIR__) . "/fixtures";
-        $this->generator = new AssetGenerator($this->fixtures);
+        $this->generator = new AssetGenerator(new ProcessorRegistry([]), $this->fixtures);
 
 
         $this->outDir = "{$this->fixtures}/public/assets";
@@ -98,5 +101,39 @@ class AssetGeneratorTest extends TestCase
     public function testMissingFile ()
     {
         $this->generator->generateAsset("missing");
+    }
+
+
+    public function testProcessorCalled ()
+    {
+        $processor = self::getMockBuilder(AssetProcessor::class)
+            ->getMock();
+
+        $generator = new AssetGenerator(new ProcessorRegistry([
+            "css" => $processor
+        ]), $this->fixtures);
+
+        $processor
+            ->expects(self::once())
+            ->method("process");
+
+        $generator->generateAsset("bundles/test/css/app.css");
+    }
+
+
+    public function testProcessorNotCalled ()
+    {
+        $processor = self::getMockBuilder(AssetProcessor::class)
+            ->getMock();
+
+        $generator = new AssetGenerator(new ProcessorRegistry([
+            "css" => $processor
+        ]), $this->fixtures);
+
+        $processor
+            ->expects(self::never())
+            ->method("process");
+
+        $generator->generateAsset("bundles/test/js/test.js");
     }
 }

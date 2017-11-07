@@ -61,7 +61,16 @@ class Asset
      */
     public function getOutputFilePath () : string
     {
-        return "{$this->outputDirectory}/{$this->outputFileName}";
+        return "{$this->outputDirectory}/{$this->getOutputFileName()}";
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getOutputFileName () : string
+    {
+        return $this->outputFileName;
     }
 
 

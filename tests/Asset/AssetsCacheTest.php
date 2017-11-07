@@ -12,7 +12,7 @@ use Psr\Cache\CacheItemPoolInterface;
 
 class AssetsCacheTest extends TestCase
 {
-    private function prepareCache ()
+    private function prepare ()
     {
         $cachePool = self::getMockBuilder(CacheItemPoolInterface::class)
             ->disableOriginalConstructor()
@@ -25,19 +25,17 @@ class AssetsCacheTest extends TestCase
             ->method("getItem")
             ->willReturn($cacheItem);
 
-        $generator = self::getMockBuilder(AssetGenerator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        return [$cachePool, $cacheItem, $generator];
+        return [$cachePool, $cacheItem];
     }
 
 
     public function testCacheInitialization ()
     {
-        /** @type \PHPUnit_Framework_MockObject_MockObject $cachePool */
-        /** @type \PHPUnit_Framework_MockObject_MockObject $cacheItem */
-        [$cachePool, $cacheItem, $generator] = $this->prepareCache();
+        /**
+         * @type \PHPUnit_Framework_MockObject_MockObject|CacheItemPoolInterface $cachePool
+         * @type \PHPUnit_Framework_MockObject_MockObject $cacheItem
+         */
+        [$cachePool, $cacheItem] = $this->prepare();
 
         $cacheItem
             ->method("isHit")
@@ -51,17 +49,39 @@ class AssetsCacheTest extends TestCase
                 "test.js" => $asset,
             ]);
 
-        $assetsCache = new AssetsCache($cachePool, $generator);
+        $assetsCache = new AssetsCache($cachePool);
         self::assertSame($asset, $assetsCache->get("test.js"));
     }
 
 
-    public function testAutomaticGeneration ()
+    public function testEmptyInitialization ()
     {
-        /** @type \PHPUnit_Framework_MockObject_MockObject $cachePool */
-        /** @type \PHPUnit_Framework_MockObject_MockObject $cacheItem */
-        /** @type \PHPUnit_Framework_MockObject_MockObject $generator */
-        [$cachePool, $cacheItem, $generator] = $this->prepareCache();
+        /**
+         * @type \PHPUnit_Framework_MockObject_MockObject|CacheItemPoolInterface $cachePool
+         * @type \PHPUnit_Framework_MockObject_MockObject $cacheItem
+         */
+        [$cachePool, $cacheItem] = $this->prepare();
+
+        $cacheItem
+            ->method("isHit")
+            ->willReturn(true);
+
+        $cacheItem
+            ->method("get")
+            ->willReturn([]);
+
+        $assetsCache = new AssetsCache($cachePool);
+        self::assertNull($assetsCache->get("test.js"));
+    }
+
+
+    public function testAdd ()
+    {
+        /**
+         * @type \PHPUnit_Framework_MockObject_MockObject|CacheItemPoolInterface $cachePool
+         * @type \PHPUnit_Framework_MockObject_MockObject $cacheItem
+         */
+        [$cachePool, $cacheItem] = $this->prepare();
 
         $cacheItem
             ->method("isHit")
@@ -69,29 +89,47 @@ class AssetsCacheTest extends TestCase
 
         $asset = new Asset("test", "test", "test");
 
-        $generator
+        // don't make assumptions about the internals here
+        $cacheItem
             ->expects(self::once())
-            ->method("generateAsset")
-            ->with($this->equalTo("test.js"))
-            ->willReturn($asset);
+            ->method("set");
 
-        $assetsCache = new AssetsCache($cachePool, $generator);
+        $cachePool
+            ->expects(self::once())
+            ->method("save")
+            ->with($cacheItem);
+
+        $assetsCache = new AssetsCache($cachePool);
+        self::assertNull($assetsCache->get("test.js"));
+        $assetsCache->add("test.js", $asset);
         self::assertSame($asset, $assetsCache->get("test.js"));
     }
 
 
     public function testClear ()
     {
-        /** @type \PHPUnit_Framework_MockObject_MockObject $cachePool */
-        /** @type \PHPUnit_Framework_MockObject_MockObject $cacheItem */
-        /** @type \PHPUnit_Framework_MockObject_MockObject $generator */
-        [$cachePool, $cacheItem, $generator] = $this->prepareCache();
+        /**
+         * @type \PHPUnit_Framework_MockObject_MockObject|CacheItemPoolInterface $cachePool
+         * @type \PHPUnit_Framework_MockObject_MockObject $cacheItem
+         */
+        [$cachePool, $cacheItem] = $this->prepare();
 
+        $cacheItem
+            ->expects(self::once())
+            ->method("set")
+            ->with([]);
+
+        $cachePool
+            ->expects(self::once())
+            ->method("save")
+            ->with($cacheItem);
+
+        $asset = new Asset("test", "test", "test");
+
+        // prime cache
         $cacheItem
             ->method("isHit")
             ->willReturn(true);
-
-        $asset = new Asset("test", "test", "test");
 
         $cacheItem
             ->method("get")
@@ -99,25 +137,13 @@ class AssetsCacheTest extends TestCase
                 "test.js" => $asset,
             ]);
 
-        $assetsCache = new AssetsCache($cachePool, $generator);
+        $assetsCache = new AssetsCache($cachePool);
         // check that item is in cache
         self::assertSame($asset, $assetsCache->get("test.js"));
-
-        // check that actual cache clearer is called
-        $generator
-            ->expects(self::once())
-            ->method("removeAllGeneratedFiles");
 
         // clear cache
         $assetsCache->clear();
 
-        // check that new item is generated if cache is called again
-        $asset2 = new Asset("test", "test", "test");
-        $generator
-            ->expects(self::once())
-            ->method("generateAsset")
-            ->with(self::equalTo("test.js"))
-            ->willReturn($asset2);
-        self::assertSame($asset2, $assetsCache->get("test.js"));
+        self::assertNull($assetsCache->get("test.js"));
     }
 }

@@ -15,23 +15,17 @@ class AssetsCache
 
 
     /**
-     * @var AssetGenerator
-     */
-    private $generator;
-
-
-    /**
      * @var array<string, Asset>
      */
     private $assets = [];
 
 
     /**
-     * @param string $rootDir
+     * @param CacheItemPoolInterface $pool
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function __construct (CacheItemPoolInterface $pool, AssetGenerator $generator)
+    public function __construct (CacheItemPoolInterface $pool)
     {
-        $this->generator = $generator;
         $this->cacheItem = $pool->getItem(self::CACHE_KEY);
         $this->cachePool = $pool;
         $this->assets = $this->cacheItem->isHit() ? $this->cacheItem->get() : [];
@@ -39,15 +33,15 @@ class AssetsCache
 
 
     /**
-     * Returns the cached asset or adds it, if it doesn't exist yet.
+     * Returns the cached asset
      *
      * @param string $assetPath
      *
-     * @throws AssetsException
+     * @return Asset|null
      */
-    public function get (string $assetPath) : Asset
+    public function get (string $assetPath) : ?Asset
     {
-        return $this->assets[$assetPath] ?? $this->add($assetPath);
+        return $this->assets[$assetPath] ?? null;
     }
 
 
@@ -55,19 +49,14 @@ class AssetsCache
      * Adds an asset to the cache
      *
      * @param string $assetPath
-     * @return Asset the generated asset
      *
      * @throws AssetsException
      */
-    public function add (string $assetPath) : Asset
+    public function add (string $assetPath, Asset $asset)
     {
-        $asset = $this->generator->generateAsset($assetPath);
-
         $this->assets[$assetPath] = $asset;
         $this->cacheItem->set($this->assets);
         $this->cachePool->save($this->cacheItem);
-
-        return $asset;
     }
 
 
@@ -76,7 +65,8 @@ class AssetsCache
      */
     public function clear ()
     {
-        $this->generator->removeAllGeneratedFiles();
         $this->assets = [];
+        $this->cacheItem->set($this->assets);
+        $this->cachePool->save($this->cacheItem);
     }
 }
