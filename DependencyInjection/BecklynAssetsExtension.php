@@ -12,6 +12,9 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class BecklynAssetsExtension extends Extension
 {
+    /**
+     * @inheritdoc
+     */
     public function load (array $configs, ContainerBuilder $container)
     {
         // process config
@@ -27,9 +30,7 @@ class BecklynAssetsExtension extends Extension
         // update services config with configuration values
         $assetGenerator = $container->getDefinition(AssetGenerator::class);
         $assetGenerator
-            ->setBindings(\array_replace($assetGenerator->getBindings(), [
-                '$publicPath' => $config["public_path"],
-                '$outputDir' => $config["output_dir"],
-            ]));
+            ->setArgument('$publicPath', $config["public_path"])
+            ->setArgument('$outputDir', $config["output_dir"]);
     }
 }
