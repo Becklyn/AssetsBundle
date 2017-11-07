@@ -19,7 +19,7 @@ class FinderTest extends TestCase
      */
     public function setUp ()
     {
-        $this->fixtures = dirname(__DIR__) . "/fixtures";
+        $this->fixtures = dirname(__DIR__) . "/fixtures/public";
     }
 
     public function testCorrectFindings ()
