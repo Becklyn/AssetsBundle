@@ -21,7 +21,7 @@ class AssetGenerator
     /**
      * @var string
      */
-    private $webPath;
+    private $publicPath;
 
 
     /**
@@ -38,13 +38,13 @@ class AssetGenerator
 
     /**
      * @param ProcessorRegistry $processorRegistry
-     * @param string            $projectDir
-     * @param string            $outputDir the output dir relative to the public/ directory
+     * @param string            $publicPath the absolute path to the public/ (or web/) directory
+     * @param string            $outputDir  the output dir relative to the public/ directory
      */
-    public function __construct (ProcessorRegistry $processorRegistry, string $projectDir, string $outputDir)
+    public function __construct (ProcessorRegistry $processorRegistry, string $publicPath, string $outputDir)
     {
         $this->processorRegistry = $processorRegistry;
-        $this->webPath = "{$projectDir}/public";
+        $this->publicPath = rtrim($publicPath, "/");
         $this->outputDir = trim($outputDir, "/");
         $this->filesystem = new Filesystem();
     }
@@ -57,7 +57,7 @@ class AssetGenerator
      */
     public function generateAsset (string $assetPath) : Asset
     {
-        $filePath = "{$this->webPath}/" . ltrim($assetPath, "/");
+        $filePath = "{$this->publicPath}/" . ltrim($assetPath, "/");
 
         if (!\is_file($filePath))
         {
@@ -78,7 +78,7 @@ class AssetGenerator
         $hash = \base64_encode(\hash("sha256", $fileContent, true));
         $asset = new Asset($this->getOutputDirectory($assetPath), $filePath, $hash);
 
-        $outputPath = "{$this->webPath}/{$asset->getOutputFilePath()}";
+        $outputPath = "{$this->publicPath}/{$asset->getOutputFilePath()}";
 
         // ensure that the target directory exists
         $this->filesystem->mkdir(dirname($outputPath));
@@ -115,6 +115,6 @@ class AssetGenerator
      */
     public function removeAllGeneratedFiles () : void
     {
-        $this->filesystem->remove("{$this->webPath}/{$this->outputDir}");
+        $this->filesystem->remove("{$this->publicPath}/{$this->outputDir}");
     }
 }
