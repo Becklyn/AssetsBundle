@@ -13,6 +13,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AssetsCacheCommand extends Command
 {
+    public static $defaultName = "becklyn:assets:reset";
+
+
     /**
      * @var CacheWarmer
      */
@@ -35,6 +38,7 @@ class AssetsCacheCommand extends Command
     protected function configure ()
     {
         $this
+            ->setName(self::$defaultName)
             ->setDescription("Resets (clears and warms) the assets cache")
             ->addOption(
                 "no-warmup",
