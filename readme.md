@@ -67,6 +67,11 @@ Currently registered processors:
 | -------------- | --------------- | ------------------------- |
 | `CssProcessor` | `.css`          | Rewrite `url(...)` paths. |
 
+
+**Warning:**
+The asset processors are using the paths from the `AssetCache`. This implies a race condition, as the processor can only rewrite paths of files that were already added to the cache. So files with a processor are deferred and only processed after all other files are finished (at least if the command / cache warmer is used). There still can be race conditions, if files with processors depend on each other. 
+
+
 Command
 -------
 
