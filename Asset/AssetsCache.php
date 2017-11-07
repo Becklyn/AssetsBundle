@@ -52,7 +52,7 @@ class AssetsCache
      *
      * @throws AssetsException
      */
-    public function add (string $assetPath, Asset $asset)
+    public function add (string $assetPath, Asset $asset) : void
     {
         $this->assets[$assetPath] = $asset;
         $this->cacheItem->set($this->assets);
@@ -63,7 +63,7 @@ class AssetsCache
     /**
      * Clears the cache
      */
-    public function clear ()
+    public function clear () : void
     {
         $this->assets = [];
         $this->cacheItem->set($this->assets);

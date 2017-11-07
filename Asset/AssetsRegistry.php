@@ -50,7 +50,7 @@ class AssetsRegistry
      * @return Asset
      * @throws AssetsException
      */
-    public function get (string $assetPath)
+    public function get (string $assetPath) : Asset
     {
         $asset = $this->cache->get($assetPath);
 
@@ -66,7 +66,7 @@ class AssetsRegistry
      * @param string[] $assetPaths
      * @throws AssetsException
      */
-    public function add (array $assetPaths, ?callable $progress)
+    public function add (array $assetPaths, ?callable $progress) : void
     {
         $deferred = [];
 
@@ -118,7 +118,7 @@ class AssetsRegistry
     /**
      * Clears the assets registry
      */
-    public function clear ()
+    public function clear () : void
     {
         $this->generator->removeAllGeneratedFiles();
         $this->cache->clear();
