@@ -73,7 +73,8 @@ class CssProcessor implements AssetProcessor
 
         if (null !== $asset)
         {
-            $path = $asset->getOutputFilePath();
+            // if an asset was found, overwrite the basename of the path with the cached asset
+            $path = dirname($path) . "/{$asset->getOutputFileName()}";
         }
 
         return "url({$quotes}{$path}{$quotes})";
