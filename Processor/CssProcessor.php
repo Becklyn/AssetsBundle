@@ -107,7 +107,7 @@ class CssProcessor implements AssetProcessor
             }
         }
 
-        // if the import has to many levels up
+        // if the import has too many levels up
         if ("/" === $dir || empty($segments))
         {
             return $import;
