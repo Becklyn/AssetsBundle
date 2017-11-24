@@ -2,8 +2,8 @@
 
 namespace Becklyn\AssetsBundle\Finder;
 
+use Becklyn\AssetsBundle\Entry\EntryNamespaces;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 
 
 /**
@@ -24,13 +24,20 @@ class AssetsFinder
 
 
     /**
-     *
-     * @param string[] $entries
+     * @var EntryNamespaces
      */
-    public function __construct (string $projectDir, array $entries)
+    private $namespaceRegistry;
+
+
+    /**
+     *
+     * @param string          $projectDir
+     * @param EntryNamespaces $namespaceRegistry
+     */
+    public function __construct (string $projectDir, EntryNamespaces $namespaceRegistry)
     {
         $this->projectDir = $projectDir;
-        $this->entries = $entries;
+        $this->namespaceRegistry = $namespaceRegistry;
     }
 
 
@@ -39,17 +46,10 @@ class AssetsFinder
      */
     public function findAssets () : array
     {
-        if (empty($this->entries))
-        {
-            return [];
-        }
-
         $files = [];
 
-        foreach ($this->entries as $namespace => $entry)
+        foreach ($this->namespaceRegistry as $namespace => $dir)
         {
-            $dir = "{$this->projectDir}/" . ltrim($entry, "/");
-
             if (!\is_dir($dir))
             {
                 continue;

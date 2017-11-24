@@ -18,6 +18,9 @@ services:
         tags:
             - { name: console.command, command: becklyn:assets:reset }
 
+    Becklyn\AssetsBundle\Entry\EntryNamespaces:
+        $projectDir: '%kernel.project_dir%'
+
     Becklyn\AssetsBundle\Finder\AssetsFinder:
         $projectDir: '%kernel.project_dir%'
 
