@@ -2,6 +2,7 @@
 
 namespace Becklyn\AssetsBundle\Finder;
 
+use Becklyn\AssetsBundle\Entry\EntryNamespaces;
 use Symfony\Component\Finder\Finder;
 
 
@@ -10,21 +11,18 @@ use Symfony\Component\Finder\Finder;
  */
 class AssetsFinder
 {
-    const BUNDLES_DIR = "bundles";
+    /**
+     * @var EntryNamespaces
+     */
+    private $namespaces;
 
 
     /**
-     * @var string
+     * @param EntryNamespaces $namespaces
      */
-    private $publicPath;
-
-
-    /**
-     * @param string $publicPath
-     */
-    public function __construct (string $publicPath)
+    public function __construct (EntryNamespaces $namespaces)
     {
-        $this->publicPath = rtrim($publicPath, "/");
+        $this->namespaces = $namespaces;
     }
 
 
@@ -33,18 +31,26 @@ class AssetsFinder
      */
     public function findAssets () : array
     {
-        $finder = new Finder();
-
-        $finder
-            ->files()
-            ->followLinks()
-            ->in("{$this->publicPath}/" . self::BUNDLES_DIR);
-
         $files = [];
 
-        foreach ($finder as $file)
+        foreach ($this->namespaces as $namespace => $dir)
         {
-            $files[] = self::BUNDLES_DIR . "/{$file->getRelativePathname()}";
+            if (!\is_dir($dir))
+            {
+                continue;
+            }
+
+            $finder = new Finder();
+
+            $finder
+                ->files()
+                ->followLinks()
+                ->in($dir);
+
+            foreach ($finder as $foundFile)
+            {
+                $files[] = "@{$namespace}/{$foundFile->getRelativePathname()}";
+            }
         }
 
         return $files;

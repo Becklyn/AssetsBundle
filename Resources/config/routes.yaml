@@ -1,0 +1,5 @@
+becklyn_assets_embed:
+    path: /embed/{path}
+    controller: 'Becklyn\AssetsBundle\Controller\EmbedController:embed'
+    requirements:
+        path: '.*?'

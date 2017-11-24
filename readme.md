@@ -3,6 +3,8 @@ BecklynAssetsBundle
 
 High-performance asset handling for symfony projects.
 
+This bundle is a simplified and specialized replacement for `symfony/asset`.
+
 
 Installation
 ------------
@@ -19,10 +21,10 @@ Info / Purpose
 
 This bundle aims to provide a way to transparently handle long-term caching of assets.
 
-All assets in `public/bundles/` are copied (and possibly transformed) to `public/assets/` and the file names modified, so that they contain the content hash of the given file.
+All assets in your entry points are copied (and possibly transformed) to `public/assets/` and the file names modified, so that they contain the content hash of the given file.
 It also provides Twig functions to use these translated paths transparently in a symfony application.
 
-In Twig the original filename is given to the `*Asset` function and it automatically generates the HTML reference for the hashed file name.
+In Twig the original filename is given to the `asset*` function and it automatically generates the HTML reference for the hashed file name.
 
 **Warning:** the directory `public/assets/` is completely cleared on cache clear, so it should exclusively be managed by this bundle.
 
@@ -35,23 +37,31 @@ Usage
 The asset generation and preparation is done automatically.
 The assets are pregenerated on cache clear + warmup or on-the-fly generated if encountered with an empty cache.
 
+In the configuration a mapping of namespaces to directories is defined. These namespaces are then used to retrieve paths to these files by using the `@{namespace}/{path}` syntax:
+
+```yaml
+becklyn_assets:
+    entries:
+        bundles: "public/bundles"
+```
+
 In Twig, the following functions can be used:
 
 ```twig
 {# automatically generates the <script></script> tags #}
-{{ jsAssets([
-    "bundles/app/js/bootstrap.js",
-    "bundles/app/js/app.js",
+{{ assets_js([
+    "@bundles/app/js/bootstrap.js",
+    "@bundles/app/js/app.js",
 ]) }}
 
 {# automatically generates the <link> tags #}
-{{ cssAssets([
-    "bundles/app/css/bootstrap.css",
-    "bundles/app/css/app.css",
+{{ assets_js([
+    "@bundles/app/css/bootstrap.css",
+    "@bundles/app/css/app.css",
 ]) }}
 
 {# just returns the URL #}
-<img src="{{ assetPath("bundles/app/img/logo.svg") }}" alt="Company Logo">
+<img src="{{ asset("@bundles/app/img/logo.svg") }}" alt="Company Logo">
 ```
 
 
@@ -79,6 +89,12 @@ All configuration values with their description and defaults:
 
 ```yaml
 becklyn_assets:
+    # the entry points. Maps the namespace to the directory (relative to `%kernel.project_dir%`)
+    # -> is required
+    entries:
+        bundles: "public/bundles"
+        app: "assets"
+        
     # the absolute path to the `public/` (or `web/`) directory
     public_path: '%kernel.project_dir%/public' 
     # relative path to the directory, where the assets are copied to (relative to `public_path`)

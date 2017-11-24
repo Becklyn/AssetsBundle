@@ -2,9 +2,8 @@
 
 namespace Becklyn\AssetsBundle\DependencyInjection;
 
-
 use Becklyn\AssetsBundle\Asset\AssetGenerator;
-use Becklyn\AssetsBundle\Finder\AssetsFinder;
+use Becklyn\AssetsBundle\Entry\EntryNamespaces;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -19,7 +18,10 @@ class BecklynAssetsExtension extends Extension
     public function load (array $configs, ContainerBuilder $container)
     {
         // process config
-        $config = $this->processConfiguration(new BecklynAssetsConfiguration(), $configs);
+        $config = $this->processConfiguration(
+            new BecklynAssetsConfiguration(),
+            $configs
+        );
 
         // load services
         $loader = new YamlFileLoader(
@@ -30,10 +32,10 @@ class BecklynAssetsExtension extends Extension
 
         // update services config with configuration values
         $container->getDefinition(AssetGenerator::class)
-            ->setArgument('$publicPath', rtrim($config["public_path"]))
+            ->setArgument('$publicPath', $config["public_path"])
             ->setArgument('$outputDir', $config["output_dir"]);
 
-        $container->getDefinition(AssetsFinder::class)
-            ->setArgument('$publicPath', $config["public_path"]);
+        $container->getDefinition(EntryNamespaces::class)
+            ->setArgument('$entries', $config["entries"]);
     }
 }
