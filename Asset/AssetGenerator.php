@@ -109,8 +109,8 @@ class AssetGenerator
     private function getOutputDirectory (NamespacedAsset $asset) : string
     {
         $outputDirectory = "{$this->outputDir}/{$asset->getNamespace()}";
-
         $dir = dirname($asset->getPath());
+
         if ("." !== $dir)
         {
             $outputDirectory .= "/{$dir}";
