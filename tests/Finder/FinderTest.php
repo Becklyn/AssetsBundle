@@ -2,6 +2,7 @@
 
 namespace Tests\Becklyn\AssetsBundle\Finder;
 
+use Becklyn\AssetsBundle\Entry\EntryNamespaces;
 use Becklyn\AssetsBundle\Finder\AssetsFinder;
 use PHPUnit\Framework\TestCase;
 
@@ -24,12 +25,15 @@ class FinderTest extends TestCase
 
     public function testCorrectFindings ()
     {
-        $finder = new AssetsFinder($this->fixtures);
+        $namespaces = new EntryNamespaces($this->fixtures, [
+            "bundles" => "bundles",
+        ]);
+        $finder = new AssetsFinder($namespaces);
 
         $files = $finder->findAssets();
 
         self::assertCount(2, $files);
-        self::assertContains("bundles/test/css/app.css", $files);
-        self::assertContains("bundles/test/js/test.js", $files);
+        self::assertContains("@bundles/test/css/app.css", $files);
+        self::assertContains("@bundles/test/js/test.js", $files);
     }
 }

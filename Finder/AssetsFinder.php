@@ -12,32 +12,17 @@ use Symfony\Component\Finder\Finder;
 class AssetsFinder
 {
     /**
-     * @var string[]
-     */
-    private $entries;
-
-
-    /**
-     * @var string
-     */
-    private $projectDir;
-
-
-    /**
      * @var EntryNamespaces
      */
-    private $namespaceRegistry;
+    private $namespaces;
 
 
     /**
-     *
-     * @param string          $projectDir
-     * @param EntryNamespaces $namespaceRegistry
+     * @param EntryNamespaces $namespaces
      */
-    public function __construct (string $projectDir, EntryNamespaces $namespaceRegistry)
+    public function __construct (EntryNamespaces $namespaces)
     {
-        $this->projectDir = $projectDir;
-        $this->namespaceRegistry = $namespaceRegistry;
+        $this->namespaces = $namespaces;
     }
 
 
@@ -48,7 +33,7 @@ class AssetsFinder
     {
         $files = [];
 
-        foreach ($this->namespaceRegistry as $namespace => $dir)
+        foreach ($this->namespaces as $namespace => $dir)
         {
             if (!\is_dir($dir))
             {

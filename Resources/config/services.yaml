@@ -26,9 +26,7 @@ services:
         $projectDir: '%kernel.project_dir%'
 
     Becklyn\AssetsBundle\File\ExtensionMimeTypeGuesser: ~
-
-    Becklyn\AssetsBundle\Finder\AssetsFinder:
-        $projectDir: '%kernel.project_dir%'
+    Becklyn\AssetsBundle\Finder\AssetsFinder: ~
 
     Becklyn\AssetsBundle\Html\AssetHtmlGenerator:
         public: true
