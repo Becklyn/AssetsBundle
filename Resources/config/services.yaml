@@ -20,6 +20,8 @@ services:
     Becklyn\AssetsBundle\Entry\EntryNamespaces:
         $projectDir: '%kernel.project_dir%'
 
+    Becklyn\AssetsBundle\File\ExtensionMimeTypeGuesser: ~
+
     Becklyn\AssetsBundle\Finder\AssetsFinder:
         $projectDir: '%kernel.project_dir%'
 
