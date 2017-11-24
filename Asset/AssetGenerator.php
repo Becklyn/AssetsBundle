@@ -2,6 +2,7 @@
 
 namespace Becklyn\AssetsBundle\Asset;
 
+use Becklyn\AssetsBundle\Entry\EntryNamespaces;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
 use Symfony\Component\Filesystem\Filesystem;
@@ -16,6 +17,12 @@ class AssetGenerator
      * @var ProcessorRegistry
      */
     private $processorRegistry;
+
+
+    /**
+     * @var EntryNamespaces
+     */
+    private $entryNamespaces;
 
 
     /**
@@ -38,12 +45,14 @@ class AssetGenerator
 
     /**
      * @param ProcessorRegistry $processorRegistry
+     * @param EntryNamespaces   $entryNamespaces
      * @param string            $publicPath the absolute path to the public/ (or web/) directory
      * @param string            $outputDir  the output dir relative to the public/ directory
      */
-    public function __construct (ProcessorRegistry $processorRegistry, string $publicPath, string $outputDir)
+    public function __construct (ProcessorRegistry $processorRegistry, EntryNamespaces $entryNamespaces, string $publicPath, string $outputDir)
     {
         $this->processorRegistry = $processorRegistry;
+        $this->entryNamespaces = $entryNamespaces;
         $this->publicPath = rtrim($publicPath, "/");
         $this->outputDir = trim($outputDir, "/");
         $this->filesystem = new Filesystem();
@@ -57,7 +66,8 @@ class AssetGenerator
      */
     public function generateAsset (string $assetPath) : Asset
     {
-        $filePath = "{$this->publicPath}/" . ltrim($assetPath, "/");
+        $namespacedAsset = NamespacedAsset::createFromFullPath($assetPath);
+        $filePath = $this->entryNamespaces->getFilePath($namespacedAsset);
 
         if (!\is_file($filePath))
         {
@@ -76,7 +86,7 @@ class AssetGenerator
         }
 
         $hash = \base64_encode(\hash("sha256", $fileContent, true));
-        $asset = new Asset($this->getOutputDirectory($assetPath), $filePath, $hash);
+        $asset = new Asset($this->getOutputDirectory($namespacedAsset), $filePath, $hash);
 
         $outputPath = "{$this->publicPath}/{$asset->getOutputFilePath()}";
 
@@ -96,17 +106,17 @@ class AssetGenerator
      * @param string $assetPath
      * @return string
      */
-    private function getOutputDirectory (string $assetPath) : string
+    private function getOutputDirectory (NamespacedAsset $asset) : string
     {
-        $assetPath = ltrim($assetPath, "/");
-        $assetPath = dirname($assetPath);
+        $outputDirectory = "{$this->outputDir}/{$asset->getNamespace()}";
 
-        if ("bundles/" === \substr($assetPath, 0, 8))
+        $dir = dirname($asset->getPath());
+        if ("." !== $dir)
         {
-            $assetPath = \substr($assetPath, 8);
+            $outputDirectory .= "/{$dir}";
         }
 
-        return "{$this->outputDir}/{$assetPath}";
+        return $outputDirectory;
     }
 
 
