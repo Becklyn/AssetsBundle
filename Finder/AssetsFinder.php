@@ -14,7 +14,13 @@ class AssetsFinder
     /**
      * @var string[]
      */
-    private $dirs;
+    private $entries;
+
+
+    /**
+     * @var string
+     */
+    private $projectDir;
 
 
     /**
@@ -23,17 +29,8 @@ class AssetsFinder
      */
     public function __construct (string $projectDir, array $entries)
     {
-        $this->dirs = [];
-
-        foreach ($entries as $entry)
-        {
-            $dir = "{$projectDir}/" . ltrim($entry, "/");
-
-            if (\is_dir($projectDir))
-            {
-                $this->dirs[] = $dir;
-            }
-        }
+        $this->projectDir = $projectDir;
+        $this->entries = $entries;
     }
 
 
@@ -42,25 +39,35 @@ class AssetsFinder
      */
     public function findAssets () : array
     {
-        if (empty($this->dirs))
+        if (empty($this->entries))
         {
             return [];
         }
 
-        $finder = new Finder();
+        $files = [];
 
-        $finder
-            ->files()
-            ->followLinks()
-            ->in($this->dirs);
+        foreach ($this->entries as $namespace => $entry)
+        {
+            $dir = "{$this->projectDir}/" . ltrim($entry, "/");
 
-
-        return \array_map(
-            function (SplFileInfo $file)
+            if (!\is_dir($dir))
             {
-                return $file->getRelativePathname();
-            },
-            \iterator_to_array($finder)
-        );
+                continue;
+            }
+
+            $finder = new Finder();
+
+            $finder
+                ->files()
+                ->followLinks()
+                ->in($dir);
+
+            foreach ($finder as $foundFile)
+            {
+                $files[] = "@{$namespace}/{$foundFile->getRelativePathname()}";
+            }
+        }
+
+        return $files;
     }
 }
