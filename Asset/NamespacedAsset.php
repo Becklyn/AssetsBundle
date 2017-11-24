@@ -57,14 +57,21 @@ class NamespacedAsset
      */
     public static function createFromFullPath (string $fullPath) : self
     {
-        if (1 === \preg_match('~^@(?<namespace>[^/]*?)/(?<path>.*)$~', $fullPath, $matches))
+        if (1 === \preg_match('~^@(?<namespace>[a-z][a-z0-9]*?)/(?<path>.+)$~', $fullPath, $matches))
         {
-            if (false !== strpos($matches["path"], ".."))
+            $path = trim($matches["path"], "/");
+
+            if ("" === $path)
+            {
+                throw new AssetsException("Invalid asset path – no path given.");
+            }
+
+            if (false !== strpos($path, ".."))
             {
                 throw new AssetsException("Invalid asset path – must not contain path '..'.");
             }
 
-            return new self($matches["namespace"], $matches["path"]);
+            return new self($matches["namespace"], $path);
         }
 
         throw new AssetsException(sprintf(
