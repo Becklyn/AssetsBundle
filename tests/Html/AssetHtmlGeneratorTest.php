@@ -8,6 +8,7 @@ use Becklyn\AssetsBundle\Asset\AssetsRegistry;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Asset\Packages;
+use Symfony\Component\Routing\RouterInterface;
 
 
 class AssetHtmlGeneratorTest extends TestCase
@@ -36,36 +37,44 @@ class AssetHtmlGeneratorTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $packages = self::getMockBuilder(Packages::class)
+        $router = self::getMockBuilder(RouterInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $generator = new AssetHtmlGenerator($registry, $packages, $isDebug);
-        return [$generator, $registry, $packages];
+        $generator = new AssetHtmlGenerator($registry, $router, $isDebug);
+        return [$generator, $registry, $router];
     }
 
 
     public function testDebugJS ()
     {
-        [$generator, $registry, $packages] = $this->buildGenerator(true);
+        /**
+         * @type AssetHtmlGenerator $generator
+         * @type \PHPUnit_Framework_MockObject_MockObject $registry
+         * @type \PHPUnit_Framework_MockObject_MockObject $router
+         */
+        [$generator, $registry, $router] = $this->buildGenerator(true);
 
         // the registry must not be called in debug mode
         $registry
             ->expects(self::never())
             ->method("get");
 
-        $packages
+        $router
             ->expects(self::exactly(2))
-            ->method("getUrl")
+            ->method("generate")
             ->withConsecutive(
-                ["a/first.js"],
-                ["b/second.js"]
+                ["becklyn_assets_embed", ["path" => \rawurlencode("@bundles/a/first.js")]],
+                ["becklyn_assets_embed", ["path" => \rawurlencode("@bundles/b/second.js")]]
             )
-            ->willReturnArgument(0);
+            ->willReturnCallback(function ($path, $params)
+            {
+                return "{$path}={$params["path"]}";
+            });
 
-        $html = $generator->linkAssets("js", ["a/first.js", "b/second.js"]);
+        $html = $generator->linkAssets("js", ["@bundles/a/first.js", "@bundles/b/second.js"]);
         self::assertEquals(
-            '<script defer src="a/first.js"></script><script defer src="b/second.js"></script>',
+            '<script defer src="becklyn_assets_embed=%40bundles%2Fa%2Ffirst.js"></script><script defer src="becklyn_assets_embed=%40bundles%2Fb%2Fsecond.js"></script>',
             $html
         );
     }
@@ -76,27 +85,30 @@ class AssetHtmlGeneratorTest extends TestCase
         /**
          * @type AssetHtmlGenerator $generator
          * @type \PHPUnit_Framework_MockObject_MockObject $registry
-         * @type \PHPUnit_Framework_MockObject_MockObject $packages
+         * @type \PHPUnit_Framework_MockObject_MockObject $router
          */
-        [$generator, $registry, $packages] = $this->buildGenerator(true);
+        [$generator, $registry, $router] = $this->buildGenerator(true);
 
         // the registry must not be called in debug mode
         $registry
             ->expects(self::never())
             ->method("get");
 
-        $packages
+        $router
             ->expects(self::exactly(2))
-            ->method("getUrl")
+            ->method("generate")
             ->withConsecutive(
-                ["a/first.css"],
-                ["b/second.css"]
+                ["becklyn_assets_embed", ["path" => \rawurlencode("@bundles/a/first.css")]],
+                ["becklyn_assets_embed", ["path" => \rawurlencode("@bundles/b/second.css")]]
             )
-            ->willReturnArgument(0);
+            ->willReturnCallback(function ($path, $params)
+            {
+                return "{$path}={$params["path"]}";
+            });
 
-        $html = $generator->linkAssets("css", ["a/first.css", "b/second.css"]);
+        $html = $generator->linkAssets("css", ["@bundles/a/first.css", "@bundles/b/second.css"]);
         self::assertEquals(
-            '<link rel="stylesheet" href="a/first.css"><link rel="stylesheet" href="b/second.css">',
+            '<link rel="stylesheet" href="becklyn_assets_embed=%40bundles%2Fa%2Ffirst.css"><link rel="stylesheet" href="becklyn_assets_embed=%40bundles%2Fb%2Fsecond.css">',
             $html
         );
     }
@@ -107,9 +119,9 @@ class AssetHtmlGeneratorTest extends TestCase
         /**
          * @type AssetHtmlGenerator $generator
          * @type \PHPUnit_Framework_MockObject_MockObject $registry
-         * @type \PHPUnit_Framework_MockObject_MockObject $packages
+         * @type \PHPUnit_Framework_MockObject_MockObject $router
          */
-        [$generator, $registry, $packages] = $this->buildGenerator(false);
+        [$generator, $registry, $router] = $this->buildGenerator(false);
 
         $registry
             ->method("get")
@@ -120,8 +132,8 @@ class AssetHtmlGeneratorTest extends TestCase
                 }
             );
 
-        $packages
-            ->method("getUrl")
+        $router
+            ->method("generate")
             ->willReturnArgument(0);
 
         $html = $generator->linkAssets("js", ["a/first.js", "b/second.js"]);
@@ -137,9 +149,9 @@ class AssetHtmlGeneratorTest extends TestCase
         /**
          * @type AssetHtmlGenerator $generator
          * @type \PHPUnit_Framework_MockObject_MockObject $registry
-         * @type \PHPUnit_Framework_MockObject_MockObject $packages
+         * @type \PHPUnit_Framework_MockObject_MockObject $router
          */
-        [$generator, $registry, $packages] = $this->buildGenerator(false);
+        [$generator, $registry, $router] = $this->buildGenerator(false);
 
         $registry
             ->method("get")
@@ -150,8 +162,8 @@ class AssetHtmlGeneratorTest extends TestCase
                 }
             );
 
-        $packages
-            ->method("getUrl")
+        $router
+            ->method("generate")
             ->willReturnArgument(0);
 
         $html = $generator->linkAssets("css", ["a/first.css", "b/second.css"]);
