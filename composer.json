@@ -23,6 +23,9 @@
         "symfony/routing": "^3.3|^4.0",
         "twig/twig": "^1.27|^2.1"
     },
+    "conflict": {
+        "symfony/asset": "*"
+    },
     "require-dev": {
         "symfony/phpunit-bridge": "^3.3|^4.0"
     },
