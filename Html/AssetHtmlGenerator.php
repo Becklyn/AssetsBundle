@@ -2,12 +2,9 @@
 
 namespace Becklyn\AssetsBundle\Html;
 
-
-use Becklyn\AssetsBundle\Asset\Asset;
-use Becklyn\AssetsBundle\Asset\AssetsCache;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
 use Becklyn\AssetsBundle\Exception\AssetsException;
-use Symfony\Component\Asset\Packages;
+use Symfony\Component\Routing\RouterInterface;
 
 
 class AssetHtmlGenerator
@@ -23,9 +20,9 @@ class AssetHtmlGenerator
 
 
     /**
-     * @var Packages
+     * @var RouterInterface
      */
-    private $packages;
+    private $router;
 
 
     /**
@@ -35,14 +32,14 @@ class AssetHtmlGenerator
 
 
     /**
-     * @param AssetsRegistry $registry
-     * @param Packages       $packages
-     * @param bool           $isDebug
+     * @param AssetsRegistry  $registry
+     * @param RouterInterface $router
+     * @param bool            $isDebug
      */
-    public function __construct (AssetsRegistry $registry, Packages $packages, bool $isDebug)
+    public function __construct (AssetsRegistry $registry, RouterInterface $router, bool $isDebug)
     {
         $this->registry = $registry;
-        $this->packages = $packages;
+        $this->router = $router;
         $this->isDebug = $isDebug;
     }
 
@@ -130,11 +127,14 @@ class AssetHtmlGenerator
      */
     public function getAssetUrlPath (string $assetPath) : string
     {
-        $path = $this->isDebug
-            ? $assetPath
-            : $this->registry->get($assetPath)->getOutputFilePath();
+        if (!$this->isDebug)
+        {
+            return $this->registry->get($assetPath)->getOutputFilePath();
+        }
 
-        return $this->packages->getUrl($path);
+        return $this->router->generate("becklyn_assets_embed", [
+            "path" => \rawurlencode($assetPath),
+        ]);
     }
 
 

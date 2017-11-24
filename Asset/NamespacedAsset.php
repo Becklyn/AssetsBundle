@@ -59,6 +59,11 @@ class NamespacedAsset
     {
         if (1 === \preg_match('~^@(?<namespace>[^/]*?)/(?<path>.*)$~', $fullPath, $matches))
         {
+            if (false !== strpos($matches["path"], ".."))
+            {
+                throw new AssetsException("Invalid asset path – must not contain path '..'.");
+            }
+
             return new self($matches["namespace"], $matches["path"]);
         }
 
