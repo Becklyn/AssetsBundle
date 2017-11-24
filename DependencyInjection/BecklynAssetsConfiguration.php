@@ -4,26 +4,10 @@ namespace Becklyn\AssetsBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 
 class BecklynAssetsConfiguration implements ConfigurationInterface
 {
-    /**
-     * @var string
-     */
-    private $projectDir;
-
-
-    /**
-     * @param string $projectDir
-     */
-    public function __construct (string $projectDir)
-    {
-        $this->projectDir = $projectDir;
-    }
-
-
     /**
      * @inheritdoc
      */
@@ -66,16 +50,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                                         return true;
                                     }
 
-                                    $realPath = \realpath("{$this->projectDir}/" . ltrim($path, "/"));
-
-                                    // skip not existing paths
-                                    if (false === $realPath)
-                                    {
-                                        continue;
-                                    }
-
-                                    // invalid path given: is outside of project directory
-                                    if ($this->projectDir !== substr($realPath, 0, strlen($this->projectDir)))
+                                    if (false !== \strpos($path, "..."))
                                     {
                                         return true;
                                     }
@@ -84,38 +59,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                                 return false;
                             }
                         )
-                            ->thenInvalid("The entries can't be outside of the project root.")
-                        ->end()
-                    ->validate()
-                        ->ifTrue(
-                            function (array $paths)
-                            {
-                                foreach ($paths as $path)
-                                {
-                                    if (!\is_string($path))
-                                    {
-                                        return true;
-                                    }
-
-                                    $realPath = \realpath("{$this->projectDir}/" . ltrim($path, "/"));
-
-                                    // skip not existing paths
-                                    if (false === $realPath)
-                                    {
-                                        continue;
-                                    }
-
-                                    // invalid path given: must be a directory
-                                    if (!\is_dir($realPath))
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
-                            }
-                        )
-                            ->thenInvalid("The entries must be directories.")
+                            ->thenInvalid("The entries can't be outside of the project root (and can't use '..' in their paths).")
                         ->end()
                     ->info("All entry directories, where assets are searched. Relative to `kernel.project_dir`.")
                 ->end()
