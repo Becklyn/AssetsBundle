@@ -3,6 +3,7 @@
 namespace Tests\Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Asset\AssetGenerator;
+use Becklyn\AssetsBundle\Entry\EntryNamespaces;
 use Becklyn\AssetsBundle\Processor\AssetProcessor;
 use Becklyn\AssetsBundle\Processor\CssProcessor;
 use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
@@ -36,7 +37,11 @@ class AssetGeneratorTest extends TestCase
     public function setUp ()
     {
         $this->fixtures = dirname(__DIR__) . "/fixtures/public";
-        $this->generator = new AssetGenerator(new ProcessorRegistry([]), $this->fixtures, "assets");
+        $entryNamespaces = new EntryNamespaces($this->fixtures, [
+            "bundles" => "bundles",
+            "other" => "other",
+        ]);
+        $this->generator = new AssetGenerator(new ProcessorRegistry([]), $entryNamespaces, $this->fixtures, "assets");
 
         $this->outDir = "{$this->fixtures}/assets";
         $fs = new Filesystem();
@@ -59,7 +64,7 @@ class AssetGeneratorTest extends TestCase
         $outputPath = "{$this->fixtures}/{$expectedOutputFilePath}";
 
         self::assertFileNotExists($outputPath);
-        $asset = $this->generator->generateAsset("other/test/css/app2.css");
+        $asset = $this->generator->generateAsset("@other/test/css/app2.css");
         self::assertFileExists($outputPath);
 
         self::assertSame("zu+/RiyZqaqqHgSHa3Xv6DI8rZax0+hDMV0WQk8xEZc=", $asset->getDigest());
@@ -74,10 +79,10 @@ class AssetGeneratorTest extends TestCase
 
     public function testBundleStripping ()
     {
-        $asset = $this->generator->generateAsset("bundles/test/css/app.css");
+        $asset = $this->generator->generateAsset("@bundles/test/css/app.css");
 
         self::assertSame("U9K1d1vkqVvk8f9j82mik2tMIxI8E4C/QlXS/T6qgeE=", $asset->getDigest());
-        self::assertSame("assets/test/css/app.U9K1d1vkqVvk8f9j82mi.css", $asset->getOutputFilePath());
+        self::assertSame("assets/bundles/test/css/app.U9K1d1vkqVvk8f9j82mi.css", $asset->getOutputFilePath());
     }
 
 
@@ -108,15 +113,19 @@ class AssetGeneratorTest extends TestCase
         $processor = self::getMockBuilder(AssetProcessor::class)
             ->getMock();
 
+        $entryNamespaces = new EntryNamespaces($this->fixtures, [
+            "bundles" => "bundles",
+        ]);
+
         $generator = new AssetGenerator(new ProcessorRegistry([
             "css" => $processor
-        ]), $this->fixtures, "assets");
+        ]), $entryNamespaces, $this->fixtures, "assets");
 
         $processor
             ->expects(self::once())
             ->method("process");
 
-        $generator->generateAsset("bundles/test/css/app.css");
+        $generator->generateAsset("@bundles/test/css/app.css");
     }
 
 
@@ -125,14 +134,18 @@ class AssetGeneratorTest extends TestCase
         $processor = self::getMockBuilder(AssetProcessor::class)
             ->getMock();
 
+        $entryNamespaces = new EntryNamespaces($this->fixtures, [
+            "bundles" => "bundles",
+        ]);
+
         $generator = new AssetGenerator(new ProcessorRegistry([
             "css" => $processor
-        ]), $this->fixtures, "assets");
+        ]), $entryNamespaces, $this->fixtures, "assets");
 
         $processor
             ->expects(self::never())
             ->method("process");
 
-        $generator->generateAsset("bundles/test/js/test.js");
+        $generator->generateAsset("@bundles/test/js/test.js");
     }
 }
