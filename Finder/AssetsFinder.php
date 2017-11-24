@@ -3,6 +3,7 @@
 namespace Becklyn\AssetsBundle\Finder;
 
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 
 /**
@@ -10,21 +11,29 @@ use Symfony\Component\Finder\Finder;
  */
 class AssetsFinder
 {
-    const BUNDLES_DIR = "bundles";
+    /**
+     * @var string[]
+     */
+    private $dirs;
 
 
     /**
-     * @var string
+     *
+     * @param string[] $entries
      */
-    private $publicPath;
-
-
-    /**
-     * @param string $publicPath
-     */
-    public function __construct (string $publicPath)
+    public function __construct (string $projectDir, array $entries)
     {
-        $this->publicPath = rtrim($publicPath, "/");
+        $this->dirs = [];
+
+        foreach ($entries as $entry)
+        {
+            $dir = "{$projectDir}/" . ltrim($entry, "/");
+
+            if (\is_dir($projectDir))
+            {
+                $this->dirs[] = $dir;
+            }
+        }
     }
 
 
@@ -33,20 +42,25 @@ class AssetsFinder
      */
     public function findAssets () : array
     {
+        if (empty($this->dirs))
+        {
+            return [];
+        }
+
         $finder = new Finder();
 
         $finder
             ->files()
             ->followLinks()
-            ->in("{$this->publicPath}/" . self::BUNDLES_DIR);
+            ->in($this->dirs);
 
-        $files = [];
 
-        foreach ($finder as $file)
-        {
-            $files[] = self::BUNDLES_DIR . "/{$file->getRelativePathname()}";
-        }
-
-        return $files;
+        return \array_map(
+            function (SplFileInfo $file)
+            {
+                return $file->getRelativePathname();
+            },
+            \iterator_to_array($finder)
+        );
     }
 }

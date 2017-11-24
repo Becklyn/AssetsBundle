@@ -19,7 +19,7 @@ class BecklynAssetsExtension extends Extension
     public function load (array $configs, ContainerBuilder $container)
     {
         // process config
-        $config = $this->processConfiguration(new BecklynAssetsConfiguration(), $configs);
+        $config = $this->processConfiguration(new BecklynAssetsConfiguration($container->getParameter("kernel.project_dir")), $configs);
 
         // load services
         $loader = new YamlFileLoader(
@@ -34,6 +34,6 @@ class BecklynAssetsExtension extends Extension
             ->setArgument('$outputDir', $config["output_dir"]);
 
         $container->getDefinition(AssetsFinder::class)
-            ->setArgument('$publicPath', $config["public_path"]);
+            ->setArgument('$entries', $config["entries"]);
     }
 }
