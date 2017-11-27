@@ -5,7 +5,7 @@ namespace Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Asset\Processor\AssetsProcessor;
 use Becklyn\AssetsBundle\Exception\AssetsException;
-use Becklyn\AssetsBundle\Processor\AssetProcessor;
+use Becklyn\AssetsBundle\Processor\AssetProcessorInterface;
 use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
 
 

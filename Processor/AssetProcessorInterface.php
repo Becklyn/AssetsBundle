@@ -4,7 +4,7 @@
 namespace Becklyn\AssetsBundle\Processor;
 
 
-interface AssetProcessor
+interface AssetProcessorInterface
 {
     /**
      * Processes the file content

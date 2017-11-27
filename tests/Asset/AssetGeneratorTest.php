@@ -4,7 +4,7 @@ namespace Tests\Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Asset\AssetGenerator;
 use Becklyn\AssetsBundle\Entry\EntryNamespaces;
-use Becklyn\AssetsBundle\Processor\AssetProcessor;
+use Becklyn\AssetsBundle\Processor\AssetProcessorInterface;
 use Becklyn\AssetsBundle\Processor\CssProcessor;
 use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
 use PHPUnit\Framework\TestCase;
@@ -110,7 +110,7 @@ class AssetGeneratorTest extends TestCase
 
     public function testProcessorCalled ()
     {
-        $processor = self::getMockBuilder(AssetProcessor::class)
+        $processor = self::getMockBuilder(AssetProcessorInterface::class)
             ->getMock();
 
         $entryNamespaces = new EntryNamespaces($this->fixtures, [
@@ -131,7 +131,7 @@ class AssetGeneratorTest extends TestCase
 
     public function testProcessorNotCalled ()
     {
-        $processor = self::getMockBuilder(AssetProcessor::class)
+        $processor = self::getMockBuilder(AssetProcessorInterface::class)
             ->getMock();
 
         $entryNamespaces = new EntryNamespaces($this->fixtures, [

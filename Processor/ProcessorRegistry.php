@@ -6,14 +6,14 @@ namespace Becklyn\AssetsBundle\Processor;
 class ProcessorRegistry
 {
     /**
-     * @var AssetProcessor[]
+     * @var AssetProcessorInterface[]
      */
     private $processors;
 
 
     /**
      *
-     * @param AssetProcessor[] $processors
+     * @param AssetProcessorInterface[] $processors
      */
     public function __construct (array $processors)
     {
@@ -25,9 +25,9 @@ class ProcessorRegistry
      * Returns the asset processor for the given asset path
      *
      * @param string $assetPath
-     * @return AssetProcessor|null
+     * @return AssetProcessorInterface|null
      */
-    public function get (string $assetPath) : ?AssetProcessor
+    public function get (string $assetPath) : ?AssetProcessorInterface
     {
         $ext = \pathinfo($assetPath, \PATHINFO_EXTENSION);
         return $this->processors[$ext] ?? null;

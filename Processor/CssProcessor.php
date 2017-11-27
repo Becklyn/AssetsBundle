@@ -8,7 +8,7 @@ use Becklyn\AssetsBundle\Asset\AssetsCache;
 /**
  *
  */
-class CssProcessor implements AssetProcessor
+class CssProcessor implements AssetProcessorInterface
 {
     /**
      * @var AssetsCache
