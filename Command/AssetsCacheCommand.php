@@ -2,7 +2,6 @@
 
 namespace Becklyn\AssetsBundle\Command;
 
-
 use Becklyn\AssetsBundle\Cache\CacheWarmer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
