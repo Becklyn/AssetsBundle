@@ -84,11 +84,30 @@ class CssProcessor implements AssetProcessorInterface
             $path = \substr($path, 1, -1);
         }
 
-        $resolvedPath = $this->resolvePath($assetPath, $path);
+        $path = $this->rewritePath($assetPath, $path);
+        return "url({$quotes}{$path}{$quotes})";
+    }
 
+
+    /**
+     * Rewrites the path to fix the local path to an update one
+     *
+     * @param string $assetPath
+     * @param string $path
+     * @return string
+     */
+    private function rewritePath (string $assetPath, string $path) : string
+    {
+        // pass URLs untouched
+        if (1 === \preg_match('~^(//|https?://)~', $path))
+        {
+            return $path;
+        }
+
+        $resolvedPath = $this->resolvePath($assetPath, $path);
         if ($this->isDebug)
         {
-            $path = $this->router->generate("becklyn_assets_embed", [
+            return $this->router->generate("becklyn_assets_embed", [
                 "path" => \rawurlencode($resolvedPath),
             ]);
         }
@@ -99,11 +118,11 @@ class CssProcessor implements AssetProcessorInterface
             if (null !== $asset)
             {
                 // if an asset was found, overwrite the basename of the path with the cached asset
-                $path = dirname($path) . "/{$asset->getOutputFileName()}";
+                return dirname($path) . "/{$asset->getOutputFileName()}";
             }
         }
 
-        return "url({$quotes}{$path}{$quotes})";
+        return $path;
     }
 
 

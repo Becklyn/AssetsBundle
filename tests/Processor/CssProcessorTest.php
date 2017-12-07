@@ -6,6 +6,7 @@ use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
 use Becklyn\AssetsBundle\Processor\CssProcessor;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Routing\RouterInterface;
 
 
 class CssProcessorTest extends TestCase
@@ -14,9 +15,10 @@ class CssProcessorTest extends TestCase
      * Builds a CSS processor with a pathmap, that maps used asset paths to generated ones
      *
      * @param array $pathMap
-     * @return CssProcessor
+     * @param bool  $isDebug
+     * @return array
      */
-    private function getProcessor (array $pathMap = []) : CssProcessor
+    private function getProcessor (array $pathMap = [], bool $isDebug) : array
     {
         $cache = self::getMockBuilder(AssetsCache::class)
             ->disableOriginalConstructor()
@@ -38,7 +40,14 @@ class CssProcessorTest extends TestCase
                 );
         }
 
-        return new CssProcessor($cache);
+        $router = self::getMockBuilder(RouterInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        return [
+            new CssProcessor($cache, $router, $isDebug),
+            $router
+        ];
     }
 
 
@@ -47,9 +56,12 @@ class CssProcessorTest extends TestCase
      */
     public function testNormalizationAndQuotes ()
     {
-        $processor = $this->getProcessor([
+        /**
+         * @type CssProcessor $processor
+         */
+        [$processor] = $this->getProcessor([
             "assets/img/logo.svg" => "123",
-        ]);
+        ], false);
 
         $input = <<<CSS
 .first {
@@ -111,9 +123,12 @@ CSS;
      */
     public function testReplace ()
     {
-        $processor = $this->getProcessor([
+        /**
+         * @type CssProcessor $processor
+         */
+        [$processor] = $this->getProcessor([
             "assets/img/logo.svg" => "123",
-        ]);
+        ], false);
 
         $input = <<<CSS
 .first {
@@ -133,7 +148,10 @@ CSS;
 
     public function testInvalidCUrlPreserved ()
     {
-        $processor = $this->getProcessor();
+        /**
+         * @type CssProcessor $processor
+         */
+        [$processor] = $this->getProcessor([], false);
 
         $input = <<<CSS
 .first {
@@ -152,7 +170,10 @@ CSS;
 
     public function testInvalidPathsIgnored ()
     {
-        $processor = $this->getProcessor();
+        /**
+         * @type CssProcessor $processor
+         */
+        [$processor] = $this->getProcessor([], false);
 
         $input = <<<CSS
 .first {
@@ -164,5 +185,32 @@ CSS;
 CSS;
 
         self::assertSame($input, $processor->process("css/test.css", $input));
+    }
+
+
+    public function testDebugRewrite ()
+    {
+        /**
+         * @type CssProcessor $processor
+         * @type \PHPUnit_Framework_MockObject_MockObject $router
+         */
+        [$processor, $router] = $this->getProcessor([], true);
+
+        $router
+            ->expects(self::once())
+            ->method("generate")
+            ->with("becklyn_assets_embed", [
+                "path" => \rawurlencode("@TestBundle/img/a.jpg"),
+            ])
+            // just to please the type constraints in the method
+            ->willReturn("a");
+
+        $input = <<<CSS
+.test {
+    background-image: url("../img/a.jpg");
+}
+CSS;
+
+        $processor->process("@TestBundle/css/test.css", $input);
     }
 }
