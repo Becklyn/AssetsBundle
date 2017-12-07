@@ -17,6 +17,12 @@ services:
         tags:
             - { name: console.command, command: becklyn:assets:reset }
 
+    Becklyn\AssetsBundle\Command\AssetsNamespacesCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+        tags:
+            - { name: console.command, command: becklyn:assets:namespaces }
+
     Becklyn\AssetsBundle\Controller\EmbedController:
         arguments:
             $isDebug: '%kernel.debug%'
