@@ -70,7 +70,6 @@ class AssetsNamespacesCommand extends Command
         $io->comment("Displays all bundle namespaces and their associated paths.\nAll paths are relative to <fg=blue>%kernel.project_dir%</>.");
 
         $namespaces = $this->fetchNamespaces($this->entryNamespaces);
-        $namespaces = [];
 
         // no namespaces registered -> error and exit
         if (empty($namespaces))
