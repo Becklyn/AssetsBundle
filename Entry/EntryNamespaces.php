@@ -18,6 +18,12 @@ class EntryNamespaces implements \IteratorAggregate
 
 
     /**
+     * @var array<string,string>
+     */
+    private $systemNamespaces = [];
+
+
+    /**
      * @var string
      */
     private $projectDir;
@@ -46,6 +52,43 @@ class EntryNamespaces implements \IteratorAggregate
      */
     public function addNamespace (string $namespace, string $directory) : void
     {
+        $dir = $this->prepareDirectory($namespace, $directory);
+
+        if (null !== $dir)
+        {
+            $this->namespaces[$namespace] = $dir;
+        }
+    }
+
+
+    /**
+     * Adds a namespace
+     *
+     * @param string $namespace
+     * @param string $directory
+     * @throws AssetsException
+     */
+    public function addSystemNamespace (string $namespace, string $directory) : void
+    {
+        $dir = $this->prepareDirectory($namespace, $directory);
+
+        if (null !== $dir)
+        {
+            $this->systemNamespaces[$namespace] = $dir;
+        }
+    }
+
+
+    /**
+     * Prepares the directory
+     *
+     * @param string $namespace
+     * @param string $directory
+     * @return null|string
+     * @throws AssetsException
+     */
+    private function prepareDirectory (string $namespace, string $directory) : ?string
+    {
         $dir = "{$this->projectDir}/" . trim($directory, "/");
 
         if (isset($this->namespaces[$namespace]))
@@ -56,10 +99,7 @@ class EntryNamespaces implements \IteratorAggregate
             ));
         }
 
-        if (is_dir($dir))
-        {
-            $this->namespaces[$namespace] = $dir;
-        }
+        return is_dir($dir) ? $dir : null;
     }
 
 
@@ -81,7 +121,9 @@ class EntryNamespaces implements \IteratorAggregate
      */
     public function getPath (string $namespace) : string
     {
-        if (!isset($this->namespaces[$namespace]))
+        $path = $this->namespaces[$namespace] ?? $this->systemNamespaces[$namespace] ?? null;
+
+        if (null === $path)
         {
             throw new AssetsException(sprintf(
                 "Unknown entry namespace: '%s'",
@@ -89,7 +131,7 @@ class EntryNamespaces implements \IteratorAggregate
             ));
         }
 
-        return $this->namespaces[$namespace];
+        return $path;
     }
 
 
