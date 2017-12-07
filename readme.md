@@ -101,8 +101,10 @@ becklyn_assets:
     output_dir: 'assets' 
 ```
 
-Command
--------
+Commands
+--------
+
+### `becklyn:assets:reset`
 
 The bundle provides a command to clear and warmup the cache:
 
@@ -115,3 +117,9 @@ php bin/console becklyn:assets:reset --no-warmup
 ``` 
 
 Normally these commands are not required, as the bundle automatically registers as **cache clearer** and **cache warmer**.
+
+
+### `becklyn:assets:namespaces`
+
+This command prints an overview over all registered namespaces.
+This is especially useful if you register paths programmatically outside of your configuration.
