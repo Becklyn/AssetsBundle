@@ -3,6 +3,8 @@
 namespace Becklyn\AssetsBundle\DependencyInjection;
 
 use Becklyn\AssetsBundle\Asset\NamespacedAsset;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -19,51 +21,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode("entries")
-                    ->scalarPrototype()->end()
-                    ->isRequired()
-                    ->cannotBeEmpty()
-                    ->validate()
-                        ->ifTrue(
-                            function (array $paths)
-                            {
-                                foreach ($paths as $namespace => $path)
-                                {
-                                    if (1 !== \preg_match('~^' . NamespacedAsset::NAMESPACE_REGEX . '$~i', $namespace))
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
-                            }
-                        )
-                            ->thenInvalid("The namespaces must start with a-z and can only contain a-z and 0-9.")
-                        ->end()
-                    ->validate()
-                        ->ifTrue(
-                            function (array $paths)
-                            {
-                                foreach ($paths as $path)
-                                {
-                                    if (!\is_string($path))
-                                    {
-                                        return true;
-                                    }
-
-                                    if (false !== \strpos($path, "..."))
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
-                            }
-                        )
-                            ->thenInvalid("The entries can't be outside of the project root (and can't use '..' in their paths).")
-                        ->end()
-                    ->info("All entry directories, where assets are searched. Relative to `kernel.project_dir`.")
-                ->end()
+                ->append(self::appendEntries("entries", "All entry directories, where assets are searched. Relative to `kernel.project_dir`."))
                 ->scalarNode("public_path")
                     ->defaultValue('%kernel.project_dir%/public')
                     ->info("The absolute path to the `public/` (or `web/`) directory.")
@@ -75,5 +33,69 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
             ->end();
 
         return $treeBuilder;
+    }
+
+
+    /**
+     * Appends the entries config entry
+     *
+     * @param string $name
+     * @param string $info
+     * @return ArrayNodeDefinition|NodeDefinition
+     */
+    public static function appendEntries (string $name, string $info)
+    {
+        $node = (new TreeBuilder())->root($name);
+
+        $node
+            ->arrayPrototype()
+                ->children()
+                    ->scalarPrototype()->end()
+                ->end()
+                ->isRequired()
+                ->cannotBeEmpty()
+                ->validate()
+                    ->ifTrue(
+                        function (array $paths)
+                        {
+                            foreach ($paths as $namespace => $path)
+                            {
+                                if (1 !== \preg_match('~^' . NamespacedAsset::NAMESPACE_REGEX . '$~i', $namespace))
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+                    )
+                    ->thenInvalid("The namespaces must start with a-z and can only contain a-z and 0-9.")
+                ->end()
+                ->validate()
+                    ->ifTrue(
+                        function (array $paths)
+                        {
+                            foreach ($paths as $path)
+                            {
+                                if (!\is_string($path))
+                                {
+                                    return true;
+                                }
+
+                                if (false !== \strpos($path, "..."))
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+                    )
+                    ->thenInvalid("The entries can't be outside of the project root (and can't use '..' in their paths).")
+                ->end()
+                ->info($info)
+            ->end();
+
+        return $node;
     }
 }
