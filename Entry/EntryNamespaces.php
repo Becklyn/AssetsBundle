@@ -2,18 +2,25 @@
 
 namespace Becklyn\AssetsBundle\Entry;
 
-
 use Becklyn\AssetsBundle\Asset\NamespacedAsset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 
 
+/**
+ * Contains all namespaces for the application
+ */
 class EntryNamespaces implements \IteratorAggregate
 {
     /**
-     * @var array
+     * @var array<string,string>
      */
-    private $namespaces;
+    private $namespaces = [];
 
+
+    /**
+     * @var string
+     */
+    private $projectDir;
 
     /**
      * @param string $projectDir
@@ -21,16 +28,37 @@ class EntryNamespaces implements \IteratorAggregate
      */
     public function __construct (string $projectDir, array $entries)
     {
-        $this->namespaces = [];
+        $this->projectDir = $projectDir;
 
-        foreach ($entries as $namespace => $entry)
+        foreach ($entries as $namespace => $directory)
         {
-            $dir = "{$projectDir}/" . trim($entry, "/");
+            $this->addNamespace($namespace, $directory);
+        }
+    }
 
-            if (is_dir($dir))
-            {
-                $this->namespaces[$namespace] = $dir;
-            }
+
+    /**
+     * Adds a namespace
+     *
+     * @param string $namespace
+     * @param string $directory
+     * @throws AssetsException
+     */
+    public function addNamespace (string $namespace, string $directory) : void
+    {
+        $dir = "{$this->projectDir}/" . trim($directory, "/");
+
+        if (isset($this->namespaces[$namespace]))
+        {
+            throw new AssetsException(sprintf(
+                "Duplicate registration of namespace '%s'.",
+                $namespace
+            ));
+        }
+
+        if (is_dir($dir))
+        {
+            $this->namespaces[$namespace] = $dir;
         }
     }
 
@@ -72,7 +100,7 @@ class EntryNamespaces implements \IteratorAggregate
      * @return string
      * @throws AssetsException
      */
-    public function getFilePath (NamespacedAsset $asset)
+    public function getFilePath (NamespacedAsset $asset) : string
     {
         return "{$this->getPath($asset->getNamespace())}/{$asset->getPath()}";
     }
