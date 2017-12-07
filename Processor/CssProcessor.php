@@ -3,6 +3,7 @@
 namespace Becklyn\AssetsBundle\Processor;
 
 use Becklyn\AssetsBundle\Asset\AssetsCache;
+use Symfony\Component\Routing\RouterInterface;
 
 
 /**
@@ -17,11 +18,27 @@ class CssProcessor implements AssetProcessorInterface
 
 
     /**
-     * @param AssetsCache $cache
+     * @var RouterInterface
      */
-    public function __construct (AssetsCache $cache)
+    private $router;
+
+
+    /**
+     * @var bool
+     */
+    private $isDebug;
+
+
+    /**
+     * @param AssetsCache     $cache
+     * @param RouterInterface $router
+     * @param bool            $isDebug
+     */
+    public function __construct (AssetsCache $cache, RouterInterface $router, bool $isDebug)
     {
         $this->cache = $cache;
+        $this->router = $router;
+        $this->isDebug = $isDebug;
     }
 
 
@@ -68,12 +85,22 @@ class CssProcessor implements AssetProcessorInterface
         }
 
         $resolvedPath = $this->resolvePath($assetPath, $path);
-        $asset = $this->cache->get($resolvedPath);
 
-        if (null !== $asset)
+        if ($this->isDebug)
         {
-            // if an asset was found, overwrite the basename of the path with the cached asset
-            $path = dirname($path) . "/{$asset->getOutputFileName()}";
+            $path = $this->router->generate("becklyn_assets_embed", [
+                "path" => \rawurlencode($resolvedPath),
+            ]);
+        }
+        else
+        {
+            $asset = $this->cache->get($resolvedPath);
+
+            if (null !== $asset)
+            {
+                // if an asset was found, overwrite the basename of the path with the cached asset
+                $path = dirname($path) . "/{$asset->getOutputFileName()}";
+            }
         }
 
         return "url({$quotes}{$path}{$quotes})";
@@ -114,6 +141,5 @@ class CssProcessor implements AssetProcessorInterface
         }
 
         return $dir . "/" . implode("/", $segments);
-
     }
 }

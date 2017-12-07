@@ -6,8 +6,10 @@ use Becklyn\AssetsBundle\Asset\NamespacedAsset;
 use Becklyn\AssetsBundle\Entry\EntryNamespaces;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\File\ExtensionMimeTypeGuesser;
+use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeExtensionGuesser;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
@@ -26,6 +28,12 @@ class EmbedController
 
 
     /**
+     * @var ProcessorRegistry
+     */
+    private $processorRegistry;
+
+
+    /**
      * @var bool
      */
     private $isDebug;
@@ -36,10 +44,11 @@ class EmbedController
      * @param ExtensionMimeTypeGuesser $mimeTypeGuesser
      * @param bool                     $isDebug
      */
-    public function __construct (EntryNamespaces $entryNamespaces, ExtensionMimeTypeGuesser $mimeTypeGuesser, bool $isDebug)
+    public function __construct (EntryNamespaces $entryNamespaces, ExtensionMimeTypeGuesser $mimeTypeGuesser, ProcessorRegistry $processorRegistry, bool $isDebug)
     {
         $this->entryNamespaces = $entryNamespaces;
         $this->mimeTypeGuesser = $mimeTypeGuesser;
+        $this->processorRegistry = $processorRegistry;
         $this->isDebug = $isDebug;
     }
 
@@ -48,7 +57,7 @@ class EmbedController
      * @param string $path
      * @return BinaryFileResponse
      */
-    public function embed (string $path) : BinaryFileResponse
+    public function embed (string $path) : Response
     {
         if (!$this->isDebug)
         {
@@ -57,19 +66,28 @@ class EmbedController
 
         try
         {
-            $asset = NamespacedAsset::createFromFullPath(\rawurldecode($path));
+            $assetPath = \rawurldecode($path);
+            $asset = NamespacedAsset::createFromFullPath($assetPath);
             $filePath = $this->entryNamespaces->getFilePath($asset);
-            return new BinaryFileResponse(
-                $filePath,
-                200,
-                [
-                    "Content-Type" => "{$this->mimeTypeGuesser->guess($filePath)};charset=utf-8",
-                ]
-            );
+            $processor = $this->processorRegistry->get($filePath);
+
+            $headers = [
+                "Content-Type" => "{$this->mimeTypeGuesser->guess($filePath)};charset=utf-8",
+            ];
+
+            if (null !== $processor && \is_file($filePath))
+            {
+                $fileContent = \file_get_contents($filePath);
+                $fileContent = $processor->process($assetPath, $fileContent);
+
+                return new Response($fileContent, 200, $headers);
+            }
+
+            return new BinaryFileResponse($filePath, 200, $headers);
         }
         catch (AssetsException $e)
         {
-            throw new NotFoundHttpException("Asset not found.");
+            throw new NotFoundHttpException("Asset not found.", $e);
         }
     }
 }
