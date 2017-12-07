@@ -8,6 +8,8 @@ use Becklyn\AssetsBundle\Exception\AssetsException;
 
 class NamespacedAsset
 {
+    const NAMESPACE_REGEX = '[a-z][a-z0-9]*?';
+
     /**
      * @var string
      */
@@ -57,7 +59,7 @@ class NamespacedAsset
      */
     public static function createFromFullPath (string $fullPath) : self
     {
-        if (1 === \preg_match('~^@(?<namespace>[a-z][a-z0-9]*?)/(?<path>.+)$~', $fullPath, $matches))
+        if (1 === \preg_match('~^@(?<namespace>' . self::NAMESPACE_REGEX . ')/(?<path>.+)$~i', $fullPath, $matches))
         {
             $path = trim($matches["path"], "/");
 

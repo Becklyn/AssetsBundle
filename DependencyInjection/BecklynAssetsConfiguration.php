@@ -2,6 +2,7 @@
 
 namespace Becklyn\AssetsBundle\DependencyInjection;
 
+use Becklyn\AssetsBundle\Asset\NamespacedAsset;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -28,7 +29,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                             {
                                 foreach ($paths as $namespace => $path)
                                 {
-                                    if (1 !== \preg_match('~^[a-z][a-z0-9]*$~', $namespace))
+                                    if (1 !== \preg_match('~^' . NamespacedAsset::NAMESPACE_REGEX . '$~i', $namespace))
                                     {
                                         return true;
                                     }
