@@ -60,7 +60,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                 {
                     foreach ($paths as $namespace => $path)
                     {
-                        if (1 !== \preg_match('~^' . NamespacedAsset::NAMESPACE_REGEX . '$~i', $namespace))
+                        if (1 !== \preg_match('~^' . NamespacedAsset::NAMESPACE_REGEX . '$~', $namespace))
                         {
                             return true;
                         }

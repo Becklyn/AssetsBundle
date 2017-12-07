@@ -59,7 +59,7 @@ class NamespacedAsset
      */
     public static function createFromFullPath (string $fullPath) : self
     {
-        if (1 === \preg_match('~^@(?<namespace>' . self::NAMESPACE_REGEX . ')/(?<path>.+)$~i', $fullPath, $matches))
+        if (1 === \preg_match('~^@(?<namespace>' . self::NAMESPACE_REGEX . ')/(?<path>.+)$~', $fullPath, $matches))
         {
             $path = trim($matches["path"], "/");
 
