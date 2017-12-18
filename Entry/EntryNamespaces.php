@@ -60,6 +60,14 @@ class EntryNamespaces implements \IteratorAggregate
         {
             $this->namespaces[$namespace] = $dir;
         }
+        else
+        {
+            throw new AssetsException(sprintf(
+                "Can't find assets dir when registering namespace '%s': %s",
+                $namespace,
+                $dir
+            ));
+        }
     }
 
 
