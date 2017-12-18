@@ -75,9 +75,18 @@ class EmbedController
                 "Content-Type" => "{$this->mimeTypeGuesser->guess($filePath)};charset=utf-8",
             ];
 
-            if (null !== $processor && \is_file($filePath))
+            if (!\is_file($filePath))
             {
-                $fileContent = \file_get_contents($filePath);
+                throw new NotFoundHttpException(sprintf(
+                    "Asset not found at '%s'.",
+                    $filePath
+                ));
+            }
+
+            $fileContent = $this->getFileHeaderHeader($assetPath, $filePath) . \file_get_contents($filePath);
+
+            if (null !== $processor )
+            {
                 $fileContent = $processor->process($assetPath, $fileContent);
 
                 return new Response($fileContent, 200, $headers);
@@ -88,6 +97,35 @@ class EmbedController
         catch (AssetsException $e)
         {
             throw new NotFoundHttpException("Asset not found.", $e);
+        }
+    }
+
+
+    /**
+     * Returns the file header for the specific file
+     *
+     * @param string $assetPath
+     * @param string $filePath
+     * @return string
+     */
+    private function getFileHeaderHeader (string $assetPath, string $filePath) : string
+    {
+        switch (\pathinfo($assetPath, \PATHINFO_EXTENSION))
+        {
+            case "css":
+            case "js":
+                return <<<HEADER
+/*
+ * Embed file
+ *    {$assetPath}
+ * from
+ *    {$filePath}
+ */
+
+HEADER;
+
+            default:
+                return "";
         }
     }
 }
