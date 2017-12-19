@@ -7,10 +7,15 @@ php:
     - 7.1
 
 before_install:
+    - composer require php-coveralls/php-coveralls
     - composer self-update --stable
 
 install:
     - composer install
 
 script:
-    - ./vendor/bin/simple-phpunit -c phpunit.xml
+    - mkdir -p build/logs
+    - ./vendor/bin/simple-phpunit -c phpunit.xml --coverage-clover build/logs/clover.xml
+
+after_script:
+    - travis_retry php vendor/bin/php-coveralls
