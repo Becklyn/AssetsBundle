@@ -53,6 +53,8 @@ class NamespacedAsset
 
 
     /**
+     * Creates an namespaced asset from the full asset path
+     *
      * @param string $fullPath
      * @return NamespacedAsset
      * @throws AssetsException
