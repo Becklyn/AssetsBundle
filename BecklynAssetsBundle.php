@@ -12,5 +12,4 @@ class BecklynAssetsBundle extends Bundle
     {
         return new BecklynAssetsExtension();
     }
-
 }
