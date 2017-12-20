@@ -8,7 +8,7 @@ use Becklyn\AssetsBundle\Exception\AssetsException;
 
 class NamespacedAsset
 {
-    const NAMESPACE_REGEX = '[a-z][a-z0-9]*?';
+    const NAMESPACE_REGEX = '[a-z][a-z0-9_]*?';
 
     /**
      * @var string

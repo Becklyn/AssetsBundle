@@ -20,6 +20,7 @@ class NamespacedAssetTest extends TestCase
             ["@bundle//a/test.js", "bundle", "a/test.js"],
             ["@bundle//a/test.js/", "bundle", "a/test.js"],
             ["@bundle123/a/test.js", "bundle123", "a/test.js"],
+            ["@bundle_123/a/test.js", "bundle_123", "a/test.js"],
         ];
     }
 
