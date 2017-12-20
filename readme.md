@@ -15,6 +15,14 @@ composer require "becklyn/assets-bundle"
 
 and then add the bundle in your `AppKernel` / `bundles.php`.
 
+Load the routes (preferably only in `dev`):
+
+```yaml
+becklyn_assets:
+    resource: "@BecklynAssetsBundle/Resources/config/routes.yaml"
+    prefix: /_assets/
+```
+
 
 Info / Purpose
 --------------
