@@ -53,6 +53,7 @@ class NamespacedAssetTest extends TestCase
             ["@bundle"],
             ["@123bundle/a.js"],
             ["@MaydTestBundle/a/test.js"],
+            ["@_test/a/test.js"],
         ];
     }
 
