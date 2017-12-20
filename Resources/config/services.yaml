@@ -39,6 +39,7 @@ services:
         arguments:
             $isDebug: '%kernel.debug%'
 
+    Becklyn\AssetsBundle\Loader\FileLoader: ~
     Becklyn\AssetsBundle\Path\AssetPathHelper: ~
     Becklyn\AssetsBundle\Processor\CssProcessor:
         arguments:

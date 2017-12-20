@@ -2,13 +2,10 @@
 
 namespace Becklyn\AssetsBundle\Controller;
 
-use Becklyn\AssetsBundle\Asset\NamespacedAsset;
-use Becklyn\AssetsBundle\Entry\EntryNamespaces;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\File\ExtensionMimeTypeGuesser;
-use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
+use Becklyn\AssetsBundle\Loader\FileLoader;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeExtensionGuesser;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -16,9 +13,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class EmbedController
 {
     /**
-     * @var EntryNamespaces
+     * @var FileLoader
      */
-    private $entryNamespaces;
+    private $loader;
 
 
     /**
@@ -28,28 +25,20 @@ class EmbedController
 
 
     /**
-     * @var ProcessorRegistry
-     */
-    private $processorRegistry;
-
-
-    /**
      * @var bool
      */
     private $isDebug;
 
 
     /**
-     * @param EntryNamespaces          $entryNamespaces
-     * @param ExtensionMimeTypeGuesser $mimeTypeGuesser
-     * @param bool                     $isDebug
+     * @param FileLoader $loader
+     * @param bool       $isDebug
      */
-    public function __construct (EntryNamespaces $entryNamespaces, ExtensionMimeTypeGuesser $mimeTypeGuesser, ProcessorRegistry $processorRegistry, bool $isDebug)
+    public function __construct (FileLoader $loader, ExtensionMimeTypeGuesser $mimeTypeGuesser, bool $isDebug)
     {
-        $this->entryNamespaces = $entryNamespaces;
-        $this->mimeTypeGuesser = $mimeTypeGuesser;
-        $this->processorRegistry = $processorRegistry;
         $this->isDebug = $isDebug;
+        $this->mimeTypeGuesser = $mimeTypeGuesser;
+        $this->loader = $loader;
     }
 
 
@@ -67,32 +56,14 @@ class EmbedController
         try
         {
             $assetPath = \rawurldecode($path);
-            $asset = NamespacedAsset::createFromFullPath($assetPath);
-            $filePath = $this->entryNamespaces->getFilePath($asset);
-            $processor = $this->processorRegistry->get($filePath);
+            $filePath = $this->loader->getFilePath($assetPath);
+            $fileContent = $this->getFileHeaderHeader($assetPath, $filePath) . $this->loader->loadFile($assetPath);
 
             $headers = [
                 "Content-Type" => "{$this->mimeTypeGuesser->guess($filePath)};charset=utf-8",
             ];
 
-            if (!\is_file($filePath))
-            {
-                throw new NotFoundHttpException(sprintf(
-                    "Asset not found at '%s'.",
-                    $filePath
-                ));
-            }
-
-            $fileContent = $this->getFileHeaderHeader($assetPath, $filePath) . \file_get_contents($filePath);
-
-            if (null !== $processor )
-            {
-                $fileContent = $processor->process($assetPath, $fileContent);
-
-                return new Response($fileContent, 200, $headers);
-            }
-
-            return new BinaryFileResponse($filePath, 200, $headers);
+            return new Response($fileContent, 200, $headers);
         }
         catch (AssetsException $e)
         {
