@@ -24,7 +24,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                 ->append(self::appendEntries(
                     "entries",
                     "All entry directories, where assets are searched. Relative to `kernel.project_dir`.",
-                    true
+                    false
                 ))
                 ->scalarNode("public_path")
                     ->defaultValue('%kernel.project_dir%/public')
@@ -93,7 +93,8 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
             )
             ->thenInvalid("The entries can't be outside of the project root (and can't use '..' in their paths).")
             ->end()
-            ->info($info);
+            ->info($info)
+            ->defaultValue([]);
 
         if ($isRequired)
         {
