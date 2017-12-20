@@ -25,6 +25,8 @@ class EntryNamespaces implements \IteratorAggregate
     /**
      * @param string $projectDir
      * @param array  $entries
+     *
+     * @throws AssetsException
      */
     public function __construct (string $projectDir, array $entries)
     {
@@ -46,7 +48,10 @@ class EntryNamespaces implements \IteratorAggregate
      */
     public function addNamespace (string $namespace, string $directory) : void
     {
-        $dir = "{$this->projectDir}/" . trim($directory, "/");
+        // prepend directory with project root, if not already there
+        $dir = ($this->projectDir !== substr($directory, 0, strlen($this->projectDir)))
+            ? "{$this->projectDir}/" . trim($directory, "/")
+            : $directory;
 
         if (isset($this->namespaces[$namespace]))
         {
