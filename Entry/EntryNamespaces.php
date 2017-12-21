@@ -28,7 +28,7 @@ class EntryNamespaces implements \IteratorAggregate
      *
      * @throws AssetsException
      */
-    public function __construct (string $projectDir, array $entries)
+    public function __construct (string $projectDir, array $entries = [])
     {
         $this->projectDir = $projectDir;
 
