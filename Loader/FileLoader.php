@@ -7,7 +7,6 @@ use Becklyn\AssetsBundle\Asset\NamespacedAsset;
 use Becklyn\AssetsBundle\Entry\EntryNamespaces;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Exception\FileNotFoundException;
-use Becklyn\AssetsBundle\File\ExtensionMimeTypeGuesser;
 use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
 
 
@@ -20,26 +19,19 @@ class FileLoader
 
 
     /**
-     * @var ExtensionMimeTypeGuesser
-     */
-    private $mimeTypeGuesser;
-
-
-    /**
      * @var ProcessorRegistry
      */
     private $processorRegistry;
 
 
     /**
-     * @param EntryNamespaces          $entryNamespaces
-     * @param ExtensionMimeTypeGuesser $mimeTypeGuesser
-     * @param ProcessorRegistry        $processorRegistry
+     *
+     * @param EntryNamespaces   $entryNamespaces
+     * @param ProcessorRegistry $processorRegistry
      */
-    public function __construct (EntryNamespaces $entryNamespaces, ExtensionMimeTypeGuesser $mimeTypeGuesser, ProcessorRegistry $processorRegistry)
+    public function __construct (EntryNamespaces $entryNamespaces, ProcessorRegistry $processorRegistry)
     {
         $this->entryNamespaces = $entryNamespaces;
-        $this->mimeTypeGuesser = $mimeTypeGuesser;
         $this->processorRegistry = $processorRegistry;
     }
 
