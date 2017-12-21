@@ -3,7 +3,9 @@
 namespace Tests\Becklyn\AssetsBundle\Twig;
 
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
+use Becklyn\AssetsBundle\Loader\FileLoader;
 use Becklyn\AssetsBundle\Twig\AssetsTwigExtension;
+use Becklyn\AssetsBundle\Url\AssetUrl;
 use PHPUnit\Framework\TestCase;
 
 
@@ -14,11 +16,19 @@ class AssetsTwigExtensionTest extends TestCase
      */
     public function testMethodNames ()
     {
-        $htmlReferences = self::getMockBuilder(AssetHtmlGenerator::class)
+        $htmlReferences = $this->getMockBuilder(AssetHtmlGenerator::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $extension = new AssetsTwigExtension($htmlReferences);
+        $assetUrl = $this->getMockBuilder(AssetUrl::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $fileLoader = $this->getMockBuilder(FileLoader::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $extension = new AssetsTwigExtension($htmlReferences, $assetUrl, $fileLoader);
         $functions = \array_map(
             function (\Twig_SimpleFunction $f)
             {
