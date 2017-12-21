@@ -2,6 +2,7 @@
 
 namespace Becklyn\AssetsBundle\Controller;
 
+use Becklyn\AssetsBundle\Embed\EmbedFileHeader;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\File\ExtensionMimeTypeGuesser;
 use Becklyn\AssetsBundle\Loader\FileLoader;
@@ -25,20 +26,29 @@ class EmbedController
 
 
     /**
+     * @var EmbedFileHeader
+     */
+    private $embedFileHeader;
+
+
+    /**
      * @var bool
      */
     private $isDebug;
 
 
     /**
-     * @param FileLoader $loader
-     * @param bool       $isDebug
+     * @param FileLoader               $loader
+     * @param ExtensionMimeTypeGuesser $mimeTypeGuesser
+     * @param EmbedFileHeader          $embedFileHeader
+     * @param bool                     $isDebug
      */
-    public function __construct (FileLoader $loader, ExtensionMimeTypeGuesser $mimeTypeGuesser, bool $isDebug)
+    public function __construct (FileLoader $loader, ExtensionMimeTypeGuesser $mimeTypeGuesser, EmbedFileHeader $embedFileHeader, bool $isDebug)
     {
-        $this->isDebug = $isDebug;
         $this->mimeTypeGuesser = $mimeTypeGuesser;
         $this->loader = $loader;
+        $this->embedFileHeader = $embedFileHeader;
+        $this->isDebug = $isDebug;
     }
 
 
@@ -57,7 +67,7 @@ class EmbedController
         {
             $assetPath = \rawurldecode($path);
             $filePath = $this->loader->getFilePath($assetPath);
-            $fileContent = $this->getFileHeaderHeader($assetPath, $filePath) . $this->loader->loadFile($assetPath);
+            $fileContent = $this->embedFileHeader->getFileHeader($assetPath, $filePath) . $this->loader->loadFile($assetPath);
 
             $headers = [
                 "Content-Type" => "{$this->mimeTypeGuesser->guess($filePath)};charset=utf-8",
@@ -68,35 +78,6 @@ class EmbedController
         catch (AssetsException $e)
         {
             throw new NotFoundHttpException("Asset not found.", $e);
-        }
-    }
-
-
-    /**
-     * Returns the file header for the specific file
-     *
-     * @param string $assetPath
-     * @param string $filePath
-     * @return string
-     */
-    private function getFileHeaderHeader (string $assetPath, string $filePath) : string
-    {
-        switch (\pathinfo($assetPath, \PATHINFO_EXTENSION))
-        {
-            case "css":
-            case "js":
-                return <<<HEADER
-/*
- * Embed file
- *    {$assetPath}
- * from
- *    {$filePath}
- */
-
-HEADER;
-
-            default:
-                return "";
         }
     }
 }
