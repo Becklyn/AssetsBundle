@@ -14,11 +14,11 @@ class AssetsCacheTest extends TestCase
 {
     private function prepare ()
     {
-        $cachePool = self::getMockBuilder(CacheItemPoolInterface::class)
+        $cachePool = $this->getMockBuilder(CacheItemPoolInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $cacheItem = self::getMockBuilder(CacheItemInterface::class)
+        $cacheItem = $this->getMockBuilder(CacheItemInterface::class)
             ->getMock();
 
         $cachePool

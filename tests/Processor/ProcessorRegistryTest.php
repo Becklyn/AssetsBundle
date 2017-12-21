@@ -11,7 +11,7 @@ class ProcessorRegistryTest extends TestCase
 {
     public function testGetter ()
     {
-        $cssProcessor = self::getMockBuilder(AssetProcessorInterface::class)
+        $cssProcessor = $this->getMockBuilder(AssetProcessorInterface::class)
             ->getMock();
 
         $registry = new ProcessorRegistry([

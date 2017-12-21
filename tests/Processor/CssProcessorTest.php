@@ -20,7 +20,7 @@ class CssProcessorTest extends TestCase
      */
     private function getProcessor (array $pathMap = [], bool $isDebug) : array
     {
-        $cache = self::getMockBuilder(AssetsCache::class)
+        $cache = $this->getMockBuilder(AssetsCache::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -40,7 +40,7 @@ class CssProcessorTest extends TestCase
                 );
         }
 
-        $router = self::getMockBuilder(RouterInterface::class)
+        $router = $this->getMockBuilder(RouterInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 

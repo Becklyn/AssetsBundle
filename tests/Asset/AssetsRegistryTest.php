@@ -14,11 +14,11 @@ class AssetsRegistryTest extends TestCase
 {
     private function prepare ()
     {
-        $cache = self::getMockBuilder(AssetsCache::class)
+        $cache = $this->getMockBuilder(AssetsCache::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $generator = self::getMockBuilder(AssetGenerator::class)
+        $generator = $this->getMockBuilder(AssetGenerator::class)
             ->disableOriginalConstructor()
             ->getMock();
 

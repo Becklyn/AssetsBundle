@@ -110,7 +110,7 @@ class AssetGeneratorTest extends TestCase
 
     public function testProcessorCalled ()
     {
-        $processor = self::getMockBuilder(AssetProcessorInterface::class)
+        $processor = $this->getMockBuilder(AssetProcessorInterface::class)
             ->getMock();
 
         $entryNamespaces = new EntryNamespaces($this->fixtures, [
@@ -131,7 +131,7 @@ class AssetGeneratorTest extends TestCase
 
     public function testProcessorNotCalled ()
     {
-        $processor = self::getMockBuilder(AssetProcessorInterface::class)
+        $processor = $this->getMockBuilder(AssetProcessorInterface::class)
             ->getMock();
 
         $entryNamespaces = new EntryNamespaces($this->fixtures, [
