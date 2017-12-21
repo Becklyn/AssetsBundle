@@ -98,26 +98,6 @@ class AssetHtmlGenerator
 
 
     /**
-     * Returns the asset url
-     *
-     * @param string $assetPath
-     * @return string
-     * @throws AssetsException
-     */
-    public function getAssetUrlPath (string $assetPath) : string
-    {
-        if (!$this->isDebug)
-        {
-            return $this->registry->get($assetPath)->getOutputFilePath();
-        }
-
-        return $this->router->generate("becklyn_assets_embed", [
-            "path" => \rawurlencode($assetPath),
-        ]);
-    }
-
-
-    /**
      * Returns the integrity HTML snippet
      *
      * @param string $assetPath
