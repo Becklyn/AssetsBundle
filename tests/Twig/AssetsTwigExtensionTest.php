@@ -37,10 +37,11 @@ class AssetsTwigExtensionTest extends TestCase
             $extension->getFunctions()
         );
 
-        self::assertContains("assets_css", $functions);
-        self::assertContains("assets_js", $functions);
-        self::assertContains("asset", $functions);
-        self::assertContains("asset_inline", $functions);
+        self::assertArraySubset([
+            "asset",
+            "asset_inline",
+            "assets_css",
+            "assets_js",
+        ], $functions);
     }
-
 }
