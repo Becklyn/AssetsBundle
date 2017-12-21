@@ -5,7 +5,7 @@ namespace Becklyn\AssetsBundle\Controller;
 use Becklyn\AssetsBundle\Embed\EmbedFileHeader;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\File\ExtensionMimeTypeGuesser;
-use Becklyn\AssetsBundle\Loader\FileLoader;
+use Becklyn\AssetsBundle\File\FileLoader;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

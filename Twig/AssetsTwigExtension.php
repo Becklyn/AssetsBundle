@@ -3,7 +3,7 @@
 namespace Becklyn\AssetsBundle\Twig;
 
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
-use Becklyn\AssetsBundle\Loader\FileLoader;
+use Becklyn\AssetsBundle\File\FileLoader;
 use Becklyn\AssetsBundle\Url\AssetUrl;
 
 

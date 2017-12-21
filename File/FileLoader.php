@@ -1,6 +1,6 @@
 <?php
 
-namespace Becklyn\AssetsBundle\Loader;
+namespace Becklyn\AssetsBundle\File;
 
 
 use Becklyn\AssetsBundle\Asset\NamespacedAsset;
@@ -41,7 +41,7 @@ class FileLoader
      *
      * @param string $assetPath
      * @throws AssetsException
-     * 
+     *
      * @return string
      */
     public function loadFile (string $assetPath) : string
