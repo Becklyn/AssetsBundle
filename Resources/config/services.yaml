@@ -28,6 +28,8 @@ services:
             $isDebug: '%kernel.debug%'
         public: true
 
+    Becklyn\AssetsBundle\Embed\EmbedFileHeader: ~
+
     Becklyn\AssetsBundle\Entry\EntryNamespaces:
         $projectDir: '%kernel.project_dir%'
 
