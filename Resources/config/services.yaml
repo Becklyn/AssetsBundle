@@ -44,8 +44,7 @@ services:
     Becklyn\AssetsBundle\Loader\FileLoader: ~
     Becklyn\AssetsBundle\Path\AssetPathHelper: ~
     Becklyn\AssetsBundle\Processor\CssProcessor:
-        arguments:
-            $isDebug: '%kernel.debug%'
+        $isDebug: '%kernel.debug%'
 
     Becklyn\AssetsBundle\Processor\ProcessorRegistry:
         arguments:
@@ -53,5 +52,7 @@ services:
                 css: '@Becklyn\AssetsBundle\Processor\CssProcessor'
 
     Becklyn\AssetsBundle\Twig\AssetsTwigExtension: ~
-    Becklyn\AssetsBundle\Url\AssetUrl: ~
+
+    Becklyn\AssetsBundle\Url\AssetUrl:
+        $isDebug: '%kernel.debug%'
 
