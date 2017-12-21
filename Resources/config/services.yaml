@@ -53,4 +53,5 @@ services:
                 css: '@Becklyn\AssetsBundle\Processor\CssProcessor'
 
     Becklyn\AssetsBundle\Twig\AssetsTwigExtension: ~
+    Becklyn\AssetsBundle\Url\AssetUrl: ~
 

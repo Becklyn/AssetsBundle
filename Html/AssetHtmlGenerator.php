@@ -4,6 +4,7 @@ namespace Becklyn\AssetsBundle\Html;
 
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
 use Becklyn\AssetsBundle\Exception\AssetsException;
+use Becklyn\AssetsBundle\Url\AssetUrl;
 use Symfony\Component\Routing\RouterInterface;
 
 
@@ -20,9 +21,9 @@ class AssetHtmlGenerator
 
 
     /**
-     * @var RouterInterface
+     * @var AssetUrl
      */
-    private $router;
+    private $assetUrl;
 
 
     /**
@@ -32,14 +33,15 @@ class AssetHtmlGenerator
 
 
     /**
-     * @param AssetsRegistry  $registry
-     * @param RouterInterface $router
-     * @param bool            $isDebug
+     *
+     * @param AssetsRegistry $registry
+     * @param AssetUrl       $assetUrl
+     * @param bool           $isDebug
      */
-    public function __construct (AssetsRegistry $registry, RouterInterface $router, bool $isDebug)
+    public function __construct (AssetsRegistry $registry, AssetUrl $assetUrl, bool $isDebug)
     {
         $this->registry = $registry;
-        $this->router = $router;
+        $this->assetUrl = $assetUrl;
         $this->isDebug = $isDebug;
     }
 
@@ -86,7 +88,7 @@ class AssetHtmlGenerator
         {
             $html .= sprintf(
                 $htmlSnippet,
-                $this->getAssetUrlPath($assetPath),
+                $this->assetUrl->generateUrl($assetPath),
                 $this->getIntegrityHtml($assetPath)
             );
         }

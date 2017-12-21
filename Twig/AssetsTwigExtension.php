@@ -4,6 +4,7 @@ namespace Becklyn\AssetsBundle\Twig;
 
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Becklyn\AssetsBundle\Loader\FileLoader;
+use Becklyn\AssetsBundle\Url\AssetUrl;
 
 
 class AssetsTwigExtension extends \Twig_Extension
@@ -12,6 +13,12 @@ class AssetsTwigExtension extends \Twig_Extension
      * @var AssetHtmlGenerator
      */
     private $htmlReferences;
+
+
+    /**
+     * @var AssetUrl
+     */
+    private $assetUrl;
 
 
     /**
@@ -25,9 +32,10 @@ class AssetsTwigExtension extends \Twig_Extension
      * @param AssetHtmlGenerator $htmlReferences
      * @param FileLoader         $fileLoader
      */
-    public function __construct (AssetHtmlGenerator $htmlReferences, FileLoader $fileLoader)
+    public function __construct (AssetHtmlGenerator $htmlReferences, AssetUrl $assetUrl, FileLoader $fileLoader)
     {
         $this->htmlReferences = $htmlReferences;
+        $this->assetUrl = $assetUrl;
         $this->fileLoader = $fileLoader;
     }
 
@@ -73,7 +81,7 @@ class AssetsTwigExtension extends \Twig_Extension
     public function getFunctions ()
     {
         return [
-            new \Twig_SimpleFunction("asset", [$this->htmlReferences, "getAssetUrlPath"]),
+            new \Twig_SimpleFunction("asset", [$this->assetUrl, "generateUrl"]),
             new \Twig_SimpleFunction("asset_inline", [$this, "inlineAsset"], ["is_safe" => ["html"]]),
             new \Twig_SimpleFunction("assets_css", [$this, "cssAssets"], ["is_safe" => ["html"]]),
             new \Twig_SimpleFunction("assets_js", [$this, "jsAssets"], ["is_safe" => ["html"]]),
