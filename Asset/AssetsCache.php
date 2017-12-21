@@ -15,6 +15,18 @@ class AssetsCache
 
 
     /**
+     * @var CacheItemPoolInterface
+     */
+    private $cachePool;
+
+
+    /**
+     * @var \Psr\Cache\CacheItemInterface
+     */
+    private $cacheItem;
+
+
+    /**
      * @var array<string, Asset>
      */
     private $assets = [];
@@ -26,8 +38,8 @@ class AssetsCache
      */
     public function __construct (CacheItemPoolInterface $pool)
     {
-        $this->cacheItem = $pool->getItem(self::CACHE_KEY);
         $this->cachePool = $pool;
+        $this->cacheItem = $pool->getItem(self::CACHE_KEY);
         $this->assets = $this->cacheItem->isHit() ? $this->cacheItem->get() : [];
     }
 
