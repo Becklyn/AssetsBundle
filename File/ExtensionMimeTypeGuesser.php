@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 class ExtensionMimeTypeGuesser
 {
     /**
-     * @var array 
+     * @var array
      */
     private static $mimeTypes = [
         'txt' => 'text/plain',
