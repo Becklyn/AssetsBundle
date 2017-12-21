@@ -2,11 +2,9 @@
 
 namespace Becklyn\AssetsBundle\Command;
 
-use Becklyn\AssetsBundle\Cache\CacheWarmer;
 use Becklyn\AssetsBundle\Entry\EntryNamespaces;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -14,12 +12,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class AssetsNamespacesCommand extends Command
 {
     public static $defaultName = "becklyn:assets:namespaces";
-
-
-    /**
-     * @var CacheWarmer
-     */
-    private $cacheWarmer;
 
 
     /**
@@ -35,14 +27,12 @@ class AssetsNamespacesCommand extends Command
 
 
     /**
-     * @param CacheWarmer     $cacheWarmer
      * @param EntryNamespaces $entryNamespaces
      * @param string          $projectDir
      */
-    public function __construct (CacheWarmer $cacheWarmer, EntryNamespaces $entryNamespaces, string $projectDir)
+    public function __construct (EntryNamespaces $entryNamespaces, string $projectDir)
     {
         parent::__construct();
-        $this->cacheWarmer = $cacheWarmer;
         $this->entryNamespaces = $entryNamespaces;
         $this->projectDir = $projectDir;
     }
