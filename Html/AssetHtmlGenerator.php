@@ -56,10 +56,10 @@ class AssetHtmlGenerator
         switch ($type)
         {
             case self::TYPE_JAVASCRIPT:
-                return $this->linkJavaScript($assetPaths);
+                return $this->link($assetPaths, '<script defer src="%s"%s></script>');
 
             case self::TYPE_CSS:
-                return $this->linkCss($assetPaths);
+                return $this->link($assetPaths, '<link rel="stylesheet" href="%s"%s>');
 
             default:
                 throw new AssetsException(sprintf(
@@ -71,44 +71,21 @@ class AssetHtmlGenerator
 
 
     /**
-     * Links debug JavaScript
+     * Links the given assets with the given HTML snippet.
      *
-     * @param string[] $assetPaths
+     * @param array  $assetPaths
+     * @param string $htmlSnippet   the template snippet. Needs to contain two placeholders.
      * @return string
      * @throws AssetsException
      */
-    private function linkJavaScript (array $assetPaths) : string
+    private function link (array $assetPaths, string $htmlSnippet)
     {
         $html = "";
 
         foreach ($assetPaths as $assetPath)
         {
             $html .= sprintf(
-                '<script defer src="%s"%s></script>',
-                $this->getAssetUrlPath($assetPath),
-                $this->getIntegrityHtml($assetPath)
-            );
-        }
-
-        return $html;
-    }
-
-
-    /**
-     * Links debug CSS
-     *
-     * @param string[] $assetPaths
-     * @return string
-     * @throws AssetsException
-     */
-    private function linkCss (array $assetPaths) : string
-    {
-        $html = "";
-
-        foreach ($assetPaths as $assetPath)
-        {
-            $html .= sprintf(
-                '<link rel="stylesheet" href="%s"%s>',
+                $htmlSnippet,
                 $this->getAssetUrlPath($assetPath),
                 $this->getIntegrityHtml($assetPath)
             );
