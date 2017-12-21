@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
 class ExtensionMimeTypeGuesser
 {
+    /**
+     * @var array 
+     */
     private static $mimeTypes = [
         'txt' => 'text/plain',
         'htm' => 'text/html',
@@ -63,6 +66,12 @@ class ExtensionMimeTypeGuesser
         'odt' => 'application/vnd.oasis.opendocument.text',
         'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
     ];
+
+
+    /**
+     * @var MimeTypeGuesser
+     */
+    private $coreGuesser;
 
 
     /**
