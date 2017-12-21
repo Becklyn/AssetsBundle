@@ -41,8 +41,10 @@ class FileLoader
      *
      * @param string $assetPath
      * @throws AssetsException
+     * 
+     * @return string
      */
-    public function loadFile (string $assetPath)
+    public function loadFile (string $assetPath) : string
     {
         $filePath = $this->getFilePath($assetPath);
         $processor = $this->processorRegistry->get($filePath);
@@ -57,7 +59,16 @@ class FileLoader
 
         $fileContent = \file_get_contents($filePath);
 
-        if (null !== $processor )
+        if (false === $fileContent)
+        {
+            throw new FileNotFoundException(sprintf(
+                "Can't read asset file '%s' at '%s'.",
+                $assetPath,
+                $filePath
+            ));
+        }
+
+        if (null !== $processor)
         {
             $fileContent = $processor->process($assetPath, $fileContent);
         }
