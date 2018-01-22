@@ -4,7 +4,7 @@
     "keywords": ["becklyn", "asset", "assets", "symfony"],
     "license": "BSD-3-Clause",
     "type": "symfony-bundle",
-    "homepage": "https://github.com/Becklyn/BecklynAssetsBundle",
+    "homepage": "https://github.com/Becklyn/AssetsBundle",
     "authors": [
         {
             "name": "Becklyn Studios",
