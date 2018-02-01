@@ -98,8 +98,8 @@ class CssProcessor implements AssetProcessorInterface
      */
     private function rewritePath (string $assetPath, string $path) : string
     {
-        // pass URLs untouched
-        if (1 === \preg_match('~^(//|https?://)~', $path))
+        // pass URLs (HTTP and data) untouched
+        if (1 === \preg_match('~^(//|https?://|data:)~', $path))
         {
             return $path;
         }
