@@ -70,7 +70,16 @@ class AssetUrl
                 ));
             }
 
-            return "{$request->getBaseUrl()}/{$this->registry->get($assetPath)->getOutputFilePath()}";
+            try
+            {
+                return "{$request->getBaseUrl()}/{$this->registry->get($assetPath)->getOutputFilePath()}";
+            }
+            catch (AssetsException $e)
+            {
+                // Instead of throwing an exception since we can't resolve the asset, we're returning the
+                // asset path un-altered so the browser will resolve it to a 404
+                return $assetPath;
+            }
         }
 
         return $this->router->generate("becklyn_assets_embed", [
