@@ -70,7 +70,23 @@ class AssetUrl
                 ));
             }
 
-            return "{$request->getBaseUrl()}/{$this->registry->get($assetPath)->getOutputFilePath()}";
+            try
+            {
+                return "{$request->getBaseUrl()}/{$this->registry->get($assetPath)->getOutputFilePath()}";
+            }
+            catch (AssetsException $e)
+            {
+                // In debug we want to let the developer know that there's a bug due to a missing asset
+                // so we just re-throw the exception.
+                if ($this->isDebug)
+                {
+                    throw $e;
+                }
+
+                // In prod we don't want to potentially bring down the entire since we can't resolve an asset,
+                // so we're returning the asset path un-altered so the browser can resolve it to a 404
+                return $assetPath;
+            }
         }
 
         return $this->router->generate("becklyn_assets_embed", [
