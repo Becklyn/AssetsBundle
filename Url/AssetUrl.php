@@ -76,8 +76,15 @@ class AssetUrl
             }
             catch (AssetsException $e)
             {
-                // Instead of throwing an exception since we can't resolve the asset, we're returning the
-                // asset path un-altered so the browser will resolve it to a 404
+                // In debug we want to let the developer know that there's a bug due to a missing asset
+                // so we just re-throw the exception.
+                if ($this->isDebug)
+                {
+                    throw $e;
+                }
+
+                // In prod we don't want to potentially bring down the entire since we can't resolve an asset,
+                // so we're returning the asset path un-altered so the browser can resolve it to a 404
                 return $assetPath;
             }
         }
