@@ -4,6 +4,7 @@ namespace Becklyn\AssetsBundle\Url;
 
 
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
+use Becklyn\AssetsBundle\Asset\NamespacedAsset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
@@ -89,8 +90,10 @@ class AssetUrl
             }
         }
 
+        $asset = NamespacedAsset::createFromFullPath($assetPath);
         return $this->router->generate("becklyn_assets_embed", [
-            "path" => \rawurlencode($assetPath),
+            "namespace" => $asset->getNamespace(),
+            "path" => $asset->getPath(),
         ]);
     }
 }

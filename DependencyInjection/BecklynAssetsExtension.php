@@ -4,6 +4,7 @@ namespace Becklyn\AssetsBundle\DependencyInjection;
 
 use Becklyn\AssetsBundle\Asset\AssetGenerator;
 use Becklyn\AssetsBundle\Entry\EntryNamespaces;
+use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -37,5 +38,8 @@ class BecklynAssetsExtension extends Extension
 
         $container->getDefinition(EntryNamespaces::class)
             ->setArgument('$entries', $config["entries"]);
+
+        $container->getDefinition(AssetsRouteLoader::class)
+            ->setArgument('$outputDir', $config["output_dir"]);
     }
 }

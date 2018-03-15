@@ -56,7 +56,7 @@ class EmbedController
      * @param string $path
      * @return BinaryFileResponse
      */
-    public function embed (string $path) : Response
+    public function embed (string $namespace, string $path) : Response
     {
         if (!$this->isDebug)
         {
@@ -65,7 +65,7 @@ class EmbedController
 
         try
         {
-            $assetPath = \rawurldecode($path);
+            $assetPath = "@{$namespace}/{$path}";
             $filePath = $this->loader->getFilePath($assetPath);
             $fileContent = $this->embedFileHeader->getFileHeader($assetPath, $filePath) . $this->loader->loadFile($assetPath);
 

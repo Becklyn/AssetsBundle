@@ -47,6 +47,11 @@ class CssProcessor implements AssetProcessorInterface
      */
     public function process (string $assetPath, string $fileContent) : string
     {
+        if ($this->isDebug)
+        {
+            return $fileContent;
+        }
+
         return \preg_replace_callback(
             '~url\\(\s*(?<path>.*?)\s*\\)~i',
             function (array $matches) use ($assetPath)
@@ -106,21 +111,12 @@ class CssProcessor implements AssetProcessorInterface
         }
 
         $resolvedPath = $this->resolvePath($assetPath, $path);
-        if ($this->isDebug)
-        {
-            return $this->router->generate("becklyn_assets_embed", [
-                "path" => \rawurlencode($resolvedPath),
-            ]);
-        }
-        else
-        {
-            $asset = $this->cache->get($resolvedPath);
+        $asset = $this->cache->get($resolvedPath);
 
-            if (null !== $asset)
-            {
-                // if an asset was found, overwrite the basename of the path with the cached asset
-                return dirname($path) . "/{$asset->getOutputFileName()}";
-            }
+        if (null !== $asset)
+        {
+            // if an asset was found, overwrite the basename of the path with the cached asset
+            return dirname($path) . "/{$asset->getOutputFileName()}";
         }
 
         return $path;
