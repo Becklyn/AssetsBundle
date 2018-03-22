@@ -2,83 +2,109 @@
 
 namespace Becklyn\AssetsBundle\Asset;
 
+use Becklyn\AssetsBundle\Exception\AssetsException;
+
 
 class Asset
 {
+    const NAMESPACE_REGEX = '[a-z][a-z0-9_]*?';
+
+    //region Fields
     /**
      * @var string
      */
-    private $outputDirectory;
+    private $namespace;
 
 
     /**
      * @var string
      */
-    private $digest;
+    private $filePath;
 
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $outputFileName;
+    private $hash;
+    //endregion
 
 
     /**
      * @param string $filePath
      * @param string $hash
      */
-    public function __construct (string $outputDirectory, string $filePath, string $hash)
+    public function __construct (string $namespace, string $filePath)
     {
-        $this->outputDirectory = trim($outputDirectory, "/");
-        $this->digest = $hash;
-        $this->outputFileName = $this->generateOutputFileName($filePath, $hash);
+        $this->namespace = $namespace;
+        $this->filePath = $filePath;
     }
 
 
+    //region Accessors
     /**
-     * Generates the output filename
-     *
-     * @param string $filePath
-     * @param string $hash
      * @return string
      */
-    private function generateOutputFileName (string $filePath, string $hash) : string
+    public function getNamespace () : string
     {
-        $extension = \pathinfo($filePath, \PATHINFO_EXTENSION);
-
-        $sanitizedHash = \strtr($hash, [
-            "+" => "_",
-            "/" => "-",
-            "=" => "",
-        ]);
-
-        return \basename($filePath, $extension) . substr($sanitizedHash, 0, 20) . ".{$extension}";
+        return $this->namespace;
     }
 
 
     /**
      * @return string
      */
-    public function getOutputFilePath () : string
+    public function getFilePath () : string
     {
-        return "{$this->outputDirectory}/{$this->getOutputFileName()}";
+        return $this->filePath;
     }
 
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getOutputFileName () : string
+    public function getHash () : ?string
     {
-        return $this->outputFileName;
+        return $this->hash;
     }
 
 
     /**
-     * @return string
+     * @param null|string $hash
      */
-    public function getDigest ()
+    public function setHash (?string $hash) : void
     {
-        return $this->digest;
+        $this->hash = $hash;
+    }
+    //endregion
+
+
+    /**
+     * @param string $assetPath
+     * @return Asset
+     * @throws AssetsException
+     */
+    public static function createFromAssetPath (string $assetPath) : Asset
+    {
+        if (1 === \preg_match('~^@(?<namespace>' . self::NAMESPACE_REGEX . ')/(?<path>.+)$~', $assetPath, $matches))
+        {
+            $path = trim($matches["path"], "/");
+
+            if ("" === $path)
+            {
+                throw new AssetsException("Invalid asset path – no path given.");
+            }
+
+            if (false !== strpos($path, ".."))
+            {
+                throw new AssetsException("Invalid asset path – must not contain path '..'.");
+            }
+
+            return new self($matches["namespace"], $path);
+        }
+
+        throw new AssetsException(sprintf(
+            "Can't parse asset path: '%s'",
+            $assetPath
+        ));
     }
 }

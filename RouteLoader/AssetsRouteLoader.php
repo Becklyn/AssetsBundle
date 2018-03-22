@@ -2,7 +2,7 @@
 
 namespace Becklyn\AssetsBundle\RouteLoader;
 
-use Becklyn\AssetsBundle\Asset\NamespacedAsset;
+use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Controller\EmbedController;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Route;
@@ -32,7 +32,7 @@ class AssetsRouteLoader extends Loader
                 "_controller" => EmbedController::class . "::embed",
             ],
             [
-                "namespace" => NamespacedAsset::NAMESPACE_REGEX,
+                "namespace" => Asset::NAMESPACE_REGEX,
                 "path" => ".*?"
             ]
         );

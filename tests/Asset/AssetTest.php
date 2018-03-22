@@ -8,28 +8,65 @@ use PHPUnit\Framework\TestCase;
 
 class AssetTest extends TestCase
 {
-    public function fileNameProvider ()
+    /**
+     * @return array
+     */
+    public function provideCreateFromPath ()
     {
         return [
-            ["out", "a.js", "hash", "out/a.hash.js"],
-            // slashes don't matter
-            ["/out/", "a.js", "hash", "out/a.hash.js"],
-            // invalid base64 chars are removed
-            ["out", "a.js", "1+2/3=4", "out/a.1_2-34.js"],
-            // hash is truncated
-            ["out", "a.js", "1234567890123456789012345678901234567890", "out/a.12345678901234567890.js"],
-            // only the basename of the file path is used
-            ["out", "test/js/a.js", "hash", "out/a.hash.js"],
+            ["@bundle/a/test.js", "bundle", "a/test.js"],
+            ["@bundle/a/test.js/", "bundle", "a/test.js"],
+            ["@bundle//a/test.js", "bundle", "a/test.js"],
+            ["@bundle//a/test.js/", "bundle", "a/test.js"],
+            ["@bundle123/a/test.js", "bundle123", "a/test.js"],
+            ["@bundle_123/a/test.js", "bundle_123", "a/test.js"],
         ];
     }
 
 
     /**
-     * @dataProvider fileNameProvider
+     * @dataProvider provideCreateFromPath
+     *
+     * @param string $path
+     * @param string $expectedNamespace
+     * @param string $expectedPath
+     * @throws \Becklyn\AssetsBundle\Exception\AssetsException
      */
-    public function testFileName (string $outDir, string $filePath, string $hash, string $expectedOutputFilePath)
+    public function testCreateFromPath (string $path, string $expectedNamespace, string $expectedPath)
     {
-        $asset = new Asset($outDir, $filePath, $hash);
-        self::assertSame($expectedOutputFilePath, $asset->getOutputFilePath());
+        $asset = Asset::createFromAssetPath($path);
+        self::assertSame($expectedNamespace, $asset->getNamespace());
+        self::assertSame($expectedPath, $asset->getFilePath());
+    }
+
+
+    /**
+     * @return array
+     */
+    public function provideFailedCreateFromPath ()
+    {
+        return [
+            ["a/test.js"],
+            ["bundle/a/test.js/"],
+            ["@bundle/"],
+            ["@bundle"],
+            ["@123bundle/a.js"],
+            ["@MaydTestBundle/a/test.js"],
+            ["@_test/a/test.js"],
+        ];
+    }
+
+
+    /**
+     * @dataProvider provideFailedCreateFromPath
+     * @expectedException Becklyn\AssetsBundle\Exception\AssetsException
+     *
+     * @param string $path
+     * @throws \Becklyn\AssetsBundle\Exception\AssetsException
+     */
+    public function testFailedCreateFromPath (string $path)
+    {
+        $a = Asset::createFromAssetPath($path);
+        \var_dump($a);
     }
 }
