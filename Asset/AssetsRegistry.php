@@ -47,16 +47,15 @@ class AssetsRegistry
      * @return Asset
      * @throws AssetsException
      */
-    public function get (string $assetPath) : Asset
+    public function get (Asset $asset) : Asset
     {
-        $asset = $this->cache->get($assetPath);
+        $cachedAsset = $this->cache->get($asset);
 
-        if (null !== $asset)
+        if (null !== $cachedAsset)
         {
-            return $asset;
+            return $cachedAsset;
         }
 
-        $asset = Asset::createFromAssetPath($assetPath);
         return $this->addAsset($asset);
     }
 

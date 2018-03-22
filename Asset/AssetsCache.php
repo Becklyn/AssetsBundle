@@ -47,13 +47,13 @@ class AssetsCache
     /**
      * Returns the cached asset
      *
-     * @param string $assetPath
+     * @param Asset $asset
      *
      * @return Asset|null
      */
-    public function get (string $assetPath) : ?Asset
+    public function get (Asset $asset) : ?Asset
     {
-        return $this->assets[$assetPath] ?? null;
+        return $this->assets[$asset->getAssetPath()] ?? null;
     }
 
 
