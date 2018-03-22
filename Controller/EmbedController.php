@@ -2,9 +2,10 @@
 
 namespace Becklyn\AssetsBundle\Controller;
 
+use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Embed\EmbedFileHeader;
 use Becklyn\AssetsBundle\Exception\AssetsException;
-use Becklyn\AssetsBundle\File\ExtensionMimeTypeGuesser;
+use Becklyn\AssetsBundle\File\AssetMimeTypeGuesser;
 use Becklyn\AssetsBundle\File\FileLoader;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,7 +21,7 @@ class EmbedController
 
 
     /**
-     * @var ExtensionMimeTypeGuesser
+     * @var AssetMimeTypeGuesser
      */
     private $mimeTypeGuesser;
 
@@ -38,12 +39,12 @@ class EmbedController
 
 
     /**
-     * @param FileLoader               $loader
-     * @param ExtensionMimeTypeGuesser $mimeTypeGuesser
-     * @param EmbedFileHeader          $embedFileHeader
-     * @param bool                     $isDebug
+     * @param FileLoader           $loader
+     * @param AssetMimeTypeGuesser $mimeTypeGuesser
+     * @param EmbedFileHeader      $embedFileHeader
+     * @param bool                 $isDebug
      */
-    public function __construct (FileLoader $loader, ExtensionMimeTypeGuesser $mimeTypeGuesser, EmbedFileHeader $embedFileHeader, bool $isDebug)
+    public function __construct (FileLoader $loader, AssetMimeTypeGuesser $mimeTypeGuesser, EmbedFileHeader $embedFileHeader, bool $isDebug)
     {
         $this->mimeTypeGuesser = $mimeTypeGuesser;
         $this->loader = $loader;
@@ -65,12 +66,12 @@ class EmbedController
 
         try
         {
-            $assetPath = "@{$namespace}/{$path}";
-            $filePath = $this->loader->getFilePath($assetPath);
-            $fileContent = $this->embedFileHeader->getFileHeader($assetPath, $filePath) . $this->loader->loadFile($assetPath);
+            $asset = new Asset($namespace, $path);
+            $filePath = $this->loader->getFilePath($asset);
+            $fileContent = $this->embedFileHeader->getFileHeader($asset, $filePath) . $this->loader->loadFile($asset);
 
             $headers = [
-                "Content-Type" => "{$this->mimeTypeGuesser->guess($filePath)};charset=utf-8",
+                "Content-Type" => "{$this->mimeTypeGuesser->guess($asset)};charset=utf-8",
             ];
 
             return new Response($fileContent, 200, $headers);
