@@ -13,9 +13,11 @@ use Becklyn\AssetsBundle\File\Type\SvgFile;
 class FileTypeRegistry
 {
     /**
+     * The file types mapped by file extension
+     *
      * @var array<string,FileType>
      */
-    private $extensions = [];
+    private $fileTypes = [];
 
 
     /**
@@ -28,14 +30,10 @@ class FileTypeRegistry
      *
      * @param array $fileTypes
      */
-    public function __construct (array $fileTypes)
+    public function __construct (array $fileTypes, GenericFile $genericFileType)
     {
-        $this->extensions = [
-            "js" => new JavaScriptFile(),
-            "css" => new CssFile(),
-            "svg" => new SvgFile(),
-        ];
-        $this->genericFileType = new GenericFile();
+        $this->fileTypes = $fileTypes;
+        $this->genericFileType = $genericFileType;
     }
 
 
@@ -45,7 +43,7 @@ class FileTypeRegistry
      */
     public function getFileType (Asset $asset) : FileType
     {
-        return $this->extensions[$asset->getFileType()] ?? $this->genericFileType;
+        return $this->fileTypes[$asset->getFileType()] ?? $this->genericFileType;
     }
 
 
