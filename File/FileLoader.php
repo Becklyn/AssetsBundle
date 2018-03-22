@@ -12,6 +12,7 @@ class FileLoader
 {
     const MODE_PROD = true;
     const MODE_DEV = false;
+    const MODE_UNTOUCHED = null;
 
     /**
      * @var NamespaceRegistry
@@ -47,7 +48,7 @@ class FileLoader
      * @throws AssetsException
      * @throws FileNotFoundException
      */
-    public function loadFile (Asset $asset, bool $mode) : string
+    public function loadFile (Asset $asset, ?bool $mode) : string
     {
         $filePath = $this->getFilePath($asset);
 
@@ -73,10 +74,13 @@ class FileLoader
 
         $fileType = $this->fileTypeRegistry->getFileType($asset);
 
-        // prepend file header in dev and process in prod
-        $fileContent = (self::MODE_PROD === $mode)
-            ? $fileType->processForProd($asset, $fileContent)
-            : $fileType->prependFileHeader($asset, $filePath, $fileContent);
+        if (self::MODE_UNTOUCHED !== $mode)
+        {
+            // prepend file header in dev and process in prod
+            $fileContent = (self::MODE_PROD === $mode)
+                ? $fileType->processForProd($asset, $fileContent)
+                : $fileType->prependFileHeader($asset, $filePath, $fileContent);
+        }
 
         return $fileContent;
     }
