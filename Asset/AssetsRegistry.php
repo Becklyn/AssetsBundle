@@ -3,7 +3,7 @@
 namespace Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Exception\AssetsException;
-use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
+use Becklyn\AssetsBundle\File\FileTypeRegistry;
 
 
 class AssetsRegistry
@@ -21,22 +21,21 @@ class AssetsRegistry
 
 
     /**
-     * @var ProcessorRegistry
+     * @var FileTypeRegistry
      */
-    private $processorRegistry;
+    private $fileTypeRegistry;
 
 
     /**
-     *
-     * @param AssetsCache       $cache
-     * @param AssetStorage      $generator
-     * @param ProcessorRegistry $processorRegistry
+     * @param AssetsCache      $cache
+     * @param AssetStorage     $generator
+     * @param FileTypeRegistry $fileTypeRegistry
      */
-    public function __construct (AssetsCache $cache, AssetStorage $generator, ProcessorRegistry $processorRegistry)
+    public function __construct (AssetsCache $cache, AssetStorage $generator, FileTypeRegistry $fileTypeRegistry)
     {
         $this->cache = $cache;
         $this->generator = $generator;
-        $this->processorRegistry = $processorRegistry;
+        $this->fileTypeRegistry = $fileTypeRegistry;
     }
 
 
@@ -72,7 +71,7 @@ class AssetsRegistry
 
         foreach ($assets as $asset)
         {
-            if ($this->processorRegistry->has($asset))
+            if ($this->fileTypeRegistry->importDeferred($asset))
             {
                 $deferred[] = $asset;
                 continue;
