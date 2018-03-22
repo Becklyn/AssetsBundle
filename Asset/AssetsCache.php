@@ -64,11 +64,10 @@ class AssetsCache
      *
      * @throws AssetsException
      */
-    public function add (string $assetPath, Asset $asset) : void
+    public function add (Asset $asset) : void
     {
-        $this->assets[$assetPath] = $asset;
-        $this->cacheItem->set($this->assets);
-        $this->cachePool->save($this->cacheItem);
+        $this->assets[$asset->getAssetPath()] = $asset;
+        $this->setAssets($this->assets);
     }
 
 
@@ -77,7 +76,18 @@ class AssetsCache
      */
     public function clear () : void
     {
-        $this->assets = [];
+        $this->setAssets([]);
+    }
+
+
+    /**
+     * Sets and stores the new assets array
+     *
+     * @param array $newAssets
+     */
+    private function setAssets (array $newAssets) : void
+    {
+        $this->assets = $newAssets;
         $this->cacheItem->set($this->assets);
         $this->cachePool->save($this->cacheItem);
     }
