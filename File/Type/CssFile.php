@@ -25,6 +25,7 @@ class CssFile extends FileType
      */
     public function importDeferred () : bool
     {
+        // must be loaded deferred, as it might have dependencies on other files
         return true;
     }
 }
