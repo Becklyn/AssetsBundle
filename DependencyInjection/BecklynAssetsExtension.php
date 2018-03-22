@@ -2,8 +2,8 @@
 
 namespace Becklyn\AssetsBundle\DependencyInjection;
 
-use Becklyn\AssetsBundle\Asset\AssetGenerator;
-use Becklyn\AssetsBundle\Entry\EntryNamespaces;
+use Becklyn\AssetsBundle\Asset\AssetStorage;
+use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -32,11 +32,11 @@ class BecklynAssetsExtension extends Extension
         $loader->load("services.yaml");
 
         // update services config with configuration values
-        $container->getDefinition(AssetGenerator::class)
+        $container->getDefinition(AssetStorage::class)
             ->setArgument('$publicPath', $config["public_path"])
             ->setArgument('$outputDir', $config["output_dir"]);
 
-        $container->getDefinition(EntryNamespaces::class)
+        $container->getDefinition(NamespaceRegistry::class)
             ->setArgument('$entries', $config["entries"]);
 
         $container->getDefinition(AssetsRouteLoader::class)
