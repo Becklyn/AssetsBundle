@@ -21,10 +21,8 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->append(self::appendEntries(
-                    "entries",
-                    "All entry directories, where assets are searched. Relative to `kernel.project_dir`.",
-                    false
+                ->append(self::appendNamespaces(
+                    "All namespace directories, where assets are searched. Relative to `kernel.project_dir`."
                 ))
                 ->scalarNode("public_path")
                     ->defaultValue('%kernel.project_dir%/public')
@@ -43,14 +41,12 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
     /**
      * Appends the entries config entry
      *
-     * @param string $name
-     * @param string $info
-     * @param bool   $isRequired
+     * @param string $description
      * @return ArrayNodeDefinition|NodeDefinition
      */
-    public static function appendEntries (string $name, string $info, bool $isRequired)
+    public static function appendNamespaces (string $description)
     {
-        $node = (new TreeBuilder())->root($name);
+        $node = (new TreeBuilder())->root("namespaces");
 
         $node
             ->scalarPrototype()->end()
@@ -91,17 +87,10 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                     return false;
                 }
             )
-            ->thenInvalid("The entries can't be outside of the project root (and can't use '..' in their paths).")
+            ->thenInvalid("The namespaces can't be outside of the project root (and can't use '..' in their paths).")
             ->end()
-            ->info($info)
+            ->info($description)
             ->defaultValue([]);
-
-        if ($isRequired)
-        {
-            $node
-                ->isRequired()
-                ->cannotBeEmpty();
-        }
 
         return $node;
     }
