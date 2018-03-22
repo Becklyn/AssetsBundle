@@ -34,10 +34,7 @@ services:
         $projectDir: '%kernel.project_dir%'
 
     Becklyn\AssetsBundle\File\ExtensionMimeTypeGuesser: ~
-
-    Becklyn\AssetsBundle\File\FileLoader:
-        $isDebug: '%kernel.debug%'
-
+    Becklyn\AssetsBundle\File\FileLoader: ~
     Becklyn\AssetsBundle\Finder\AssetsFinder: ~
 
     Becklyn\AssetsBundle\Html\AssetHtmlGenerator:

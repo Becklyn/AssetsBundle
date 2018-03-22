@@ -63,7 +63,7 @@ class AssetStorage
      */
     public function import (Asset $asset) : Asset
     {
-        $fileContent = $this->fileLoader->loadFile($asset);
+        $fileContent = $this->fileLoader->loadFile($asset, FileLoader::MODE_PROD);
 
         $asset->setHash(
             \base64_encode(\hash("sha256", $fileContent, true))

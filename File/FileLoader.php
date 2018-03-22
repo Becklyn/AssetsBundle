@@ -10,11 +10,8 @@ use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 
 class FileLoader
 {
-    /**
-     * @var bool
-     */
-    private $isDebug;
-
+    const MODE_PROD = true;
+    const MODE_DEV = false;
 
     /**
      * @var NamespaceRegistry
@@ -33,9 +30,8 @@ class FileLoader
      * @param NamespaceRegistry $namespaceRegistry
      * @param FileTypeRegistry  $fileTypeRegistry
      */
-    public function __construct (bool $isDebug, NamespaceRegistry $namespaceRegistry, FileTypeRegistry $fileTypeRegistry)
+    public function __construct (NamespaceRegistry $namespaceRegistry, FileTypeRegistry $fileTypeRegistry)
     {
-        $this->isDebug = $isDebug;
         $this->namespaceRegistry = $namespaceRegistry;
         $this->fileTypeRegistry = $fileTypeRegistry;
     }
@@ -44,12 +40,14 @@ class FileLoader
     /**
      * Loads an asset's file content
      *
-     * @param string $assetPath
-     * @throws AssetsException
+     * @param Asset $asset
+     * @param bool  $mode   one of the MODE_* constants
      *
      * @return string
+     * @throws AssetsException
+     * @throws FileNotFoundException
      */
-    public function loadFile (Asset $asset) : string
+    public function loadFile (Asset $asset, bool $mode) : string
     {
         $filePath = $this->getFilePath($asset);
 
@@ -76,9 +74,9 @@ class FileLoader
         $fileType = $this->fileTypeRegistry->getFileType($asset);
 
         // prepend file header in dev and process in prod
-        $fileContent = $this->isDebug
-            ? $fileType->prependFileHeader($asset, $filePath, $fileContent)
-            : $fileType->processForProd($asset, $fileContent);
+        $fileContent = (self::MODE_PROD === $mode)
+            ? $fileType->processForProd($asset, $fileContent)
+            : $fileType->prependFileHeader($asset, $filePath, $fileContent);
 
         return $fileContent;
     }
