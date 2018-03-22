@@ -99,7 +99,7 @@ class Asset
      * @return Asset
      * @throws AssetsException
      */
-    public static function createFromAssetPath (string $assetPath) : Asset
+    public static function createFromAssetPath (string $assetPath) : self
     {
         if (1 === \preg_match('~^@(?<namespace>' . self::NAMESPACE_REGEX . ')/(?<path>.+)$~', $assetPath, $matches))
         {
