@@ -95,6 +95,17 @@ class Asset
 
 
     /**
+     * Returns the full asset path
+     *
+     * @return string
+     */
+    public function getAssetPath () : string
+    {
+        return "@{$this->getNamespace()}/{$this->getFilePath()}";
+    }
+
+
+    /**
      * @param string $assetPath
      * @return Asset
      * @throws AssetsException
