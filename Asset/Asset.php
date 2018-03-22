@@ -26,6 +26,12 @@ class Asset
      * @var string|null
      */
     private $hash;
+
+
+    /**
+     * @var string
+     */
+    private $fileType;
     //endregion
 
 
@@ -37,6 +43,7 @@ class Asset
     {
         $this->namespace = $namespace;
         $this->filePath = $filePath;
+        $this->fileType = \pathinfo($filePath, \PATHINFO_EXTENSION);
     }
 
 
@@ -74,6 +81,15 @@ class Asset
     public function setHash (?string $hash) : void
     {
         $this->hash = $hash;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getFileType ()
+    {
+        return $this->fileType;
     }
     //endregion
 
