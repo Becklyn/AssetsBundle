@@ -18,4 +18,13 @@ class JavaScriptFile extends FileType
         $header = $this->generateGenericFileHeader($asset, $filePath, '/*', '*/');
         return $header . $fileContent;
     }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function getHtmlLinkFormat () : ?string
+    {
+        return '<script defer src="%s"%s></script>';
+    }
 }

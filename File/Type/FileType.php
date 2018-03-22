@@ -43,4 +43,19 @@ abstract class FileType
     {
         return false;
     }
+
+
+    /**
+     * Returns the link format to link to this file type from HTML.
+     *
+     * Is passed to sprintf() with the following parameters:
+     *      1: the url
+     *      2: integrity HTML attribute
+     *
+     * @return null|string
+     */
+    public function getHtmlLinkFormat () : ?string
+    {
+        return null;
+    }
 }

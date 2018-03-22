@@ -28,4 +28,13 @@ class CssFile extends FileType
         // must be loaded deferred, as it might have dependencies on other files
         return true;
     }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function getHtmlLinkFormat () : ?string
+    {
+        return '<link rel="stylesheet" href="%s"%s>';
+    }
 }
