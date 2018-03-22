@@ -15,7 +15,7 @@ abstract class FileType
      * @param string $fileContent
      * @return string
      */
-    public function addFileHeader (Asset $asset, string $filePath, string $fileContent) : string
+    public function prependFileHeader (Asset $asset, string $filePath, string $fileContent) : string
     {
         return $fileContent;
     }

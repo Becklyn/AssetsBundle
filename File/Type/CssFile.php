@@ -13,7 +13,7 @@ class CssFile extends FileType
     /**
      * @inheritDoc
      */
-    public function addFileHeader (Asset $asset, string $filePath, string $fileContent) : string
+    public function prependFileHeader (Asset $asset, string $filePath, string $fileContent) : string
     {
         $header = $this->generateGenericFileHeader($asset, $filePath, '/*', '*/');
         return $header . $fileContent;
