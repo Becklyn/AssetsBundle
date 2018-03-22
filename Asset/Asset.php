@@ -106,6 +106,20 @@ class Asset
 
 
     /**
+     * Returns the final storage path, where the production file is dumped to
+     *
+     * @return string
+     */
+    public function getDumpFilePath () : string
+    {
+        $dir = dirname($this->filePath);
+        $fileName = \basename($this->filePath, ".{$this->fileType}");
+
+        return "{$dir}/{$fileName}.{$this->hash}.{$this->fileType}";
+    }
+
+
+    /**
      * @param string $assetPath
      * @return Asset
      * @throws AssetsException
