@@ -2,8 +2,8 @@
 
 namespace Becklyn\AssetsBundle\Asset;
 
-use Becklyn\AssetsBundle\Entry\EntryNamespaces;
 use Becklyn\AssetsBundle\Exception\AssetsException;
+use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -11,7 +11,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Generates the asset instances
  */
-class AssetGenerator
+class AssetStorage
 {
     /**
      * @var ProcessorRegistry
@@ -20,9 +20,9 @@ class AssetGenerator
 
 
     /**
-     * @var EntryNamespaces
+     * @var NamespaceRegistry
      */
-    private $entryNamespaces;
+    private $namespaceRegistry;
 
 
     /**
@@ -45,14 +45,19 @@ class AssetGenerator
 
     /**
      * @param ProcessorRegistry $processorRegistry
-     * @param EntryNamespaces   $entryNamespaces
+     * @param NamespaceRegistry $namespaceRegistry
      * @param string            $publicPath the absolute path to the public/ (or web/) directory
      * @param string            $outputDir  the output dir relative to the public/ directory
      */
-    public function __construct (ProcessorRegistry $processorRegistry, EntryNamespaces $entryNamespaces, string $publicPath, string $outputDir)
+    public function __construct (
+        ProcessorRegistry $processorRegistry,
+        NamespaceRegistry $namespaceRegistry,
+        string $publicPath,
+        string $outputDir
+    )
     {
         $this->processorRegistry = $processorRegistry;
-        $this->entryNamespaces = $entryNamespaces;
+        $this->namespaceRegistry = $namespaceRegistry;
         $this->publicPath = rtrim($publicPath, "/");
         $this->outputDir = trim($outputDir, "/");
         $this->filesystem = new Filesystem();
@@ -60,35 +65,37 @@ class AssetGenerator
 
 
     /**
+     * Imports the given asset
+     *
      * @param string $assetPath
      * @return Asset
      * @throws AssetsException
      */
-    public function generateAsset (string $assetPath) : Asset
+    public function import (Asset $asset) : Asset
     {
-        $namespacedAsset = NamespacedAsset::createFromFullPath($assetPath);
-        $filePath = $this->entryNamespaces->getFilePath($namespacedAsset);
+        $filePath = $this->namespaceRegistry->getFilePath($asset);
 
         if (!\is_file($filePath))
         {
             throw new AssetsException(sprintf(
                 "Missing assets file: %s",
-                $assetPath
+                $asset->getAssetPath()
             ));
         }
 
-        $processor = $this->processorRegistry->get($assetPath);
+        $processor = $this->processorRegistry->get($asset);
         $fileContent = \file_get_contents($filePath);
 
         if (null !== $processor)
         {
-            $fileContent = $processor->process($assetPath, $fileContent);
+            $fileContent = $processor->process($asset, $fileContent);
         }
 
-        $hash = \base64_encode(\hash("sha256", $fileContent, true));
-        $asset = new Asset($this->getOutputDirectory($namespacedAsset), $filePath, $hash);
+        $asset->setHash(
+            \base64_encode(\hash("sha256", $fileContent, true))
+        );
 
-        $outputPath = "{$this->publicPath}/{$asset->getOutputFilePath()}";
+        $outputPath = "{$this->publicPath}/{$asset->getStorePath()}";
 
         // ensure that the target directory exists
         $this->filesystem->mkdir(dirname($outputPath));
@@ -97,26 +104,6 @@ class AssetGenerator
         $this->filesystem->dumpFile($outputPath, $fileContent);
 
         return $asset;
-    }
-
-
-    /**
-     * Generates the output directory
-     *
-     * @param string $assetPath
-     * @return string
-     */
-    private function getOutputDirectory (NamespacedAsset $asset) : string
-    {
-        $outputDirectory = "{$this->outputDir}/{$asset->getNamespace()}";
-        $dir = dirname($asset->getPath());
-
-        if ("." !== $dir)
-        {
-            $outputDirectory .= "/{$dir}";
-        }
-
-        return $outputDirectory;
     }
 
 
