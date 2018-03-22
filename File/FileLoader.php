@@ -2,20 +2,19 @@
 
 namespace Becklyn\AssetsBundle\File;
 
-
-use Becklyn\AssetsBundle\Asset\NamespacedAsset;
-use Becklyn\AssetsBundle\Entry\EntryNamespaces;
+use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Exception\FileNotFoundException;
+use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
 
 
 class FileLoader
 {
     /**
-     * @var EntryNamespaces
+     * @var NamespaceRegistry
      */
-    private $entryNamespaces;
+    private $namespaceRegistry;
 
 
     /**
@@ -25,13 +24,12 @@ class FileLoader
 
 
     /**
-     *
-     * @param EntryNamespaces   $entryNamespaces
+     * @param NamespaceRegistry $namespaceRegistry
      * @param ProcessorRegistry $processorRegistry
      */
-    public function __construct (EntryNamespaces $entryNamespaces, ProcessorRegistry $processorRegistry)
+    public function __construct (NamespaceRegistry $namespaceRegistry, ProcessorRegistry $processorRegistry)
     {
-        $this->entryNamespaces = $entryNamespaces;
+        $this->namespaceRegistry = $namespaceRegistry;
         $this->processorRegistry = $processorRegistry;
     }
 
@@ -44,15 +42,16 @@ class FileLoader
      *
      * @return string
      */
-    public function loadFile (string $assetPath) : string
+    public function loadFile (Asset $asset) : string
     {
-        $filePath = $this->getFilePath($assetPath);
-        $processor = $this->processorRegistry->get($filePath);
+        $filePath = $this->getFilePath($asset);
+        $processor = $this->processorRegistry->get($asset);
 
         if (!\is_file($filePath))
         {
             throw new FileNotFoundException(sprintf(
-                "Asset not found at '%s'.",
+                "Asset '%s' not found at '%s'.",
+                $asset->getAssetPath(),
                 $filePath
             ));
         }
@@ -63,14 +62,14 @@ class FileLoader
         {
             throw new FileNotFoundException(sprintf(
                 "Can't read asset file '%s' at '%s'.",
-                $assetPath,
+                $asset->getAssetPath(),
                 $filePath
             ));
         }
 
         if (null !== $processor)
         {
-            $fileContent = $processor->process($assetPath, $fileContent);
+            $fileContent = $processor->process($asset, $fileContent);
         }
 
         return $fileContent;
@@ -85,9 +84,8 @@ class FileLoader
      *
      * @throws AssetsException
      */
-    public function getFilePath (string $assetPath)
+    public function getFilePath (Asset $asset)
     {
-        $asset = NamespacedAsset::createFromFullPath($assetPath);
-        return $this->entryNamespaces->getFilePath($asset);
+        return $this->namespaceRegistry->getFilePath($asset);
     }
 }
