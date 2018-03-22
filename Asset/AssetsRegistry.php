@@ -15,7 +15,7 @@ class AssetsRegistry
 
 
     /**
-     * @var AssetGenerator
+     * @var AssetStorage
      */
     private $generator;
 
@@ -29,10 +29,10 @@ class AssetsRegistry
     /**
      *
      * @param AssetsCache       $cache
-     * @param AssetGenerator    $generator
+     * @param AssetStorage      $generator
      * @param ProcessorRegistry $processorRegistry
      */
-    public function __construct (AssetsCache $cache, AssetGenerator $generator, ProcessorRegistry $processorRegistry)
+    public function __construct (AssetsCache $cache, AssetStorage $generator, ProcessorRegistry $processorRegistry)
     {
         $this->cache = $cache;
         $this->generator = $generator;
@@ -51,31 +51,35 @@ class AssetsRegistry
     {
         $asset = $this->cache->get($assetPath);
 
-        return (null === $asset)
-            ? $this->addAsset($assetPath)
-            : $asset;
+        if (null !== $asset)
+        {
+            return $asset;
+        }
+
+        $asset = Asset::createFromAssetPath($assetPath);
+        return $this->addAsset($asset);
     }
 
 
     /**
      * Adds a list of asset paths
      *
-     * @param string[] $assetPaths
+     * @param Asset[] $assets
      * @throws AssetsException
      */
-    public function add (array $assetPaths, ?callable $progress) : void
+    public function add (array $assets, ?callable $progress) : void
     {
         $deferred = [];
 
-        foreach ($assetPaths as $assetPath)
+        foreach ($assets as $asset)
         {
-            if ($this->processorRegistry->has($assetPath))
+            if ($this->processorRegistry->has($asset))
             {
-                $deferred[] = $assetPath;
+                $deferred[] = $asset;
                 continue;
             }
 
-            $this->addAsset($assetPath);
+            $this->addAsset($asset);
 
             if (null !== $progress)
             {
@@ -83,9 +87,9 @@ class AssetsRegistry
             }
         }
 
-        foreach ($deferred as $assetPath)
+        foreach ($deferred as $asset)
         {
-            $this->addAsset($assetPath);
+            $this->addAsset($asset);
 
             if (null !== $progress)
             {
@@ -102,10 +106,11 @@ class AssetsRegistry
      * @return Asset
      * @throws AssetsException
      */
-    private function addAsset (string $assetPath) : Asset
+    private function addAsset (Asset $asset) : Asset
     {
-        $asset = $this->generator->generateAsset($assetPath);
-        $this->cache->add($assetPath, $asset);
+        $asset = $this->generator->import($asset);
+        $this->cache->add($asset);
+
         return $asset;
     }
 
