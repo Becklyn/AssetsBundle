@@ -3,11 +3,12 @@
 namespace Becklyn\AssetsBundle\File;
 
 
+use Becklyn\AssetsBundle\Asset\Asset;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
 
-class ExtensionMimeTypeGuesser
+class AssetMimeTypeGuesser
 {
     /**
      * @var array
@@ -86,21 +87,21 @@ class ExtensionMimeTypeGuesser
     /**
      * Guesses the mime type.
      *
-     * @param string $filePath
+     * @param Asset $asset
      * @return string
      */
-    public function guess (string $filePath) : string
+    public function guess (Asset $asset) : string
     {
         try
         {
-            $extension = \pathinfo($filePath, \PATHINFO_EXTENSION);
+            $predefinedType = self::$mimeTypes[$asset->getFileType()] ?? null;
 
-            if (isset(self::$mimeTypes[$extension]))
+            if (null !== $predefinedType)
             {
-                return self::$mimeTypes[$extension];
+                return $predefinedType;
             }
 
-            return $this->coreGuesser->guess($filePath);
+            return $this->coreGuesser->guess($asset->getFilePath());
         }
         catch (Exception $e)
         {
