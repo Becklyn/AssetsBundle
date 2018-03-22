@@ -2,18 +2,15 @@
 
 namespace Becklyn\AssetsBundle\Html;
 
+use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
 use Becklyn\AssetsBundle\Exception\AssetsException;
+use Becklyn\AssetsBundle\File\FileTypeRegistry;
 use Becklyn\AssetsBundle\Url\AssetUrl;
-use Symfony\Component\Routing\RouterInterface;
 
 
 class AssetHtmlGenerator
 {
-    const TYPE_CSS = "css";
-    const TYPE_JAVASCRIPT = "js";
-
-
     /**
      * @var AssetsRegistry
      */
@@ -27,6 +24,12 @@ class AssetHtmlGenerator
 
 
     /**
+     * @var FileTypeRegistry
+     */
+    private $fileTypeRegistry;
+
+
+    /**
      * @var bool
      */
     private $isDebug;
@@ -34,62 +37,49 @@ class AssetHtmlGenerator
 
     /**
      *
-     * @param AssetsRegistry $registry
-     * @param AssetUrl       $assetUrl
-     * @param bool           $isDebug
+     * @param AssetsRegistry   $registry
+     * @param AssetUrl         $assetUrl
+     * @param FileTypeRegistry $fileTypeRegistry
+     * @param bool             $isDebug
      */
-    public function __construct (AssetsRegistry $registry, AssetUrl $assetUrl, bool $isDebug)
+    public function __construct (AssetsRegistry $registry, AssetUrl $assetUrl, FileTypeRegistry $fileTypeRegistry, bool $isDebug)
     {
         $this->registry = $registry;
         $this->assetUrl = $assetUrl;
+        $this->fileTypeRegistry = $fileTypeRegistry;
         $this->isDebug = $isDebug;
     }
 
 
     /**
      *
-     * @param string   $type
      * @param string[] $assetPaths
      *
      * @throws AssetsException
      */
-    public function linkAssets (string $type, array $assetPaths) : string
+    public function linkAssets (array $assetPaths) : string
     {
-        switch ($type)
-        {
-            case self::TYPE_JAVASCRIPT:
-                return $this->link($assetPaths, '<script defer src="%s"%s></script>');
-
-            case self::TYPE_CSS:
-                return $this->link($assetPaths, '<link rel="stylesheet" href="%s"%s>');
-
-            default:
-                throw new AssetsException(sprintf(
-                    "Invalid asset type: %s",
-                    $type
-                ));
-        }
-    }
-
-
-    /**
-     * Links the given assets with the given HTML snippet.
-     *
-     * @param array  $assetPaths
-     * @param string $htmlSnippet   the template snippet. Needs to contain two placeholders.
-     * @return string
-     * @throws AssetsException
-     */
-    private function link (array $assetPaths, string $htmlSnippet)
-    {
+        /** @var Asset[] $assets */
+        $assets = \array_map([Asset::class, "createFromAssetPath"], $assetPaths);
         $html = "";
 
-        foreach ($assetPaths as $assetPath)
+        foreach ($assets as $asset)
         {
+            $fileType = $this->fileTypeRegistry->getFileType($asset);
+            $htmlLinkFormat = $fileType->getHtmlLinkFormat();
+
+            if (null === $htmlLinkFormat)
+            {
+                throw new AssetsException(sprintf(
+                    "No HTML link format found for file of type: %s",
+                    $asset->getFileType()
+                ));
+            }
+
             $html .= sprintf(
-                $htmlSnippet,
-                $this->assetUrl->generateUrl($assetPath),
-                $this->getIntegrityHtml($assetPath)
+                $htmlLinkFormat,
+                $this->assetUrl->generateUrl($asset),
+                $this->getIntegrityHtml($asset)
             );
         }
 
@@ -100,17 +90,17 @@ class AssetHtmlGenerator
     /**
      * Returns the integrity HTML snippet
      *
-     * @param string $assetPath
+     * @param Asset $asset
      * @return string
      * @throws AssetsException
      */
-    private function getIntegrityHtml (string $assetPath) : string
+    private function getIntegrityHtml (Asset $asset) : string
     {
         return $this->isDebug
             ? ""
             : sprintf(
                 ' integrity="sha256-%s"',
-                $this->registry->get($assetPath)->getDigest()
+                $this->registry->get($asset)->getHash()
             );
     }
 }
