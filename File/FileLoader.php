@@ -6,11 +6,16 @@ use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Exception\FileNotFoundException;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
-use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
 
 
 class FileLoader
 {
+    /**
+     * @var bool
+     */
+    private $isDebug;
+
+
     /**
      * @var NamespaceRegistry
      */
@@ -18,19 +23,21 @@ class FileLoader
 
 
     /**
-     * @var ProcessorRegistry
+     * @var FileTypeRegistry
      */
-    private $processorRegistry;
+    private $fileTypeRegistry;
 
 
     /**
+     * @param bool              $isDebug
      * @param NamespaceRegistry $namespaceRegistry
-     * @param ProcessorRegistry $processorRegistry
+     * @param FileTypeRegistry  $fileTypeRegistry
      */
-    public function __construct (NamespaceRegistry $namespaceRegistry, ProcessorRegistry $processorRegistry)
+    public function __construct (bool $isDebug, NamespaceRegistry $namespaceRegistry, FileTypeRegistry $fileTypeRegistry)
     {
+        $this->isDebug = $isDebug;
         $this->namespaceRegistry = $namespaceRegistry;
-        $this->processorRegistry = $processorRegistry;
+        $this->fileTypeRegistry = $fileTypeRegistry;
     }
 
 
@@ -45,7 +52,6 @@ class FileLoader
     public function loadFile (Asset $asset) : string
     {
         $filePath = $this->getFilePath($asset);
-        $processor = $this->processorRegistry->get($asset);
 
         if (!\is_file($filePath))
         {
@@ -67,10 +73,12 @@ class FileLoader
             ));
         }
 
-        if (null !== $processor)
-        {
-            $fileContent = $processor->process($asset, $fileContent);
-        }
+        $fileType = $this->fileTypeRegistry->getFileType($asset);
+
+        // prepend file header in dev and process in prod
+        $fileContent = $this->isDebug
+            ? $fileType->prependFileHeader($asset, $filePath, $fileContent)
+            : $fileType->processForProd($asset, $fileContent);
 
         return $fileContent;
     }
