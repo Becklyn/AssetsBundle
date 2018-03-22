@@ -2,6 +2,8 @@
 
 namespace Becklyn\AssetsBundle\Embed;
 
+use Becklyn\AssetsBundle\Asset\Asset;
+
 
 /**
  * Embeds a debug file header in the embedded files
@@ -15,16 +17,16 @@ class EmbedFileHeader
      * @param string $filePath
      * @return string
      */
-    public function getFileHeader (string $assetPath, string $filePath) : string
+    public function getFileHeader (Asset $asset, string $filePath) : string
     {
-        switch (\pathinfo($assetPath, \PATHINFO_EXTENSION))
+        switch ($asset->getFileType())
         {
             case "css":
             case "js":
-                return $this->getGenericFileHeader($assetPath, $filePath, '/*', '*/');
+                return $this->getGenericFileHeader($asset, $filePath, '/*', '*/');
 
             case "svg":
-                return $this->getGenericFileHeader($assetPath, $filePath, '<!--', '-->');
+                return $this->getGenericFileHeader($asset, $filePath, '<!--', '-->');
 
             default:
                 return "";
@@ -35,19 +37,19 @@ class EmbedFileHeader
     /**
      * Returns a generic file header
      *
-     * @param string $assetPath
+     * @param Asset  $asset
      * @param string $filePath
      * @param string $openingComment
      * @param string $closingComment
      * @return string
      */
-    private function getGenericFileHeader (string $assetPath, string $filePath, string $openingComment, string $closingComment) : string
+    private function getGenericFileHeader (Asset $asset, string $filePath, string $openingComment, string $closingComment) : string
     {
         // keep the blank line at the end, as php strips blank lines at the end of HEREDOC
         return <<<HEADER
 {$openingComment}
     Embed asset
-        {$assetPath}
+        {$asset->getAssetPath()}
     from file 
         {$filePath}
 {$closingComment}
