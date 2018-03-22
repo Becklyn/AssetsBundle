@@ -3,7 +3,6 @@
 namespace Becklyn\AssetsBundle\Controller;
 
 use Becklyn\AssetsBundle\Asset\Asset;
-use Becklyn\AssetsBundle\Embed\EmbedFileHeader;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\File\AssetMimeTypeGuesser;
 use Becklyn\AssetsBundle\File\FileLoader;
@@ -27,12 +26,6 @@ class EmbedController
 
 
     /**
-     * @var EmbedFileHeader
-     */
-    private $embedFileHeader;
-
-
-    /**
      * @var bool
      */
     private $isDebug;
@@ -41,14 +34,12 @@ class EmbedController
     /**
      * @param FileLoader           $loader
      * @param AssetMimeTypeGuesser $mimeTypeGuesser
-     * @param EmbedFileHeader      $embedFileHeader
      * @param bool                 $isDebug
      */
-    public function __construct (FileLoader $loader, AssetMimeTypeGuesser $mimeTypeGuesser, EmbedFileHeader $embedFileHeader, bool $isDebug)
+    public function __construct (FileLoader $loader, AssetMimeTypeGuesser $mimeTypeGuesser, bool $isDebug)
     {
         $this->mimeTypeGuesser = $mimeTypeGuesser;
         $this->loader = $loader;
-        $this->embedFileHeader = $embedFileHeader;
         $this->isDebug = $isDebug;
     }
 
@@ -67,8 +58,7 @@ class EmbedController
         try
         {
             $asset = new Asset($namespace, $path);
-            $filePath = $this->loader->getFilePath($asset);
-            $fileContent = $this->embedFileHeader->getFileHeader($asset, $filePath) . $this->loader->loadFile($asset);
+            $fileContent = $this->loader->loadFile($asset, FileLoader::MODE_DEV);
 
             $headers = [
                 "Content-Type" => "{$this->mimeTypeGuesser->guess($asset)};charset=utf-8",
