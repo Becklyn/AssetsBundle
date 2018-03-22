@@ -148,4 +148,42 @@ class Asset
             $assetPath
         ));
     }
+
+
+    /**
+     * Returns an asset at a relative path (in relation to the current asset)
+     *
+     * @param string $relativePath
+     */
+    public function getRelativeAsset (string $relativePath) : ?self
+    {
+        if ("/" === $relativePath)
+        {
+            return $this;
+        }
+
+        $segments = explode("/", rtrim($relativePath, "/"));
+        $dir = dirname($this->getFilePath());
+
+        while ("/" !== $dir && !empty($segments) && (".." === $segments[0] || "." === $segments[0]))
+        {
+            $segment = \array_shift($segments);
+
+            if (".." === $segment)
+            {
+                $dir = dirname($dir);
+            }
+        }
+
+        // if the import has too many levels up
+        if ("/" === $dir || empty($segments))
+        {
+            return null;
+        }
+
+        return new Asset(
+            $this->getNamespace(),
+            $dir . "/" . \implode("/", $segments)
+        );
+    }
 }
