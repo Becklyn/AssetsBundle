@@ -68,8 +68,8 @@ class AssetStorageTest extends TestCase
 
     public function testGenerate ()
     {
-        $expectedOutputFilePath = "other/test/css/app2.zu+_RiyZqaqqHgSHa3Xv.css";
-        $outputPath = "{$this->outDir}/assets/{$expectedOutputFilePath}";
+        $expectedOutputFilePath = "test/css/app2.zu+_RiyZqaqqHgSHa3Xv.css";
+        $outputPath = "{$this->outDir}/assets/other/{$expectedOutputFilePath}";
 
         self::assertFileNotExists($outputPath);
         $asset = $this->storage->import(new Asset("other", "test/css/app2.css"));
@@ -90,7 +90,7 @@ class AssetStorageTest extends TestCase
         $asset = $this->storage->import(new Asset("bundles", "test/css/app.css"));
 
         self::assertSame("U9K1d1vkqVvk8f9j82mik2tMIxI8E4C/QlXS/T6qgeE=", $asset->getHash());
-        self::assertSame("bundles/test/css/app.U9K1d1vkqVvk8f9j82mi.css", $asset->getDumpFilePath());
+        self::assertSame("test/css/app.U9K1d1vkqVvk8f9j82mi.css", $asset->getDumpFilePath());
     }
 
 

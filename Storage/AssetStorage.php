@@ -63,7 +63,7 @@ class AssetStorage
             \base64_encode(\hash("sha256", $fileContent, true))
         );
 
-        $outputPath = "{$this->storagePath}/{$asset->getDumpFilePath()}";
+        $outputPath = "{$this->storagePath}/{$asset->getNamespace()}/{$asset->getDumpFilePath()}";
 
         // ensure that the target directory exists
         $this->filesystem->mkdir(dirname($outputPath));

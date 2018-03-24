@@ -144,7 +144,7 @@ class Asset
             ? ".{$this->fileNameHash}"
             : "";
 
-        return "{$this->getNamespace()}/{$dir}{$fileName}{$hash}.{$this->fileType}";
+        return "{$dir}{$fileName}{$hash}.{$this->fileType}";
     }
 
 
