@@ -3,9 +3,12 @@
 namespace Becklyn\AssetsBundle\Url;
 
 
+use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
 use Becklyn\AssetsBundle\Asset\NamespacedAsset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
+use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -15,7 +18,7 @@ class AssetUrl
     /**
      * @var AssetsRegistry
      */
-    private $registry;
+    private $assetsRegistry;
 
 
     /**
@@ -25,30 +28,30 @@ class AssetUrl
 
 
     /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-
-    /**
      * @var bool
      */
     private $isDebug;
 
 
     /**
-     *
-     * @param AssetsRegistry  $registry
-     * @param RouterInterface $router
-     * @param RequestStack    $requestStack
-     * @param bool            $isDebug
+     * @var LoggerInterface
      */
-    public function __construct (AssetsRegistry $registry, RouterInterface $router, RequestStack $requestStack, bool $isDebug)
+    private $logger;
+
+
+    /**
+     *
+     * @param AssetsRegistry  $assetsRegistry
+     * @param RouterInterface $router
+     * @param bool            $isDebug
+     * @param LoggerInterface $logger
+     */
+    public function __construct (AssetsRegistry $assetsRegistry, RouterInterface $router, bool $isDebug, LoggerInterface $logger)
     {
-        $this->registry = $registry;
+        $this->assetsRegistry = $assetsRegistry;
         $this->router = $router;
-        $this->requestStack = $requestStack;
         $this->isDebug = $isDebug;
+        $this->logger = $logger;
     }
 
 
@@ -57,43 +60,53 @@ class AssetUrl
      * @return string
      * @throws AssetsException
      */
-    public function generateUrl (string $assetPath) : string
+    public function generateUrl (Asset $asset) : string
     {
-        if (!$this->isDebug)
+        $filePath = $asset->getFilePath();
+
+        try
         {
-            $request = $this->requestStack->getMasterRequest();
+            // always load asset to catch missing assets in dev
+            $cachedAsset = $this->assetsRegistry->get($asset);
 
-            if (null === $request)
+            // use dumped file path in prod
+            if (!$this->isDebug)
             {
-                throw new AssetsException(sprintf(
-                    "Can't embed asset '%s' without request.",
-                    $assetPath
-                ));
-            }
-
-            try
-            {
-                return "{$request->getBaseUrl()}/{$this->registry->get($assetPath)->getOutputFilePath()}";
-            }
-            catch (AssetsException $e)
-            {
-                // In debug we want to let the developer know that there's a bug due to a missing asset
-                // so we just re-throw the exception.
-                if ($this->isDebug)
-                {
-                    throw $e;
-                }
-
-                // In prod we don't want to potentially bring down the entire since we can't resolve an asset,
-                // so we're returning the asset path un-altered so the browser can resolve it to a 404
-                return $assetPath;
+                $filePath = $cachedAsset->getDumpFilePath();
             }
         }
+        catch (AssetsException $e)
+        {
+            // In debug we want to let the developer know that there's a bug due to a missing asset
+            // so we just re-throw the exception.
+            if ($this->isDebug)
+            {
+                throw $e;
+            }
 
-        $asset = NamespacedAsset::createFromFullPath($assetPath);
-        return $this->router->generate("becklyn_assets_embed", [
+            // In prod we don't want to potentially bring down the entire since we can't resolve an asset,
+            // so we're returning the asset path un-altered so the browser can resolve it to a 404
+            // so just log the error
+            $this->logger->error("Can't load asset {assetPath}", [
+                "assetPath" => $asset->getAssetPath(),
+                "asset" => $asset,
+            ]);
+        }
+
+        return $this->router->generate(AssetsRouteLoader::ROUTE_NAME, [
             "namespace" => $asset->getNamespace(),
-            "path" => $asset->getPath(),
+            "path" => $filePath,
         ]);
+    }
+
+
+    /**
+     * @param string $assetPath
+     * @return string
+     * @throws AssetsException
+     */
+    public function generateUrlFromAssetPath (string $assetPath) : string
+    {
+        return $this->generateUrl(Asset::createFromAssetPath($assetPath));
     }
 }

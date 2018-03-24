@@ -11,8 +11,17 @@ use Symfony\Component\Routing\RouteCollection;
 
 class AssetsRouteLoader extends Loader
 {
+    public const ROUTE_NAME = "becklyn_assets.embed";
+
+    /**
+     * @var string
+     */
     private $outputDir;
 
+
+    /**
+     * @param string $outputDir
+     */
     public function __construct (string $outputDir)
     {
         $this->outputDir = $outputDir;
@@ -37,7 +46,7 @@ class AssetsRouteLoader extends Loader
             ]
         );
 
-        $collection->add("becklyn_assets_embed", $route);
+        $collection->add(self::ROUTE_NAME, $route);
 
         return $collection;
     }
