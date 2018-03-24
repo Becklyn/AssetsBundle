@@ -22,13 +22,7 @@ class AssetStorage
     /**
      * @var string
      */
-    private $publicPath;
-
-
-    /**
-     * @var string
-     */
-    private $outputDir;
+    private $storagePath;
 
 
     /**
@@ -49,8 +43,7 @@ class AssetStorage
     )
     {
         $this->fileLoader = $fileLoader;
-        $this->publicPath = rtrim($publicPath, "/");
-        $this->outputDir = trim($outputDir, "/");
+        $this->storagePath = rtrim($publicPath, "/") . "/" . trim($outputDir, "/");
         $this->filesystem = new Filesystem();
     }
 
@@ -70,7 +63,7 @@ class AssetStorage
             \base64_encode(\hash("sha256", $fileContent, true))
         );
 
-        $outputPath = "{$this->publicPath}/{$asset->getDumpFilePath()}";
+        $outputPath = "{$this->storagePath}/{$asset->getDumpFilePath()}";
 
         // ensure that the target directory exists
         $this->filesystem->mkdir(dirname($outputPath));
@@ -87,6 +80,6 @@ class AssetStorage
      */
     public function removeAllStoredFiles () : void
     {
-        $this->filesystem->remove("{$this->publicPath}/{$this->outputDir}");
+        $this->filesystem->remove($this->storagePath);
     }
 }
