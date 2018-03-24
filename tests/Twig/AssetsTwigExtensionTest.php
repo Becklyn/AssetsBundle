@@ -40,8 +40,7 @@ class AssetsTwigExtensionTest extends TestCase
         self::assertArraySubset([
             "asset",
             "asset_inline",
-            "assets_css",
-            "assets_js",
+            "assets_link",
         ], $functions);
     }
 }
