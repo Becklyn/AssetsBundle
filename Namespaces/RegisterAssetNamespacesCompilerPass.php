@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 /**
  * A helper compiler pass that automatically registers the given asset namespaces
  */
-class RegisterEntryNamespacesCompilerPass implements CompilerPassInterface
+class RegisterAssetNamespacesCompilerPass implements CompilerPassInterface
 {
     /**
      * Mapping from namespace => path.
