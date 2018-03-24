@@ -14,7 +14,7 @@ trait CreateHashedAssetTrait
      * @param string $hash
      * @return Asset
      */
-    private function createAssetWithHash (string $namespace, string $path, string $hash) : Asset
+    private function createdHashedAsset (string $namespace, string $path, string $hash) : Asset
     {
         $asset = new Asset($namespace, $path);
         $asset->setHash($hash);

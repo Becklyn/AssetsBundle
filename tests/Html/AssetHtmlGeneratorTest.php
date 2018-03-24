@@ -29,13 +29,13 @@ class AssetHtmlGeneratorTest extends TestCase
     protected function setUp ()
     {
         $this->js = [
-            $this->createAssetWithHash("out", "js/first.js", "j1"),
-            $this->createAssetWithHash("out", "js/second.js", "j2"),
+            $this->createdHashedAsset("out", "js/first.js", "j1"),
+            $this->createdHashedAsset("out", "js/second.js", "j2"),
         ];
 
         $this->css = [
-            $this->createAssetWithHash("out", "css/first.css", "c1"),
-            $this->createAssetWithHash("out", "css/second.css", "c2"),
+            $this->createdHashedAsset("out", "css/first.css", "c1"),
+            $this->createdHashedAsset("out", "css/second.css", "c2"),
         ];
     }
 
@@ -151,7 +151,7 @@ class AssetHtmlGeneratorTest extends TestCase
             ->willReturnCallback(
                 function (Asset $asset)
                 {
-                    return $this->createAssetWithHash($asset->getNamespace(), $asset->getFilePath(), "hash");
+                    return $this->createdHashedAsset($asset->getNamespace(), $asset->getFilePath(), "hash");
                 }
             );
 
@@ -173,7 +173,7 @@ class AssetHtmlGeneratorTest extends TestCase
             ->willReturnCallback(
                 function (Asset $asset)
                 {
-                    return $this->createAssetWithHash($asset->getNamespace(), $asset->getFilePath(), "hash");
+                    return $this->createdHashedAsset($asset->getNamespace(), $asset->getFilePath(), "hash");
                 }
             );
 
