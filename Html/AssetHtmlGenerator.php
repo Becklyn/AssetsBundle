@@ -79,7 +79,7 @@ class AssetHtmlGenerator
             $html .= sprintf(
                 $htmlLinkFormat,
                 $this->assetUrl->generateUrl($asset),
-                $this->getIntegrityHtml($asset)
+                $this->isDebug ? "" : $this->getIntegrityHtml($asset)
             );
         }
 
