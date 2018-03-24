@@ -49,7 +49,7 @@ class Asset
     public function __construct (string $namespace, string $filePath)
     {
         $this->namespace = $namespace;
-        $this->filePath = $filePath;
+        $this->filePath = ltrim($filePath, "/");
         $this->fileType = \pathinfo($filePath, \PATHINFO_EXTENSION);
     }
 
@@ -140,7 +140,11 @@ class Asset
             ? ""
             : "{$dir}/";
 
-        return "{$this->getNamespace()}/{$dir}{$fileName}.{$this->fileNameHash}.{$this->fileType}";
+        $hash = !empty($this->fileNameHash)
+            ? ".{$this->fileNameHash}"
+            : "";
+
+        return "{$this->getNamespace()}/{$dir}{$fileName}{$hash}.{$this->fileType}";
     }
 
 
