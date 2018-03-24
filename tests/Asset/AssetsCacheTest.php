@@ -3,7 +3,7 @@
 namespace Tests\Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Asset\Asset;
-use Becklyn\AssetsBundle\Asset\AssetGenerator;
+use Becklyn\AssetsBundle\Asset\AssetStorage;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
 use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemInterface;
@@ -41,16 +41,18 @@ class AssetsCacheTest extends TestCase
             ->method("isHit")
             ->willReturn(true);
 
-        $asset = new Asset("test", "test", "test");
+        $cachedAsset = new Asset("test", "test.js");
+        $cachedAsset->setHash("hash");
+        $asset = new Asset("test", "test.js");
 
         $cacheItem
             ->method("get")
             ->willReturn([
-                "test.js" => $asset,
+                "@test/test.js" => $asset,
             ]);
 
         $assetsCache = new AssetsCache($cachePool);
-        self::assertSame($asset, $assetsCache->get("test.js"));
+        self::assertSame($asset, $assetsCache->get($asset));
     }
 
 
@@ -71,7 +73,8 @@ class AssetsCacheTest extends TestCase
             ->willReturn([]);
 
         $assetsCache = new AssetsCache($cachePool);
-        self::assertNull($assetsCache->get("test.js"));
+        $asset = new Asset("test", "test.js");
+        self::assertNull($assetsCache->get($asset));
     }
 
 
@@ -87,8 +90,6 @@ class AssetsCacheTest extends TestCase
             ->method("isHit")
             ->willReturn(false);
 
-        $asset = new Asset("test", "test", "test");
-
         // don't make assumptions about the internals here
         $cacheItem
             ->expects(self::once())
@@ -100,9 +101,10 @@ class AssetsCacheTest extends TestCase
             ->with($cacheItem);
 
         $assetsCache = new AssetsCache($cachePool);
-        self::assertNull($assetsCache->get("test.js"));
-        $assetsCache->add("test.js", $asset);
-        self::assertSame($asset, $assetsCache->get("test.js"));
+        $asset = new Asset("test", "test.js");
+        self::assertNull($assetsCache->get($asset));
+        $assetsCache->add($asset);
+        self::assertSame($asset, $assetsCache->get($asset));
     }
 
 
@@ -124,7 +126,7 @@ class AssetsCacheTest extends TestCase
             ->method("save")
             ->with($cacheItem);
 
-        $asset = new Asset("test", "test", "test");
+        $asset = new Asset("test", "test.js");
 
         // prime cache
         $cacheItem
@@ -134,16 +136,16 @@ class AssetsCacheTest extends TestCase
         $cacheItem
             ->method("get")
             ->willReturn([
-                "test.js" => $asset,
+                "@test/test.js" => $asset,
             ]);
 
         $assetsCache = new AssetsCache($cachePool);
         // check that item is in cache
-        self::assertSame($asset, $assetsCache->get("test.js"));
+        self::assertSame($asset, $assetsCache->get($asset));
 
         // clear cache
         $assetsCache->clear();
 
-        self::assertNull($assetsCache->get("test.js"));
+        self::assertNull($assetsCache->get($asset));
     }
 }
