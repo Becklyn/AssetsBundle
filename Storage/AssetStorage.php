@@ -1,7 +1,8 @@
 <?php
 
-namespace Becklyn\AssetsBundle\Asset;
+namespace Becklyn\AssetsBundle\Storage;
 
+use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\File\FileLoader;
 use Symfony\Component\Filesystem\Filesystem;

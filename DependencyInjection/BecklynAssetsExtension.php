@@ -2,9 +2,9 @@
 
 namespace Becklyn\AssetsBundle\DependencyInjection;
 
-use Becklyn\AssetsBundle\Asset\AssetStorage;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
+use Becklyn\AssetsBundle\Storage\AssetStorage;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;

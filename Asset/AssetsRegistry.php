@@ -4,6 +4,7 @@ namespace Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\File\FileTypeRegistry;
+use Becklyn\AssetsBundle\Storage\AssetStorage;
 
 
 class AssetsRegistry
