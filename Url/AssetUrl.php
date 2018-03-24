@@ -34,19 +34,19 @@ class AssetUrl
 
 
     /**
-     * @var LoggerInterface
+     * @var LoggerInterface|null
      */
     private $logger;
 
 
     /**
      *
-     * @param AssetsRegistry  $assetsRegistry
-     * @param RouterInterface $router
-     * @param bool            $isDebug
-     * @param LoggerInterface $logger
+     * @param AssetsRegistry       $assetsRegistry
+     * @param RouterInterface      $router
+     * @param bool                 $isDebug
+     * @param LoggerInterface|null $logger
      */
-    public function __construct (AssetsRegistry $assetsRegistry, RouterInterface $router, bool $isDebug, LoggerInterface $logger)
+    public function __construct (AssetsRegistry $assetsRegistry, RouterInterface $router, bool $isDebug, ?LoggerInterface $logger)
     {
         $this->assetsRegistry = $assetsRegistry;
         $this->router = $router;
@@ -84,13 +84,16 @@ class AssetUrl
                 throw $e;
             }
 
-            // In prod we don't want to potentially bring down the entire since we can't resolve an asset,
-            // so we're returning the asset path un-altered so the browser can resolve it to a 404
-            // so just log the error
-            $this->logger->error("Can't load asset {assetPath}", [
-                "assetPath" => $asset->getAssetPath(),
-                "asset" => $asset,
-            ]);
+            if (null !== $this->logger)
+            {
+                // In prod we don't want to potentially bring down the entire since we can't resolve an asset,
+                // so we're returning the asset path un-altered so the browser can resolve it to a 404
+                // so just log the error
+                $this->logger->error("Can't load asset {assetPath}", [
+                    "assetPath" => $asset->getAssetPath(),
+                    "asset" => $asset,
+                ]);
+            }
         }
 
         return $this->router->generate(AssetsRouteLoader::ROUTE_NAME, [
