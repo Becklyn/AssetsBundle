@@ -18,7 +18,7 @@ class DependencyMap
      *
      * @param array $dependencyMap
      */
-    public function __construct (array $dependencyMap)
+    public function __construct (array $dependencyMap = [])
     {
         $this->map = $dependencyMap;
     }
