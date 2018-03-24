@@ -97,8 +97,9 @@ class CssImportRewriter
 
         if (null !== $assetAtPath)
         {
-            // if an asset was found, overwrite the basename of the path with the cached asset
-            return dirname($path) . "/{$assetAtPath->getDumpFilePath()}";
+            // only overwrite the file name of the import
+            $baseName = \basename($assetAtPath->getDumpFilePath());
+            return \preg_replace('~(?<=^|/)[^/]*?$~', $baseName, $path);
         }
 
         return $path;
