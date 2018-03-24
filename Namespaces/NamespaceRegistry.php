@@ -22,11 +22,10 @@ class NamespaceRegistry implements \IteratorAggregate
      */
     private $projectDir;
 
+
     /**
      * @param string $projectDir
      * @param array  $entries
-     *
-     * @throws AssetsException
      */
     public function __construct (string $projectDir, array $entries = [])
     {
