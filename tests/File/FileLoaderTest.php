@@ -37,7 +37,7 @@ class FileLoaderTest extends TestCase
             "bundles" => "public/bundles"
         ]);
 
-        $fileTypes = new FileTypeRegistry([], new GenericFile());
+        $fileTypes = new FileTypeRegistry(new GenericFile());
 
         $this->loader = new FileLoader($this->namespaceRegistry, $fileTypes);
     }
@@ -100,9 +100,9 @@ class FileLoaderTest extends TestCase
             ->method("prependFileHeader")
             ->willReturnArgument(2);
 
-        $fileTypes = new FileTypeRegistry([
+        $fileTypes = new FileTypeRegistry(new GenericFile(), [
             "css" => $testFileType,
-        ], new GenericFile());
+        ]);
 
         $loader = new FileLoader($this->namespaceRegistry, $fileTypes);
         $loader->loadFile(new Asset("bundles", "test/css/app.css"), FileLoader::MODE_DEV);
@@ -123,9 +123,9 @@ class FileLoaderTest extends TestCase
             ->method("processForProd")
             ->willReturnArgument(1);
 
-        $fileTypes = new FileTypeRegistry([
+        $fileTypes = new FileTypeRegistry(new GenericFile(), [
             "css" => $testFileType,
-        ], new GenericFile());
+        ]);
 
         $loader = new FileLoader($this->namespaceRegistry, $fileTypes);
         $loader->loadFile(new Asset("bundles", "test/css/app.css"), FileLoader::MODE_PROD);
@@ -145,9 +145,9 @@ class FileLoaderTest extends TestCase
             ->expects(self::never())
             ->method("processForProd");
 
-        $fileTypes = new FileTypeRegistry([
+        $fileTypes = new FileTypeRegistry(new GenericFile(), [
             "css" => $testFileType,
-        ], new GenericFile());
+        ]);
 
         $loader = new FileLoader($this->namespaceRegistry, $fileTypes);
         $loader->loadFile(new Asset("bundles", "test/css/app.css"), FileLoader::MODE_UNTOUCHED);
@@ -176,9 +176,9 @@ class FileLoaderTest extends TestCase
             ->method("processForProd")
             ->willReturnArgument(1);
 
-        $fileTypes = new FileTypeRegistry([
+        $fileTypes = new FileTypeRegistry($genericFileType, [
             "css" => $testFileType,
-        ], $genericFileType);
+        ]);
 
         $loader = new FileLoader($this->namespaceRegistry, $fileTypes);
         $loader->loadFile(new Asset("bundles", "test/js/test.js"), FileLoader::MODE_PROD);

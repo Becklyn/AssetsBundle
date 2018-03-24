@@ -58,10 +58,10 @@ class AssetHtmlGeneratorTest extends TestCase
             ->method("rewriteImports")
             ->willReturnArgument(1);
 
-        $fileTypeRegistry = new FileTypeRegistry([
+        $fileTypeRegistry = new FileTypeRegistry(new GenericFile(), [
             "js" => new JavaScriptFile(),
             "css" => new CssFile($importRewriter),
-        ], new GenericFile());
+        ]);
 
         $assetUrl
             ->method("generateUrl")

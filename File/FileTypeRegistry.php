@@ -13,6 +13,12 @@ use Becklyn\AssetsBundle\File\Type\SvgFile;
 class FileTypeRegistry
 {
     /**
+     * @var FileType
+     */
+    private $genericFileType;
+
+
+    /**
      * The file types mapped by file extension
      *
      * @var array<string,FileType>
@@ -21,19 +27,14 @@ class FileTypeRegistry
 
 
     /**
-     * @var FileType
-     */
-    private $genericFileType;
-
-
-    /**
-     * @param array    $fileTypes
+     *
      * @param FileType $genericFileType
+     * @param array    $specializedFileTypes    the mapping of `extension => FileType` of all specialized file types
      */
-    public function __construct (array $fileTypes, FileType $genericFileType)
+    public function __construct (FileType $genericFileType, array $specializedFileTypes = [])
     {
-        $this->fileTypes = $fileTypes;
         $this->genericFileType = $genericFileType;
+        $this->fileTypes = $specializedFileTypes;
     }
 
 

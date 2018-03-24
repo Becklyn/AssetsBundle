@@ -47,7 +47,7 @@ class AssetStorageTest extends TestCase
 
 
         $this->storage = new AssetStorage(
-            new FileLoader($namespaces, new FileTypeRegistry([], new GenericFile())),
+            new FileLoader($namespaces, new FileTypeRegistry(new GenericFile())),
             $this->outDir,
             "assets"
         );

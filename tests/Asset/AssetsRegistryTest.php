@@ -26,7 +26,7 @@ class AssetsRegistryTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $registry = new AssetsRegistry($cache, $storage, new FileTypeRegistry([], new GenericFile()));
+        $registry = new AssetsRegistry($cache, $storage, new FileTypeRegistry(new GenericFile()));
         return [$registry, $cache, $storage];
     }
 
