@@ -116,7 +116,11 @@ class Asset
         $dir = dirname($this->filePath);
         $fileName = \basename($this->filePath, ".{$this->fileType}");
 
-        return "{$dir}/{$fileName}.{$this->hash}.{$this->fileType}";
+        $dir = "." === $dir
+            ? ""
+            : "{$dir}/";
+
+        return "{$dir}{$fileName}.{$this->hash}.{$this->fileType}";
     }
 
 
