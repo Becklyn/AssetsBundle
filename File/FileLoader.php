@@ -89,7 +89,7 @@ class FileLoader
     /**
      * Returns the file path for the given asset
      *
-     * @param string $assetPath
+     * @param Asset $asset
      * @return string
      *
      * @throws AssetsException
