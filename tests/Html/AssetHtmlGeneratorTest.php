@@ -16,27 +16,15 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
+use Tests\Becklyn\AssetsBundle\CreateHashedAssetTrait;
 
 
 class AssetHtmlGeneratorTest extends TestCase
 {
+    use CreateHashedAssetTrait;
+
     private $js = [];
     private $css = [];
-
-
-    /**
-     * @param string $namespace
-     * @param string $path
-     * @param string $hash
-     * @return Asset
-     */
-    private function createAssetWithHash (string $namespace, string $path, string $hash) : Asset
-    {
-        $asset = new Asset($namespace, $path);
-        $asset->setHash($hash);
-        return $asset;
-    }
-
 
     protected function setUp ()
     {
