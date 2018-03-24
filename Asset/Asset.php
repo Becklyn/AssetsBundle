@@ -84,10 +84,11 @@ class Asset
 
     /**
      * @param null|string $hash
+     * @param bool        $setFileNameHash
      */
-    public function setHash (?string $hash) : void
+    public function setHash (?string $hash, bool $setFileNameHash = true) : void
     {
-        if (null !== $hash)
+        if ($setFileNameHash && null !== $hash)
         {
             $fileNameHash = rtrim($hash, "=");
             $fileNameHash = \strtr($fileNameHash, [

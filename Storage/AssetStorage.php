@@ -5,6 +5,7 @@ namespace Becklyn\AssetsBundle\Storage;
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\File\FileLoader;
+use Becklyn\AssetsBundle\File\FileTypeRegistry;
 use Symfony\Component\Filesystem\Filesystem;
 
 
@@ -20,6 +21,12 @@ class AssetStorage
 
 
     /**
+     * @var FileTypeRegistry
+     */
+    private $fileTypeRegistry;
+
+
+    /**
      * @var string
      */
     private $storagePath;
@@ -32,17 +39,20 @@ class AssetStorage
 
 
     /**
-     * @param FileLoader $fileLoader
-     * @param string     $publicPath the absolute path to the public/ (or web/) directory
-     * @param string     $outputDir  the output dir relative to the public/ directory
+     * @param FileLoader       $fileLoader
+     * @param FileTypeRegistry $fileTypeRegistry
+     * @param string           $publicPath the absolute path to the public/ (or web/) directory
+     * @param string           $outputDir  the output dir relative to the public/ directory
      */
     public function __construct (
         FileLoader $fileLoader,
+        FileTypeRegistry $fileTypeRegistry,
         string $publicPath,
         string $outputDir
     )
     {
         $this->fileLoader = $fileLoader;
+        $this->fileTypeRegistry = $fileTypeRegistry;
         $this->storagePath = rtrim($publicPath, "/") . "/" . trim($outputDir, "/");
         $this->filesystem = new Filesystem();
     }
@@ -58,9 +68,11 @@ class AssetStorage
     public function import (Asset $asset) : Asset
     {
         $fileContent = $this->fileLoader->loadFile($asset, FileLoader::MODE_PROD);
+        $fileType = $this->fileTypeRegistry->getFileType($asset);
 
         $asset->setHash(
-            \base64_encode(\hash("sha256", $fileContent, true))
+            \base64_encode(\hash("sha256", $fileContent, true)),
+            $fileType->shouldIncludeHashInFileName()
         );
 
         $outputPath = "{$this->storagePath}/{$asset->getNamespace()}/{$asset->getDumpFilePath()}";

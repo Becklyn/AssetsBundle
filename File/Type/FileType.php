@@ -58,4 +58,15 @@ abstract class FileType
     {
         return null;
     }
+
+
+    /**
+     * Flag whether the file name of the dumped file should contain the hash
+     *
+     * @return bool
+     */
+    public function shouldIncludeHashInFileName () : bool
+    {
+        return true;
+    }
 }

@@ -5,6 +5,7 @@ namespace Tests\Becklyn\AssetsBundle\Storage;
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\File\FileLoader;
 use Becklyn\AssetsBundle\File\FileTypeRegistry;
+use Becklyn\AssetsBundle\File\Type\FileType;
 use Becklyn\AssetsBundle\File\Type\GenericFile;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Becklyn\AssetsBundle\Storage\AssetStorage;
@@ -45,9 +46,18 @@ class AssetStorageTest extends TestCase
             "other" => "other",
         ]);
 
+        $fileTypeRegistry = new FileTypeRegistry(new GenericFile(), [
+            "js" => new class extends FileType {
+                public function shouldIncludeHashInFileName () : bool
+                {
+                    return false;
+                }
+            },
+        ]);
 
         $this->storage = new AssetStorage(
-            new FileLoader($namespaces, new FileTypeRegistry(new GenericFile())),
+            new FileLoader($namespaces, $fileTypeRegistry),
+            $fileTypeRegistry,
             $this->outDir,
             "assets"
         );
@@ -66,6 +76,9 @@ class AssetStorageTest extends TestCase
     }
 
 
+    /**
+     * Test file import with hashed file name
+     */
     public function testGenerate ()
     {
         $expectedOutputFilePath = "test/css/app2.zu+_RiyZqaqqHgSHa3Xv.css";
@@ -80,6 +93,28 @@ class AssetStorageTest extends TestCase
 
         self::assertFileEquals(
             "{$this->fixtures}/other/test/css/app2.css",
+            $outputPath
+        );
+    }
+
+
+    /**
+     * Tests the file generation with a file type that should not include hashes in the file name
+     */
+    public function testGenerateWithoutHash ()
+    {
+        $expectedOutputFilePath = "test/js/test.js";
+        $outputPath = "{$this->outDir}/assets/bundles/{$expectedOutputFilePath}";
+
+        self::assertFileNotExists($outputPath);
+        $asset = $this->storage->import(new Asset("bundles", "test/js/test.js"));
+        self::assertFileExists($outputPath);
+
+        self::assertSame("47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=", $asset->getHash());
+        self::assertSame($expectedOutputFilePath, $asset->getDumpFilePath());
+
+        self::assertFileEquals(
+            "{$this->fixtures}/bundles/test/js/test.js",
             $outputPath
         );
     }

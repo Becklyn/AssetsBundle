@@ -27,4 +27,13 @@ class JavaScriptFile extends FileType
     {
         return '<script defer src="%s"%s></script>';
     }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function shouldIncludeHashInFileName () : bool
+    {
+        return false;
+    }
 }
