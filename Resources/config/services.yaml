@@ -5,50 +5,51 @@ services:
 
 
     Becklyn\AssetsBundle\Asset\AssetsCache: ~
-
-    Becklyn\AssetsBundle\Asset\AssetGenerator:
-        $publicPath: "%kernel.project_dir%/public"
-        $outputDir: "assets"
-
     Becklyn\AssetsBundle\Asset\AssetsRegistry: ~
     Becklyn\AssetsBundle\Cache\CacheWarmer: ~
-
-    Becklyn\AssetsBundle\Command\AssetsCacheCommand:
-        tags:
-            - { name: console.command, command: becklyn:assets:reset }
+    Becklyn\AssetsBundle\Command\AssetsInstallCommand: ~
 
     Becklyn\AssetsBundle\Command\AssetsNamespacesCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-        tags:
-            - { name: console.command, command: becklyn:assets:namespaces }
+        $projectDir: '%kernel.project_dir%'
 
     Becklyn\AssetsBundle\Controller\EmbedController:
         arguments:
             $isDebug: '%kernel.debug%'
         public: true
 
-    Becklyn\AssetsBundle\Embed\EmbedFileHeader: ~
-
-    Becklyn\AssetsBundle\Entry\EntryNamespaces:
-        $projectDir: '%kernel.project_dir%'
-
-    Becklyn\AssetsBundle\File\ExtensionMimeTypeGuesser: ~
+    # the first parameter is set in the bundle extension
+    Becklyn\AssetsBundle\Dependency\DependencyMap: ~
+    Becklyn\AssetsBundle\File\AssetMimeTypeGuesser: ~
     Becklyn\AssetsBundle\File\FileLoader: ~
-    Becklyn\AssetsBundle\Finder\AssetsFinder: ~
 
+    Becklyn\AssetsBundle\File\FileTypeRegistry:
+        $genericFileType: '@Becklyn\AssetsBundle\File\Type\GenericFile'
+        $specializedFileTypes:
+            css: '@Becklyn\AssetsBundle\File\Type\CssFile'
+            js: '@Becklyn\AssetsBundle\File\Type\JavaScriptFile'
+            svg: '@Becklyn\AssetsBundle\File\Type\SvgFile'
+
+    Becklyn\AssetsBundle\File\Type\CssFile: ~
+    Becklyn\AssetsBundle\File\Type\GenericFile: ~
+    Becklyn\AssetsBundle\File\Type\JavaScriptFile: ~
+    Becklyn\AssetsBundle\File\Type\SvgFile: ~
+    Becklyn\AssetsBundle\Finder\AssetsFinder: ~
     Becklyn\AssetsBundle\Html\AssetHtmlGenerator:
         public: true
         arguments:
             $isDebug: '%kernel.debug%'
 
-    Becklyn\AssetsBundle\Path\AssetPathHelper: ~
+    Becklyn\AssetsBundle\Namespaces\NamespaceRegistry:
+        $projectDir: '%kernel.project_dir%'
+
+    Becklyn\AssetsBundle\Storage\AssetStorage: ~
     Becklyn\AssetsBundle\Twig\AssetsTwigExtension: ~
 
     Becklyn\AssetsBundle\Url\AssetUrl:
         $isDebug: '%kernel.debug%'
 
 
+    # Register route loader
     Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader:
         public: true
         tags: [routing.loader]
