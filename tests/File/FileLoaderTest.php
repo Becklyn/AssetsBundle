@@ -2,9 +2,11 @@
 
 namespace Tests\Becklyn\AssetsBundle\File;
 
-use Becklyn\AssetsBundle\Entry\EntryNamespaces;
+use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\File\FileLoader;
-use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
+use Becklyn\AssetsBundle\File\FileTypeRegistry;
+use Becklyn\AssetsBundle\File\Type\GenericFile;
+use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use PHPUnit\Framework\TestCase;
 
 
@@ -24,23 +26,21 @@ class FileLoaderTest extends TestCase
 
     protected function setUp ()
     {
-        $entryNamespaces = new EntryNamespaces($this->fixtures, [
+        $entryNamespaces = new NamespaceRegistry($this->fixtures, [
             "bundles" => "public/bundles"
         ]);
 
-        $processorRegistry = $this->getMockBuilder(ProcessorRegistry::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $fileTypes = new FileTypeRegistry([], new GenericFile());
 
-        $this->loader = new FileLoader($entryNamespaces, $processorRegistry);
+        $this->loader = new FileLoader($entryNamespaces, $fileTypes);
     }
 
 
     public function dataProviderValid ()
     {
         return [
-            ["@bundles/test/css/app.css", "{$this->fixtures}/public/bundles/test/css/app.css"],
-            ["@bundles/test/js/test.js", "{$this->fixtures}/public/bundles/test/js/test.js"],
+            [new Asset("bundles", "test/css/app.css"), "{$this->fixtures}/public/bundles/test/css/app.css"],
+            [new Asset("bundles", "test/js/test.js"), "{$this->fixtures}/public/bundles/test/js/test.js"],
         ];
     }
 
@@ -48,34 +48,33 @@ class FileLoaderTest extends TestCase
     /**
      * @dataProvider dataProviderValid
      *
-     * @param string $assetPath
+     * @param Asset  $asset
      * @param string $expectedFile
-     * @throws \Becklyn\AssetsBundle\Exception\AssetsException
      */
-    public function testValid (string $assetPath, string $expectedFile)
+    public function testValid (Asset $asset, string $expectedFile)
     {
-        self::assertStringEqualsFile($expectedFile, $this->loader->loadFile($assetPath));
+        self::assertStringEqualsFile($expectedFile, $this->loader->loadFile($asset, FileLoader::MODE_UNTOUCHED));
     }
 
 
     public function dataProviderInvalid ()
     {
         return [
-            ["@invalid/test.js"],
-            ["@bundles/test/js/doesnt_exist.js"],
-            ["@Invalid/test.js"],
+            [new Asset("invalid", "test.js")],
+            [new Asset("bundles", "test/js/doesnt_exist.js")],
+            [new Asset("Invalid", "test.js")],
         ];
     }
 
 
     /**
      * @dataProvider dataProviderInvalid
-     * @param string $assetPath
+     * @param Asset $asset
      *
      * @expectedException \Becklyn\AssetsBundle\Exception\AssetsException
      */
-    public function testInvalid (string $assetPath)
+    public function testInvalid (Asset $asset)
     {
-        $this->loader->loadFile($assetPath);
+        $this->loader->loadFile($asset, FileLoader::MODE_UNTOUCHED);
     }
 }
