@@ -82,9 +82,9 @@ class AssetStorage
 
 
     /**
-     * Removes all generated files
+     * Removes all stored files
      */
-    public function removeAllGeneratedFiles () : void
+    public function removeAllStoredFiles () : void
     {
         $this->filesystem->remove("{$this->publicPath}/{$this->outputDir}");
     }
