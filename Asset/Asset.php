@@ -30,6 +30,12 @@ class Asset
 
 
     /**
+     * @var string|null
+     */
+    private $fileNameHash;
+
+
+    /**
      * @var string
      */
     private $fileType;
@@ -81,7 +87,21 @@ class Asset
      */
     public function setHash (?string $hash) : void
     {
+        if (null !== $hash)
+        {
+            $fileNameHash = rtrim($hash, "=");
+            $fileNameHash = \strtr($fileNameHash, [
+                "/" => "_",
+            ]);
+            $fileNameHash = \substr($fileNameHash, 0, 20);
+        }
+        else
+        {
+            $fileNameHash = null;
+        }
+
         $this->hash = $hash;
+        $this->fileNameHash = $fileNameHash;
     }
 
 
@@ -120,7 +140,7 @@ class Asset
             ? ""
             : "{$dir}/";
 
-        return "{$dir}{$fileName}.{$this->hash}.{$this->fileType}";
+        return "{$this->getNamespace()}/{$dir}{$fileName}.{$this->fileNameHash}.{$this->fileType}";
     }
 
 
