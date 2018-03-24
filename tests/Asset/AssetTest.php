@@ -68,4 +68,19 @@ class AssetTest extends TestCase
     {
         Asset::createFromAssetPath($path);
     }
+
+
+    /**
+     * Tests, that no other properties are copied over when generating a relative asset
+     */
+    public function testRelativeCreationResetsProperties ()
+    {
+        $asset = new Asset("namespace", "path.jpg");
+        $asset->setHash("my-hash");
+
+        self::assertSame("my-hash", $asset->getHash());
+        $relativeAsset = $asset->getRelativeAsset("test.jpg");
+        self::assertSame("my-hash", $asset->getHash());
+        self::assertNull($relativeAsset->getHash());
+    }
 }
