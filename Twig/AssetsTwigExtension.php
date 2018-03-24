@@ -31,6 +31,7 @@ class AssetsTwigExtension extends \Twig_Extension
     /**
      *
      * @param AssetHtmlGenerator $htmlReferences
+     * @param AssetUrl           $assetUrl
      * @param FileLoader         $fileLoader
      */
     public function __construct (AssetHtmlGenerator $htmlReferences, AssetUrl $assetUrl, FileLoader $fileLoader)
