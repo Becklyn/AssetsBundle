@@ -1,6 +1,6 @@
 <?php
 
-namespace Becklyn\AssetsBundle\tests\File;
+namespace Tests\Becklyn\AssetsBundle\File;
 
 use Becklyn\AssetsBundle\Entry\EntryNamespaces;
 use Becklyn\AssetsBundle\File\FileLoader;
