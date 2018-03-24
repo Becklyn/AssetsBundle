@@ -17,7 +17,7 @@ class AssetsRegistry
     /**
      * @var AssetStorage
      */
-    private $generator;
+    private $storage;
 
 
     /**
@@ -28,13 +28,13 @@ class AssetsRegistry
 
     /**
      * @param AssetsCache      $cache
-     * @param AssetStorage     $generator
+     * @param AssetStorage     $storage
      * @param FileTypeRegistry $fileTypeRegistry
      */
-    public function __construct (AssetsCache $cache, AssetStorage $generator, FileTypeRegistry $fileTypeRegistry)
+    public function __construct (AssetsCache $cache, AssetStorage $storage, FileTypeRegistry $fileTypeRegistry)
     {
         $this->cache = $cache;
-        $this->generator = $generator;
+        $this->storage = $storage;
         $this->fileTypeRegistry = $fileTypeRegistry;
     }
 
@@ -106,7 +106,7 @@ class AssetsRegistry
      */
     private function addAsset (Asset $asset) : Asset
     {
-        $asset = $this->generator->import($asset);
+        $asset = $this->storage->import($asset);
         $this->cache->add($asset);
 
         return $asset;
@@ -119,7 +119,7 @@ class AssetsRegistry
      */
     public function clear () : void
     {
-        $this->generator->removeAllGeneratedFiles();
+        $this->storage->removeAllStoredFiles();
         $this->cache->clear();
     }
 }
