@@ -2,7 +2,6 @@
 
 namespace Becklyn\AssetsBundle\Asset;
 
-use Becklyn\AssetsBundle\Exception\AssetsException;
 use Psr\Cache\CacheItemPoolInterface;
 
 
