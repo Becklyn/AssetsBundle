@@ -2,6 +2,7 @@
 
 namespace Tests\Becklyn\AssetsBundle\Twig;
 
+use Becklyn\AssetsBundle\Dependency\DependencyMap;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Becklyn\AssetsBundle\File\FileLoader;
 use Becklyn\AssetsBundle\Twig\AssetsTwigExtension;
@@ -28,7 +29,7 @@ class AssetsTwigExtensionTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $extension = new AssetsTwigExtension($htmlReferences, $assetUrl, $fileLoader);
+        $extension = new AssetsTwigExtension($htmlReferences, $assetUrl, $fileLoader, new DependencyMap([]));
         $functions = \array_map(
             function (\Twig_SimpleFunction $f)
             {
