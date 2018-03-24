@@ -66,7 +66,6 @@ class AssetTest extends TestCase
      */
     public function testFailedCreateFromPath (string $path)
     {
-        $a = Asset::createFromAssetPath($path);
-        \var_dump($a);
+        Asset::createFromAssetPath($path);
     }
 }
