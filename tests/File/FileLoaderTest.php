@@ -5,6 +5,7 @@ namespace Tests\Becklyn\AssetsBundle\File;
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\File\FileLoader;
 use Becklyn\AssetsBundle\File\FileTypeRegistry;
+use Becklyn\AssetsBundle\File\Type\FileType;
 use Becklyn\AssetsBundle\File\Type\GenericFile;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use PHPUnit\Framework\TestCase;
@@ -24,15 +25,21 @@ class FileLoaderTest extends TestCase
     private $fixtures = __DIR__ . "/../fixtures";
 
 
+    /**
+     * @var NamespaceRegistry
+     */
+    private $namespaceRegistry;
+
+
     protected function setUp ()
     {
-        $entryNamespaces = new NamespaceRegistry($this->fixtures, [
+        $this->namespaceRegistry = new NamespaceRegistry($this->fixtures, [
             "bundles" => "public/bundles"
         ]);
 
         $fileTypes = new FileTypeRegistry([], new GenericFile());
 
-        $this->loader = new FileLoader($entryNamespaces, $fileTypes);
+        $this->loader = new FileLoader($this->namespaceRegistry, $fileTypes);
     }
 
 
@@ -76,5 +83,104 @@ class FileLoaderTest extends TestCase
     public function testInvalid (Asset $asset)
     {
         $this->loader->loadFile($asset, FileLoader::MODE_UNTOUCHED);
+    }
+
+
+    /**
+     * Tests, that the custom file type is correctly called in dev
+     */
+    public function testCustomProcessorCalledInDev ()
+    {
+        $testFileType = $this->getMockBuilder(FileType::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $testFileType
+            ->expects(self::once())
+            ->method("prependFileHeader")
+            ->willReturnArgument(2);
+
+        $fileTypes = new FileTypeRegistry([
+            "css" => $testFileType,
+        ], new GenericFile());
+
+        $loader = new FileLoader($this->namespaceRegistry, $fileTypes);
+        $loader->loadFile(new Asset("bundles", "test/css/app.css"), FileLoader::MODE_DEV);
+    }
+
+
+    /**
+     * Tests, that the custom file type is correctly called in prod
+     */
+    public function testCustomProcessorCalledInProd ()
+    {
+        $testFileType = $this->getMockBuilder(FileType::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $testFileType
+            ->expects(self::once())
+            ->method("processForProd")
+            ->willReturnArgument(1);
+
+        $fileTypes = new FileTypeRegistry([
+            "css" => $testFileType,
+        ], new GenericFile());
+
+        $loader = new FileLoader($this->namespaceRegistry, $fileTypes);
+        $loader->loadFile(new Asset("bundles", "test/css/app.css"), FileLoader::MODE_PROD);
+    }
+
+
+    /**
+     * Tests, that the custom file type is correctly called in prod
+     */
+    public function testCustomProcessorNotCalledInUntouched ()
+    {
+        $testFileType = $this->getMockBuilder(FileType::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $testFileType
+            ->expects(self::never())
+            ->method("processForProd");
+
+        $fileTypes = new FileTypeRegistry([
+            "css" => $testFileType,
+        ], new GenericFile());
+
+        $loader = new FileLoader($this->namespaceRegistry, $fileTypes);
+        $loader->loadFile(new Asset("bundles", "test/css/app.css"), FileLoader::MODE_UNTOUCHED);
+    }
+
+
+    /**
+     * Tests, that the fallback type is correctly called
+     */
+    public function testFallbackType ()
+    {
+        $testFileType = $this->getMockBuilder(FileType::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $testFileType
+            ->expects(self::never())
+            ->method("processForProd");
+
+        $genericFileType = $this->getMockBuilder(FileType::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $genericFileType
+            ->expects(self::once())
+            ->method("processForProd")
+            ->willReturnArgument(1);
+
+        $fileTypes = new FileTypeRegistry([
+            "css" => $testFileType,
+        ], $genericFileType);
+
+        $loader = new FileLoader($this->namespaceRegistry, $fileTypes);
+        $loader->loadFile(new Asset("bundles", "test/js/test.js"), FileLoader::MODE_PROD);
     }
 }
