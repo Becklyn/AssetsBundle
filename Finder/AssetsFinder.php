@@ -3,7 +3,7 @@
 namespace Becklyn\AssetsBundle\Finder;
 
 use Becklyn\AssetsBundle\Asset\Asset;
-use Becklyn\AssetsBundle\Entry\NamespaceRegistry;
+use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Symfony\Component\Finder\Finder;
 
 
