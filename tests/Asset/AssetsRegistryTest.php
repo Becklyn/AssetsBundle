@@ -3,57 +3,63 @@
 namespace Tests\Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Asset\Asset;
-use Becklyn\AssetsBundle\Asset\AssetGenerator;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
-use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
+use Becklyn\AssetsBundle\File\FileTypeRegistry;
+use Becklyn\AssetsBundle\File\Type\GenericFile;
+use Becklyn\AssetsBundle\Storage\AssetStorage;
 use PHPUnit\Framework\TestCase;
+use Tests\Becklyn\AssetsBundle\CreateHashedAssetTrait;
 
 
 class AssetsRegistryTest extends TestCase
 {
+    use CreateHashedAssetTrait;
+
     private function prepare ()
     {
         $cache = $this->getMockBuilder(AssetsCache::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $generator = $this->getMockBuilder(AssetGenerator::class)
+        $storage = $this->getMockBuilder(AssetStorage::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        return [$cache, $generator];
+        $registry = new AssetsRegistry($cache, $storage, new FileTypeRegistry([], new GenericFile()));
+        return [$registry, $cache, $storage];
     }
 
 
     public function testAutomaticGeneration ()
     {
         /**
-         * @type \PHPUnit_Framework_MockObject_MockObject|AssetsCache $cache
-         * @type \PHPUnit_Framework_MockObject_MockObject|AssetGenerator $generator
+         * @type AssetsRegistry                                        $registry
+         * @type \PHPUnit_Framework_MockObject_MockObject|AssetsCache  $cache
+         * @type \PHPUnit_Framework_MockObject_MockObject|AssetStorage $storage
          */
-        [$cache, $generator] = $this->prepare();
+        [$registry, $cache, $storage] = $this->prepare();
 
-        $asset = new Asset("test", "test", "test");
+        $asset = $this->createdHashedAsset("test", "test", "test");
 
-        $generator
+        $storage
             ->expects(self::once())
-            ->method("generateAsset")
-            ->with($this->equalTo("test.js"))
+            ->method("import")
+            ->with($asset)
             ->willReturn($asset);
 
-        $assetsCache = new AssetsRegistry($cache, $generator, new ProcessorRegistry([]));
-        self::assertSame($asset, $assetsCache->get("test.js"));
+        self::assertSame($asset, $registry->get($asset));
     }
 
 
     public function testClear ()
     {
         /**
-         * @type \PHPUnit_Framework_MockObject_MockObject|AssetsCache $cache
-         * @type \PHPUnit_Framework_MockObject_MockObject|AssetGenerator $generator
+         * @type AssetsRegistry                                        $registry
+         * @type \PHPUnit_Framework_MockObject_MockObject|AssetsCache  $cache
+         * @type \PHPUnit_Framework_MockObject_MockObject|AssetStorage $storage
          */
-        [$cache, $generator] = $this->prepare();
+        [$registry, $cache, $storage] = $this->prepare();
 
         // check that cache is cleared
         $cache
@@ -61,12 +67,11 @@ class AssetsRegistryTest extends TestCase
             ->method("clear");
 
         // check that actual cache clearer is called
-        $generator
+        $storage
             ->expects(self::once())
-            ->method("removeAllGeneratedFiles");
+            ->method("removeAllStoredFiles");
 
         // clear cache
-        $registry = new AssetsRegistry($cache, $generator, new ProcessorRegistry([]));
         $registry->clear();
     }
 }
