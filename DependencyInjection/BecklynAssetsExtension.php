@@ -2,6 +2,8 @@
 
 namespace Becklyn\AssetsBundle\DependencyInjection;
 
+use Becklyn\AssetsBundle\Dependency\DependencyLoader;
+use Becklyn\AssetsBundle\Dependency\DependencyMap;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
 use Becklyn\AssetsBundle\Storage\AssetStorage;
@@ -41,5 +43,28 @@ class BecklynAssetsExtension extends Extension
 
         $container->getDefinition(AssetsRouteLoader::class)
             ->setArgument('$outputDir', $config["output_dir"]);
+
+        $this->initializeDependencyMap($config, $container);
+    }
+
+
+    /**
+     * Initializes the dependency map
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function initializeDependencyMap (array $config, ContainerBuilder $container) : void
+    {
+        $registry = new NamespaceRegistry($container->getParameter("kernel.project_dir"), $config["entries"]);
+        $loader = new DependencyLoader($registry);
+
+        foreach ($config["dependency_maps"] as $dependencyMap)
+        {
+            $loader->importFile($dependencyMap);
+        }
+
+        $container->getDefinition(DependencyMap::class)
+            ->setArgument('$dependencyMap', $loader->getDependencyMap());
     }
 }

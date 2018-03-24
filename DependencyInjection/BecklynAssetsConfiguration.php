@@ -32,6 +32,11 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                     ->defaultValue('assets')
                     ->info("The relative path to the assets output dir. Relative to `public_path`.")
                 ->end()
+                ->arrayNode("dependency_maps")
+                    ->scalarPrototype()->end()
+                    ->defaultValue([])
+                    ->info("The paths to the dependency maps.")
+                ->end()
             ->end();
 
         return $treeBuilder;
