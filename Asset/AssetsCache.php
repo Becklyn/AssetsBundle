@@ -34,7 +34,6 @@ class AssetsCache
 
     /**
      * @param CacheItemPoolInterface $pool
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function __construct (CacheItemPoolInterface $pool)
     {
@@ -61,8 +60,6 @@ class AssetsCache
      * Adds an asset to the cache
      *
      * @param string $assetPath
-     *
-     * @throws AssetsException
      */
     public function add (Asset $asset) : void
     {
