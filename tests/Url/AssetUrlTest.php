@@ -1,13 +1,13 @@
 <?php
 
-namespace Becklyn\AssetsBundle\tests\Url;
+namespace Tests\Becklyn\AssetsBundle\Url;
 
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
+use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Url\AssetUrl;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 
@@ -23,14 +23,9 @@ class AssetUrlTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $requestStack = $this->getMockBuilder(RequestStack::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
         return [
-            new AssetUrl($registry, $router, $requestStack, $isDebug),
+            new AssetUrl($registry, $router, $isDebug, null),
             $router,
-            $requestStack,
             $registry
         ];
     }
@@ -44,13 +39,18 @@ class AssetUrlTest extends TestCase
          */
         [$assetUrl, $router] = $this->buildObject(true);
 
+        $asset = new Asset("namespace", "test.jpg");
+
         $router
             ->expects(self::once())
             ->method("generate")
-            ->with("becklyn_assets_embed", ["path" => \rawurlencode("@test/abc")])
+            ->with("becklyn_assets.embed", [
+                "namespace" => "namespace",
+                "path" => "test.jpg"
+            ])
             ->willReturn("example");
 
-        $assetUrl->generateUrl("@test/abc");
+        $assetUrl->generateUrl($asset);
     }
 
 
@@ -59,55 +59,135 @@ class AssetUrlTest extends TestCase
         /**
          * @type AssetUrl $assetUrl
          * @type \PHPUnit_Framework_MockObject_MockObject $router
-         * @type \PHPUnit_Framework_MockObject_MockObject $requestStack
          * @type \PHPUnit_Framework_MockObject_MockObject $registry
          */
-        [$assetUrl, $router, $requestStack, $registry] = $this->buildObject(false);
+        [$assetUrl, $router, $registry] = $this->buildObject(false);
 
-        $request = $this->getMockBuilder(Request::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $request
-            ->expects(self::once())
-            ->method("getBaseUrl")
-            ->willReturn("/base-url");
-
-        $requestStack
-            ->expects(self::once())
-            ->method("getMasterRequest")
-            ->willReturn($request);
+        $asset = new Asset("test", "abc.jpg");
 
         $registry
             ->expects(self::once())
             ->method("get")
-            ->with("@test/abc")
-            ->willReturn(new Asset("out", "test.jpg", "hash"));
+            ->with($asset)
+            ->willReturnCallback(function () {
+                $result = new Asset("out", "test.jpg");
+                $result->setHash("hash");
+                return $result;
+            });
 
-        $actual = $assetUrl->generateUrl("@test/abc");
-        self::assertEquals("/base-url/out/test.hash.jpg", $actual);
+        $router
+            ->expects(self::once())
+            ->method("generate")
+            ->with("becklyn_assets.embed", [
+                "namespace" => "out",
+                "path" => "test.hash.jpg",
+            ])
+            ->willReturn("");
+
+        $assetUrl->generateUrl($asset);
     }
 
 
     /**
-     * @expectedException \Becklyn\AssetsBundle\Exception\AssetsException
-     * @expectedExceptionMessage Can't embed asset '@test/abc' without request.
+     * Missing file in prod WITHOUT logger:
+     *
+     * just returns the default path
      */
-    public function testProdWithoutRequest ()
+    public function testMissingFileInProd ()
     {
         /**
          * @type AssetUrl $assetUrl
          * @type \PHPUnit_Framework_MockObject_MockObject $router
-         * @type \PHPUnit_Framework_MockObject_MockObject $requestStack
+         * @type \PHPUnit_Framework_MockObject_MockObject $registry
          */
-        [$assetUrl, $router, $requestStack] = $this->buildObject(false);
+        [$assetUrl, $router, $registry] = $this->buildObject(false);
 
-        $requestStack
+        $asset = new Asset("test", "abc.jpg");
+
+        $registry
             ->expects(self::once())
-            ->method("getMasterRequest")
-            ->willReturn(null);
+            ->method("get")
+            ->with($asset)
+            ->willThrowException(new AssetsException());
 
-        $assetUrl->generateUrl("@test/abc");
+        $router
+            ->expects(self::once())
+            ->method("generate")
+            ->with("becklyn_assets.embed", [
+                "namespace" => $asset->getNamespace(),
+                "path" => $asset->getFilePath(),
+            ])
+            ->willReturn("");
+
+        $assetUrl->generateUrl($asset);
     }
 
+
+    /**
+     * Missing file in prod WITH logger:
+     *
+     * logs an error and returns the default path
+     */
+    public function testMissingFileInProdWithLogger ()
+    {
+        $registry = $this->getMockBuilder(AssetsRegistry::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $router = $this->getMockBuilder(RouterInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $assetUrl = new AssetUrl($registry, $router, false, $logger);
+
+        $asset = new Asset("test", "abc.jpg");
+
+        $registry
+            ->expects(self::once())
+            ->method("get")
+            ->with($asset)
+            ->willThrowException(new AssetsException());
+
+        $router
+            ->method("generate")
+            ->willReturn("");
+
+        $logger
+            ->expects(self::once())
+            ->method("error");
+
+        $assetUrl->generateUrl($asset);
+    }
+
+
+    /**
+     * Missing file in dev:
+     *
+     * Throw exception
+     *
+     * @expectedException Becklyn\AssetsBundle\Exception\AssetsException
+     */
+    public function testMissingFileInDev ()
+    {
+        /**
+         * @type AssetUrl $assetUrl
+         * @type \PHPUnit_Framework_MockObject_MockObject $router
+         * @type \PHPUnit_Framework_MockObject_MockObject $registry
+         */
+        [$assetUrl, $router, $registry] = $this->buildObject(true);
+
+        $asset = new Asset("test", "abc.jpg");
+
+        $registry
+            ->expects(self::once())
+            ->method("get")
+            ->with($asset)
+            ->willThrowException(new AssetsException());
+
+        $assetUrl->generateUrl($asset);
+    }
 }

@@ -72,6 +72,7 @@ class AssetUrl
             // use dumped file path in prod
             if (!$this->isDebug)
             {
+                $asset = $cachedAsset;
                 $filePath = $cachedAsset->getDumpFilePath();
             }
         }
