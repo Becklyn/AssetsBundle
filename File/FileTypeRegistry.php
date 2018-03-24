@@ -21,16 +21,16 @@ class FileTypeRegistry
 
 
     /**
-     * @var GenericFile
+     * @var FileType
      */
     private $genericFileType;
 
 
     /**
-     *
-     * @param array $fileTypes
+     * @param array    $fileTypes
+     * @param FileType $genericFileType
      */
-    public function __construct (array $fileTypes, GenericFile $genericFileType)
+    public function __construct (array $fileTypes, FileType $genericFileType)
     {
         $this->fileTypes = $fileTypes;
         $this->genericFileType = $genericFileType;
