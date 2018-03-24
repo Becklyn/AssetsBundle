@@ -2,8 +2,11 @@
 
 namespace Becklyn\AssetsBundle\DependencyInjection;
 
-use Becklyn\AssetsBundle\Asset\AssetGenerator;
-use Becklyn\AssetsBundle\Entry\EntryNamespaces;
+use Becklyn\AssetsBundle\Dependency\DependencyLoader;
+use Becklyn\AssetsBundle\Dependency\DependencyMap;
+use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
+use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
+use Becklyn\AssetsBundle\Storage\AssetStorage;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -31,11 +34,37 @@ class BecklynAssetsExtension extends Extension
         $loader->load("services.yaml");
 
         // update services config with configuration values
-        $container->getDefinition(AssetGenerator::class)
+        $container->getDefinition(AssetStorage::class)
             ->setArgument('$publicPath', $config["public_path"])
             ->setArgument('$outputDir', $config["output_dir"]);
 
-        $container->getDefinition(EntryNamespaces::class)
+        $container->getDefinition(NamespaceRegistry::class)
             ->setArgument('$entries', $config["entries"]);
+
+        $container->getDefinition(AssetsRouteLoader::class)
+            ->setArgument('$outputDir', $config["output_dir"]);
+
+        $this->initializeDependencyMap($config, $container);
+    }
+
+
+    /**
+     * Initializes the dependency map
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function initializeDependencyMap (array $config, ContainerBuilder $container) : void
+    {
+        $registry = new NamespaceRegistry($container->getParameter("kernel.project_dir"), $config["entries"]);
+        $loader = new DependencyLoader($registry);
+
+        foreach ($config["dependency_maps"] as $dependencyMap)
+        {
+            $loader->importFile($dependencyMap);
+        }
+
+        $container->getDefinition(DependencyMap::class)
+            ->setArgument('$dependencyMap', $loader->getDependencyMap());
     }
 }

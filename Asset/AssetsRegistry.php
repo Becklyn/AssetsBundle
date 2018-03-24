@@ -3,7 +3,8 @@
 namespace Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Exception\AssetsException;
-use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
+use Becklyn\AssetsBundle\File\FileTypeRegistry;
+use Becklyn\AssetsBundle\Storage\AssetStorage;
 
 
 class AssetsRegistry
@@ -15,28 +16,27 @@ class AssetsRegistry
 
 
     /**
-     * @var AssetGenerator
+     * @var AssetStorage
      */
-    private $generator;
+    private $storage;
 
 
     /**
-     * @var ProcessorRegistry
+     * @var FileTypeRegistry
      */
-    private $processorRegistry;
+    private $fileTypeRegistry;
 
 
     /**
-     *
-     * @param AssetsCache       $cache
-     * @param AssetGenerator    $generator
-     * @param ProcessorRegistry $processorRegistry
+     * @param AssetsCache      $cache
+     * @param AssetStorage     $storage
+     * @param FileTypeRegistry $fileTypeRegistry
      */
-    public function __construct (AssetsCache $cache, AssetGenerator $generator, ProcessorRegistry $processorRegistry)
+    public function __construct (AssetsCache $cache, AssetStorage $storage, FileTypeRegistry $fileTypeRegistry)
     {
         $this->cache = $cache;
-        $this->generator = $generator;
-        $this->processorRegistry = $processorRegistry;
+        $this->storage = $storage;
+        $this->fileTypeRegistry = $fileTypeRegistry;
     }
 
 
@@ -47,35 +47,38 @@ class AssetsRegistry
      * @return Asset
      * @throws AssetsException
      */
-    public function get (string $assetPath) : Asset
+    public function get (Asset $asset) : Asset
     {
-        $asset = $this->cache->get($assetPath);
+        $cachedAsset = $this->cache->get($asset);
 
-        return (null === $asset)
-            ? $this->addAsset($assetPath)
-            : $asset;
+        if (null !== $cachedAsset)
+        {
+            return $cachedAsset;
+        }
+
+        return $this->addAsset($asset);
     }
 
 
     /**
      * Adds a list of asset paths
      *
-     * @param string[] $assetPaths
+     * @param Asset[] $assets
      * @throws AssetsException
      */
-    public function add (array $assetPaths, ?callable $progress) : void
+    public function add (array $assets, ?callable $progress) : void
     {
         $deferred = [];
 
-        foreach ($assetPaths as $assetPath)
+        foreach ($assets as $asset)
         {
-            if ($this->processorRegistry->has($assetPath))
+            if ($this->fileTypeRegistry->importDeferred($asset))
             {
-                $deferred[] = $assetPath;
+                $deferred[] = $asset;
                 continue;
             }
 
-            $this->addAsset($assetPath);
+            $this->addAsset($asset);
 
             if (null !== $progress)
             {
@@ -83,9 +86,9 @@ class AssetsRegistry
             }
         }
 
-        foreach ($deferred as $assetPath)
+        foreach ($deferred as $asset)
         {
-            $this->addAsset($assetPath);
+            $this->addAsset($asset);
 
             if (null !== $progress)
             {
@@ -102,10 +105,11 @@ class AssetsRegistry
      * @return Asset
      * @throws AssetsException
      */
-    private function addAsset (string $assetPath) : Asset
+    private function addAsset (Asset $asset) : Asset
     {
-        $asset = $this->generator->generateAsset($assetPath);
-        $this->cache->add($assetPath, $asset);
+        $asset = $this->storage->import($asset);
+        $this->cache->add($asset);
+
         return $asset;
     }
 
@@ -116,7 +120,7 @@ class AssetsRegistry
      */
     public function clear () : void
     {
-        $this->generator->removeAllGeneratedFiles();
+        $this->storage->removeAllStoredFiles();
         $this->cache->clear();
     }
 }

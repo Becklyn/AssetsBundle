@@ -2,57 +2,61 @@
 
 namespace Becklyn\AssetsBundle\File;
 
-
-use Becklyn\AssetsBundle\Asset\NamespacedAsset;
-use Becklyn\AssetsBundle\Entry\EntryNamespaces;
+use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Exception\FileNotFoundException;
-use Becklyn\AssetsBundle\Processor\ProcessorRegistry;
+use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 
 
 class FileLoader
 {
-    /**
-     * @var EntryNamespaces
-     */
-    private $entryNamespaces;
-
+    const MODE_PROD = true;
+    const MODE_DEV = false;
+    const MODE_UNTOUCHED = null;
 
     /**
-     * @var ProcessorRegistry
+     * @var NamespaceRegistry
      */
-    private $processorRegistry;
+    private $namespaceRegistry;
 
 
     /**
-     *
-     * @param EntryNamespaces   $entryNamespaces
-     * @param ProcessorRegistry $processorRegistry
+     * @var FileTypeRegistry
      */
-    public function __construct (EntryNamespaces $entryNamespaces, ProcessorRegistry $processorRegistry)
+    private $fileTypeRegistry;
+
+
+    /**
+     * @param bool              $isDebug
+     * @param NamespaceRegistry $namespaceRegistry
+     * @param FileTypeRegistry  $fileTypeRegistry
+     */
+    public function __construct (NamespaceRegistry $namespaceRegistry, FileTypeRegistry $fileTypeRegistry)
     {
-        $this->entryNamespaces = $entryNamespaces;
-        $this->processorRegistry = $processorRegistry;
+        $this->namespaceRegistry = $namespaceRegistry;
+        $this->fileTypeRegistry = $fileTypeRegistry;
     }
 
 
     /**
      * Loads an asset's file content
      *
-     * @param string $assetPath
-     * @throws AssetsException
+     * @param Asset $asset
+     * @param bool  $mode   one of the MODE_* constants
      *
      * @return string
+     * @throws AssetsException
+     * @throws FileNotFoundException
      */
-    public function loadFile (string $assetPath) : string
+    public function loadFile (Asset $asset, ?bool $mode) : string
     {
-        $filePath = $this->getFilePath($assetPath);
-        $processor = $this->processorRegistry->get($filePath);
+        $filePath = $this->getFilePath($asset);
 
         if (!\is_file($filePath))
         {
             throw new FileNotFoundException(sprintf(
-                "Asset not found at '%s'.",
+                "Asset '%s' not found at '%s'.",
+                $asset->getAssetPath(),
                 $filePath
             ));
         }
@@ -63,14 +67,19 @@ class FileLoader
         {
             throw new FileNotFoundException(sprintf(
                 "Can't read asset file '%s' at '%s'.",
-                $assetPath,
+                $asset->getAssetPath(),
                 $filePath
             ));
         }
 
-        if (null !== $processor)
+        $fileType = $this->fileTypeRegistry->getFileType($asset);
+
+        if (self::MODE_UNTOUCHED !== $mode)
         {
-            $fileContent = $processor->process($assetPath, $fileContent);
+            // prepend file header in dev and process in prod
+            $fileContent = (self::MODE_PROD === $mode)
+                ? $fileType->processForProd($asset, $fileContent)
+                : $fileType->prependFileHeader($asset, $filePath, $fileContent);
         }
 
         return $fileContent;
@@ -80,14 +89,13 @@ class FileLoader
     /**
      * Returns the file path for the given asset
      *
-     * @param string $assetPath
+     * @param Asset $asset
      * @return string
      *
      * @throws AssetsException
      */
-    public function getFilePath (string $assetPath)
+    public function getFilePath (Asset $asset)
     {
-        $asset = NamespacedAsset::createFromFullPath($assetPath);
-        return $this->entryNamespaces->getFilePath($asset);
+        return $this->namespaceRegistry->getFilePath($asset);
     }
 }

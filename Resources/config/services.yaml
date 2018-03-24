@@ -43,16 +43,12 @@ services:
             $isDebug: '%kernel.debug%'
 
     Becklyn\AssetsBundle\Path\AssetPathHelper: ~
-    Becklyn\AssetsBundle\Processor\CssProcessor:
-        $isDebug: '%kernel.debug%'
-
-    Becklyn\AssetsBundle\Processor\ProcessorRegistry:
-        arguments:
-            $processors:
-                css: '@Becklyn\AssetsBundle\Processor\CssProcessor'
-
     Becklyn\AssetsBundle\Twig\AssetsTwigExtension: ~
 
     Becklyn\AssetsBundle\Url\AssetUrl:
         $isDebug: '%kernel.debug%'
 
+
+    Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader:
+        public: true
+        tags: [routing.loader]

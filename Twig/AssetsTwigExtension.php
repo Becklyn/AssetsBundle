@@ -2,6 +2,7 @@
 
 namespace Becklyn\AssetsBundle\Twig;
 
+use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Becklyn\AssetsBundle\File\FileLoader;
 use Becklyn\AssetsBundle\Url\AssetUrl;
@@ -30,6 +31,7 @@ class AssetsTwigExtension extends \Twig_Extension
     /**
      *
      * @param AssetHtmlGenerator $htmlReferences
+     * @param AssetUrl           $assetUrl
      * @param FileLoader         $fileLoader
      */
     public function __construct (AssetHtmlGenerator $htmlReferences, AssetUrl $assetUrl, FileLoader $fileLoader)
@@ -45,20 +47,9 @@ class AssetsTwigExtension extends \Twig_Extension
      * @return string
      * @throws \Becklyn\AssetsBundle\Exception\AssetsException
      */
-    public function cssAssets (array $assetPaths) : string
+    public function linkAssets (array $assetPaths) : string
     {
-        return $this->htmlReferences->linkAssets(AssetHtmlGenerator::TYPE_CSS, $assetPaths);
-    }
-
-
-    /**
-     * @param array $assetPaths
-     * @return string
-     * @throws \Becklyn\AssetsBundle\Exception\AssetsException
-     */
-    public function jsAssets (array $assetPaths) : string
-    {
-        return $this->htmlReferences->linkAssets(AssetHtmlGenerator::TYPE_JAVASCRIPT, $assetPaths);
+        return $this->htmlReferences->linkAssets($assetPaths);
     }
 
 
@@ -71,7 +62,8 @@ class AssetsTwigExtension extends \Twig_Extension
      */
     public function inlineAsset (string $assetPath) : string
     {
-        return $this->fileLoader->loadFile($assetPath);
+        $asset = Asset::createFromAssetPath($assetPath);
+        return $this->fileLoader->loadFile($asset, FileLoader::MODE_UNTOUCHED);
     }
 
 
@@ -81,10 +73,9 @@ class AssetsTwigExtension extends \Twig_Extension
     public function getFunctions ()
     {
         return [
-            new \Twig_SimpleFunction("asset", [$this->assetUrl, "generateUrl"]),
+            new \Twig_SimpleFunction("asset", [$this->assetUrl, "generateUrlFromAssetPath"]),
             new \Twig_SimpleFunction("asset_inline", [$this, "inlineAsset"], ["is_safe" => ["html"]]),
-            new \Twig_SimpleFunction("assets_css", [$this, "cssAssets"], ["is_safe" => ["html"]]),
-            new \Twig_SimpleFunction("assets_js", [$this, "jsAssets"], ["is_safe" => ["html"]]),
+            new \Twig_SimpleFunction("assets_link", [$this, "linkAssets"], ["is_safe" => ["html"]]),
         ];
     }
 }

@@ -2,7 +2,8 @@
 
 namespace Becklyn\AssetsBundle\Finder;
 
-use Becklyn\AssetsBundle\Entry\EntryNamespaces;
+use Becklyn\AssetsBundle\Asset\Asset;
+use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Symfony\Component\Finder\Finder;
 
 
@@ -12,26 +13,28 @@ use Symfony\Component\Finder\Finder;
 class AssetsFinder
 {
     /**
-     * @var EntryNamespaces
+     * @var NamespaceRegistry
      */
     private $namespaces;
 
 
     /**
-     * @param EntryNamespaces $namespaces
+     * @param NamespaceRegistry $namespaces
      */
-    public function __construct (EntryNamespaces $namespaces)
+    public function __construct (NamespaceRegistry $namespaces)
     {
         $this->namespaces = $namespaces;
     }
 
 
     /**
-     * @return string[]
+     * Finds all assets in the namespaces
+     *
+     * @return Asset[]
      */
     public function findAssets () : array
     {
-        $files = [];
+        $assets = [];
 
         foreach ($this->namespaces as $namespace => $dir)
         {
@@ -49,10 +52,10 @@ class AssetsFinder
 
             foreach ($finder as $foundFile)
             {
-                $files[] = "@{$namespace}/{$foundFile->getRelativePathname()}";
+                $assets[] = new Asset($namespace, $foundFile->getRelativePathname());
             }
         }
 
-        return $files;
+        return $assets;
     }
 }

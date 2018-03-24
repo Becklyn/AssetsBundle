@@ -2,7 +2,7 @@
 
 namespace Becklyn\AssetsBundle\DependencyInjection;
 
-use Becklyn\AssetsBundle\Asset\NamespacedAsset;
+use Becklyn\AssetsBundle\Asset\Asset;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -21,10 +21,8 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->append(self::appendEntries(
-                    "entries",
-                    "All entry directories, where assets are searched. Relative to `kernel.project_dir`.",
-                    false
+                ->append(self::appendNamespaces(
+                    "All namespace directories, where assets are searched. Relative to `kernel.project_dir`."
                 ))
                 ->scalarNode("public_path")
                     ->defaultValue('%kernel.project_dir%/public')
@@ -33,6 +31,11 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                 ->scalarNode("output_dir")
                     ->defaultValue('assets')
                     ->info("The relative path to the assets output dir. Relative to `public_path`.")
+                ->end()
+                ->arrayNode("dependency_maps")
+                    ->scalarPrototype()->end()
+                    ->defaultValue([])
+                    ->info("The paths to the dependency maps.")
                 ->end()
             ->end();
 
@@ -43,14 +46,12 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
     /**
      * Appends the entries config entry
      *
-     * @param string $name
-     * @param string $info
-     * @param bool   $isRequired
+     * @param string $description
      * @return ArrayNodeDefinition|NodeDefinition
      */
-    public static function appendEntries (string $name, string $info, bool $isRequired)
+    public static function appendNamespaces (string $description)
     {
-        $node = (new TreeBuilder())->root($name);
+        $node = (new TreeBuilder())->root("namespaces");
 
         $node
             ->scalarPrototype()->end()
@@ -60,7 +61,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                 {
                     foreach ($paths as $namespace => $path)
                     {
-                        if (1 !== \preg_match('~^' . NamespacedAsset::NAMESPACE_REGEX . '$~', $namespace))
+                        if (1 !== \preg_match('~^' . Asset::NAMESPACE_REGEX . '$~', $namespace))
                         {
                             return true;
                         }
@@ -91,17 +92,10 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                     return false;
                 }
             )
-            ->thenInvalid("The entries can't be outside of the project root (and can't use '..' in their paths).")
+            ->thenInvalid("The namespaces can't be outside of the project root (and can't use '..' in their paths).")
             ->end()
-            ->info($info)
+            ->info($description)
             ->defaultValue([]);
-
-        if ($isRequired)
-        {
-            $node
-                ->isRequired()
-                ->cannotBeEmpty();
-        }
 
         return $node;
     }

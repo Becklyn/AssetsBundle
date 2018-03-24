@@ -10,9 +10,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 
-class AssetsCacheCommand extends Command
+class AssetsInstallCommand extends Command
 {
-    public static $defaultName = "becklyn:assets:reset";
+    public static $defaultName = "becklyn:assets:install";
 
 
     /**
@@ -27,7 +27,7 @@ class AssetsCacheCommand extends Command
     public function __construct (CacheWarmer $cacheWarmer)
     {
         $this->cacheWarmer = $cacheWarmer;
-        parent::__construct();
+        parent::__construct(self::$defaultName);
     }
 
 
@@ -37,13 +37,12 @@ class AssetsCacheCommand extends Command
     protected function configure ()
     {
         $this
-            ->setName(self::$defaultName)
-            ->setDescription("Resets (clears and warms) the assets cache")
+            ->setDescription("Installs the assets. Clears the dump directory, re-adds all files and fills the cache.")
             ->addOption(
                 "no-warmup",
                 null,
                 InputOption::VALUE_OPTIONAL,
-                "Should be cache be automatically warmed up?",
+                "Should the cache be automatically warmed up?",
                 false
             );
     }
@@ -56,7 +55,7 @@ class AssetsCacheCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $io->title("Becklyn Assets: Reset");
+        $io->title("Becklyn Assets: Install");
         $this->cacheWarmer->clearCache($io);
 
         if (!$input->getOption("no-warmup"))

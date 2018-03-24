@@ -1,6 +1,6 @@
 <?php
 
-namespace Becklyn\AssetsBundle\Entry;
+namespace Becklyn\AssetsBundle\Namespaces;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -33,7 +33,7 @@ class RegisterEntryNamespacesCompilerPass implements CompilerPassInterface
      */
     public function process (ContainerBuilder $container)
     {
-        $entryNamespaces = $container->getDefinition(EntryNamespaces::class);
+        $entryNamespaces = $container->getDefinition(NamespaceRegistry::class);
 
         foreach ($this->mapping as $namespace => $path)
         {

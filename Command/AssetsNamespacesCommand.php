@@ -2,7 +2,7 @@
 
 namespace Becklyn\AssetsBundle\Command;
 
-use Becklyn\AssetsBundle\Entry\EntryNamespaces;
+use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,9 +15,9 @@ class AssetsNamespacesCommand extends Command
 
 
     /**
-     * @var EntryNamespaces
+     * @var NamespaceRegistry
      */
-    private $entryNamespaces;
+    private $namespaceRegistry;
 
 
     /**
@@ -27,13 +27,13 @@ class AssetsNamespacesCommand extends Command
 
 
     /**
-     * @param EntryNamespaces $entryNamespaces
-     * @param string          $projectDir
+     * @param NamespaceRegistry $namespaceRegistry
+     * @param string            $projectDir
      */
-    public function __construct (EntryNamespaces $entryNamespaces, string $projectDir)
+    public function __construct (NamespaceRegistry $namespaceRegistry, string $projectDir)
     {
-        parent::__construct();
-        $this->entryNamespaces = $entryNamespaces;
+        parent::__construct(self::$defaultName);
+        $this->namespaceRegistry = $namespaceRegistry;
         $this->projectDir = $projectDir;
     }
 
@@ -44,7 +44,6 @@ class AssetsNamespacesCommand extends Command
     protected function configure ()
     {
         $this
-            ->setName(self::$defaultName)
             ->setDescription("Displays an overview of all registered asset namespaces.");
     }
 
@@ -56,10 +55,10 @@ class AssetsNamespacesCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $io->title("Becklyn Asset Namespaces");
+        $io->title("Becklyn Assets: Namespaces");
         $io->comment("Displays all bundle namespaces and their associated paths.\nAll paths are relative to <fg=blue>%kernel.project_dir%</>.");
 
-        $namespaces = $this->fetchNamespaces($this->entryNamespaces);
+        $namespaces = $this->fetchNamespaces($this->namespaceRegistry);
 
         // no namespaces registered -> error and exit
         if (empty($namespaces))
@@ -104,7 +103,7 @@ class AssetsNamespacesCommand extends Command
      *
      * @return array
      */
-    private function fetchNamespaces (EntryNamespaces $entryNamespaces) : array
+    private function fetchNamespaces (NamespaceRegistry $entryNamespaces) : array
     {
         $namespaces = [];
 

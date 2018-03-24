@@ -34,7 +34,6 @@ class AssetsCache
 
     /**
      * @param CacheItemPoolInterface $pool
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function __construct (CacheItemPoolInterface $pool)
     {
@@ -47,13 +46,13 @@ class AssetsCache
     /**
      * Returns the cached asset
      *
-     * @param string $assetPath
+     * @param Asset $asset
      *
      * @return Asset|null
      */
-    public function get (string $assetPath) : ?Asset
+    public function get (Asset $asset) : ?Asset
     {
-        return $this->assets[$assetPath] ?? null;
+        return $this->assets[$asset->getAssetPath()] ?? null;
     }
 
 
@@ -61,14 +60,11 @@ class AssetsCache
      * Adds an asset to the cache
      *
      * @param string $assetPath
-     *
-     * @throws AssetsException
      */
-    public function add (string $assetPath, Asset $asset) : void
+    public function add (Asset $asset) : void
     {
-        $this->assets[$assetPath] = $asset;
-        $this->cacheItem->set($this->assets);
-        $this->cachePool->save($this->cacheItem);
+        $this->assets[$asset->getAssetPath()] = $asset;
+        $this->setAssets($this->assets);
     }
 
 
@@ -77,7 +73,18 @@ class AssetsCache
      */
     public function clear () : void
     {
-        $this->assets = [];
+        $this->setAssets([]);
+    }
+
+
+    /**
+     * Sets and stores the new assets array
+     *
+     * @param array $newAssets
+     */
+    private function setAssets (array $newAssets) : void
+    {
+        $this->assets = $newAssets;
         $this->cacheItem->set($this->assets);
         $this->cachePool->save($this->cacheItem);
     }

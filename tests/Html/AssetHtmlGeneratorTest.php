@@ -5,30 +5,37 @@ namespace Tests\Becklyn\AssetsBundle\Html;
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
+use Becklyn\AssetsBundle\File\FileTypeRegistry;
+use Becklyn\AssetsBundle\File\Type\Css\CssImportRewriter;
+use Becklyn\AssetsBundle\File\Type\CssFile;
+use Becklyn\AssetsBundle\File\Type\GenericFile;
+use Becklyn\AssetsBundle\File\Type\JavaScriptFile;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Becklyn\AssetsBundle\Url\AssetUrl;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
+use Tests\Becklyn\AssetsBundle\CreateHashedAssetTrait;
 
 
 class AssetHtmlGeneratorTest extends TestCase
 {
+    use CreateHashedAssetTrait;
+
     private $js = [];
     private $css = [];
-
 
     protected function setUp ()
     {
         $this->js = [
-            new Asset("out/js", "first.js", "j1"),
-            new Asset("out/js", "second.js", "j2"),
+            $this->createdHashedAsset("out", "js/first.js", "j1"),
+            $this->createdHashedAsset("out", "js/second.js", "j2"),
         ];
 
         $this->css = [
-            new Asset("out/css", "first.css", "c1"),
-            new Asset("out/css", "second.css", "c2"),
+            $this->createdHashedAsset("out", "css/first.css", "c1"),
+            $this->createdHashedAsset("out", "css/second.css", "c2"),
         ];
     }
 
@@ -43,12 +50,25 @@ class AssetHtmlGeneratorTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $importRewriter = $this->getMockBuilder(CssImportRewriter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $importRewriter
+            ->method("rewriteImports")
+            ->willReturnArgument(1);
+
+        $fileTypeRegistry = new FileTypeRegistry(new GenericFile(), [
+            "js" => new JavaScriptFile(),
+            "css" => new CssFile($importRewriter),
+        ]);
+
         $assetUrl
             ->method("generateUrl")
-            ->willReturnArgument(0);
+            ->willReturnCallback(function (Asset $asset) { return $asset->getAssetPath(); });
 
-        $generator = new AssetHtmlGenerator($registry, $assetUrl, $isDebug);
-        return [$generator, $registry, $assetUrl];
+        $generator = new AssetHtmlGenerator($registry, $assetUrl, $fileTypeRegistry, $isDebug);
+        return [$generator, $registry, $assetUrl, $fileTypeRegistry];
     }
 
 
@@ -66,15 +86,18 @@ class AssetHtmlGeneratorTest extends TestCase
             ->expects(self::never())
             ->method("get");
 
+        /** @var Asset[] $assets */
+        $assets = [
+            new Asset("bundles", "a/first.js"),
+            new Asset("bundles", "b/second.js"),
+        ];
+
         $assetUrl
             ->expects(self::exactly(2))
             ->method("generateUrl")
-            ->withConsecutive(
-                ["@bundles/a/first.js"],
-                ["@bundles/b/second.js"]
-            );
+            ->withConsecutive(...$assets);
 
-        $html = $generator->linkAssets("js", ["@bundles/a/first.js", "@bundles/b/second.js"]);
+        $html = $generator->linkAssets([$assets[0]->getAssetPath(), $assets[1]->getAssetPath()]);
         self::assertEquals(
             '<script defer src="@bundles/a/first.js"></script><script defer src="@bundles/b/second.js"></script>',
             $html
@@ -96,15 +119,18 @@ class AssetHtmlGeneratorTest extends TestCase
             ->expects(self::never())
             ->method("get");
 
+        /** @var Asset[] $assets */
+        $assets = [
+            new Asset("bundles", "a/first.css"),
+            new Asset("bundles", "b/second.css"),
+        ];
+
         $assetUrl
             ->expects(self::exactly(2))
             ->method("generateUrl")
-            ->withConsecutive(
-                ["@bundles/a/first.css"],
-                ["@bundles/b/second.css"]
-            );
+            ->withConsecutive(...$assets);
 
-        $html = $generator->linkAssets("css", ["@bundles/a/first.css", "@bundles/b/second.css"]);
+        $html = $generator->linkAssets([$assets[0]->getAssetPath(), $assets[1]->getAssetPath()]);
         self::assertEquals(
             '<link rel="stylesheet" href="@bundles/a/first.css"><link rel="stylesheet" href="@bundles/b/second.css">',
             $html
@@ -117,20 +143,19 @@ class AssetHtmlGeneratorTest extends TestCase
         /**
          * @type AssetHtmlGenerator $generator
          * @type \PHPUnit_Framework_MockObject_MockObject $registry
-         * @type \PHPUnit_Framework_MockObject_MockObject $assetUrl
          */
-        [$generator, $registry, $assetUrl] = $this->buildGenerator(false);
+        [$generator, $registry] = $this->buildGenerator(false);
 
         $registry
             ->method("get")
             ->willReturnCallback(
-                function ($url)
+                function (Asset $asset)
                 {
-                    return new Asset("out/", $url, "hash");
+                    return $this->createdHashedAsset($asset->getNamespace(), $asset->getFilePath(), "hash");
                 }
             );
 
-        $html = $generator->linkAssets("js", ["@a/first.js", "@b/second.js"]);
+        $html = $generator->linkAssets(["@a/first.js", "@b/second.js"]);
         self::assertContains('integrity="', $html);
     }
 
@@ -140,20 +165,19 @@ class AssetHtmlGeneratorTest extends TestCase
         /**
          * @type AssetHtmlGenerator $generator
          * @type \PHPUnit_Framework_MockObject_MockObject $registry
-         * @type \PHPUnit_Framework_MockObject_MockObject $router
          */
-        [$generator, $registry, $router] = $this->buildGenerator(false);
+        [$generator, $registry] = $this->buildGenerator(false);
 
         $registry
             ->method("get")
             ->willReturnCallback(
-                function ($url)
+                function (Asset $asset)
                 {
-                    return new Asset("out/", $url, "hash");
+                    return $this->createdHashedAsset($asset->getNamespace(), $asset->getFilePath(), "hash");
                 }
             );
 
-        $html = $generator->linkAssets("css", ["@a/first.css", "@b/second.css"]);
+        $html = $generator->linkAssets(["@a/first.css", "@b/second.css"]);
         self::assertContains('integrity="', $html);
     }
 }

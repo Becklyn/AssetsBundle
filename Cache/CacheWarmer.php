@@ -66,18 +66,18 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
             $io->text("Searching for all assets in the bundles/ directory...");
         }
 
-        $files = $this->finder->findAssets();
+        $assets = $this->finder->findAssets();
 
         if (null !== $io)
         {
             $io->text(sprintf(
-                "Found <fg=yellow>%d file%s</>.",
-                count($files),
-                count($files) !== 1 ? "s" : ""
+                "Found <fg=yellow>%d asset%s</>.",
+                count($assets),
+                count($assets) !== 1 ? "s" : ""
             ));
         }
 
-        if (0 === count($files))
+        if (0 === count($assets))
         {
             return;
         }
@@ -85,14 +85,14 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
         if (null !== $io)
         {
             $io->newLine();
-            $progressBar = $io->createProgressBar(count($files));
+            $progressBar = $io->createProgressBar(count($assets));
         }
 
         $progressCallback = (null !== $progressBar)
             ? [$progressBar, "advance"]
             : null;
 
-        $this->registry->add($files, $progressCallback);
+        $this->registry->add($assets, $progressCallback);
 
         if (null !== $io)
         {

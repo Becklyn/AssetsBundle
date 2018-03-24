@@ -1,15 +1,15 @@
 <?php
 
-namespace Becklyn\AssetsBundle\Entry;
+namespace Becklyn\AssetsBundle\Namespaces;
 
-use Becklyn\AssetsBundle\Asset\NamespacedAsset;
+use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 
 
 /**
  * Contains all namespaces for the application
  */
-class EntryNamespaces implements \IteratorAggregate
+class NamespaceRegistry implements \IteratorAggregate
 {
     /**
      * @var array<string,string>
@@ -22,11 +22,10 @@ class EntryNamespaces implements \IteratorAggregate
      */
     private $projectDir;
 
+
     /**
      * @param string $projectDir
      * @param array  $entries
-     *
-     * @throws AssetsException
      */
     public function __construct (string $projectDir, array $entries = [])
     {
@@ -107,14 +106,14 @@ class EntryNamespaces implements \IteratorAggregate
 
 
     /**
-     * Returns the full file path for the given namespaced asset
+     * Returns the full file path for the given asset
      *
-     * @param NamespacedAsset $asset
+     * @param Asset $asset
      * @return string
      * @throws AssetsException
      */
-    public function getFilePath (NamespacedAsset $asset) : string
+    public function getFilePath (Asset $asset) : string
     {
-        return "{$this->getPath($asset->getNamespace())}/{$asset->getPath()}";
+        return "{$this->getPath($asset->getNamespace())}/{$asset->getFilePath()}";
     }
 }
