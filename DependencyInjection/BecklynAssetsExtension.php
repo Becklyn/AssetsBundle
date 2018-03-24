@@ -39,7 +39,7 @@ class BecklynAssetsExtension extends Extension
             ->setArgument('$outputDir', $config["output_dir"]);
 
         $container->getDefinition(NamespaceRegistry::class)
-            ->setArgument('$entries', $config["entries"]);
+            ->setArgument('$namespaces', $config["namespaces"]);
 
         $container->getDefinition(AssetsRouteLoader::class)
             ->setArgument('$outputDir', $config["output_dir"]);
@@ -56,7 +56,7 @@ class BecklynAssetsExtension extends Extension
      */
     private function initializeDependencyMap (array $config, ContainerBuilder $container) : void
     {
-        $registry = new NamespaceRegistry($container->getParameter("kernel.project_dir"), $config["entries"]);
+        $registry = new NamespaceRegistry($container->getParameter("kernel.project_dir"), $config["namespaces"]);
         $loader = new DependencyLoader($registry);
 
         foreach ($config["dependency_maps"] as $dependencyMap)

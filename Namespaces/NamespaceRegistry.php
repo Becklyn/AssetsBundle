@@ -25,13 +25,13 @@ class NamespaceRegistry implements \IteratorAggregate
 
     /**
      * @param string $projectDir
-     * @param array  $entries
+     * @param array  $namespaces
      */
-    public function __construct (string $projectDir, array $entries = [])
+    public function __construct (string $projectDir, array $namespaces = [])
     {
         $this->projectDir = $projectDir;
 
-        foreach ($entries as $namespace => $directory)
+        foreach ($namespaces as $namespace => $directory)
         {
             $this->addNamespace($namespace, $directory);
         }
