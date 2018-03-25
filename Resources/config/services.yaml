@@ -29,6 +29,7 @@ services:
             js: '@Becklyn\AssetsBundle\File\Type\JavaScriptFile'
             svg: '@Becklyn\AssetsBundle\File\Type\SvgFile'
 
+    Becklyn\AssetsBundle\File\Type\Css\CssImportRewriter: ~
     Becklyn\AssetsBundle\File\Type\CssFile: ~
     Becklyn\AssetsBundle\File\Type\GenericFile: ~
     Becklyn\AssetsBundle\File\Type\JavaScriptFile: ~
