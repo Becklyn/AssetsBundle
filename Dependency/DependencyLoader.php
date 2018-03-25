@@ -48,11 +48,19 @@ class DependencyLoader
     {
         try {
             $filePath = $this->namespaceRegistry->getFilePath(Asset::createFromAssetPath($assetPathToMap));
-            $map = \json_decode(\file_get_contents($filePath), true);
-            $this->importMap(
-                \dirname($assetPathToMap),
-                $map
-            );
+
+            if (\is_file($filePath))
+            {
+                $map = \json_decode(\file_get_contents($filePath), true);
+
+                if (null !== $map)
+                {
+                    $this->importMap(
+                        \dirname($assetPathToMap),
+                        $map
+                    );
+                }
+            }
         }
         catch (AssetsException $e)
         {
@@ -79,7 +87,7 @@ class DependencyLoader
 
         foreach ($dependencyMap as $file => $dependencies)
         {
-            $this->dependencyMap["{$basePath}/{$file}"] = \array_map(
+            $this->dependencyMap["{$basePath}/{$file}.js"] = \array_map(
                 function (string $file) use ($basePath)
                 {
                     return "{$basePath}/{$file}";
