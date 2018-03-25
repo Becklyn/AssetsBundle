@@ -4,6 +4,7 @@ namespace Becklyn\AssetsBundle\Twig;
 
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Dependency\DependencyMap;
+use Becklyn\AssetsBundle\Dependency\DependencyMapFactory;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Becklyn\AssetsBundle\File\FileLoader;
 use Becklyn\AssetsBundle\Url\AssetUrl;
@@ -37,22 +38,22 @@ class AssetsTwigExtension extends \Twig_Extension
 
     /**
      *
-     * @param AssetHtmlGenerator $htmlReferences
-     * @param AssetUrl           $assetUrl
-     * @param FileLoader         $fileLoader
-     * @param DependencyMap      $dependencyMap
+     * @param AssetHtmlGenerator   $htmlReferences
+     * @param AssetUrl             $assetUrl
+     * @param FileLoader           $fileLoader
+     * @param DependencyMapFactory $dependencyMapFactory
      */
     public function __construct (
         AssetHtmlGenerator $htmlReferences,
         AssetUrl $assetUrl,
         FileLoader $fileLoader,
-        DependencyMap $dependencyMap
+        DependencyMapFactory $dependencyMapFactory
     )
     {
         $this->htmlReferences = $htmlReferences;
         $this->assetUrl = $assetUrl;
         $this->fileLoader = $fileLoader;
-        $this->dependencyMap = $dependencyMap;
+        $this->dependencyMap = $dependencyMapFactory->getDependencyMap();
     }
 
 

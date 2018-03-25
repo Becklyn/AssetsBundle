@@ -17,8 +17,10 @@ services:
             $isDebug: '%kernel.debug%'
         public: true
 
-    # the first parameter is set in the bundle extension
-    Becklyn\AssetsBundle\Dependency\DependencyMap: ~
+    # configured in bundle extension
+    Becklyn\AssetsBundle\Dependency\DependencyMapFactory:
+        $isDebug: '%kernel.debug%'
+
     Becklyn\AssetsBundle\File\AssetMimeTypeGuesser: ~
     Becklyn\AssetsBundle\File\FileLoader: ~
 

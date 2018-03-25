@@ -3,7 +3,7 @@
 namespace Becklyn\AssetsBundle\DependencyInjection;
 
 use Becklyn\AssetsBundle\Dependency\DependencyLoader;
-use Becklyn\AssetsBundle\Dependency\DependencyMap;
+use Becklyn\AssetsBundle\Dependency\DependencyMapFactory;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
 use Becklyn\AssetsBundle\Storage\AssetStorage;
@@ -64,7 +64,8 @@ class BecklynAssetsExtension extends Extension
             $loader->importFile($dependencyMap);
         }
 
-        $container->getDefinition(DependencyMap::class)
-            ->setArgument('$dependencyMap', $loader->getDependencyMap());
+        $container->getDefinition(DependencyMapFactory::class)
+            ->setArgument('$dependencyFiles', $config["dependency_maps"])
+            ->setArgument('$precompiledDependencyMap', $loader->getDependencyMap());
     }
 }
