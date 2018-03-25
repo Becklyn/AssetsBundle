@@ -3,7 +3,9 @@
 namespace Becklyn\AssetsBundle\Dependency;
 
 use Becklyn\AssetsBundle\Asset\Asset;
+use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
+use Psr\Log\LoggerInterface;
 
 
 class DependencyLoader
@@ -21,11 +23,19 @@ class DependencyLoader
 
 
     /**
-     * @param NamespaceRegistry $namespaceRegistry
+     * @var LoggerInterface|null
      */
-    public function __construct (NamespaceRegistry $namespaceRegistry)
+    private $logger;
+
+
+    /**
+     * @param NamespaceRegistry    $namespaceRegistry
+     * @param LoggerInterface|null $logger
+     */
+    public function __construct (NamespaceRegistry $namespaceRegistry, ?LoggerInterface $logger = null)
     {
         $this->namespaceRegistry = $namespaceRegistry;
+        $this->logger = $logger;
     }
 
 
@@ -33,16 +43,27 @@ class DependencyLoader
      * Imports all dependencies from the given dependencies file
      *
      * @param string $assetPathToMap
-     * @throws \Becklyn\AssetsBundle\Exception\AssetsException
      */
     public function importFile (string $assetPathToMap) : void
     {
-        $filePath = $this->namespaceRegistry->getFilePath(Asset::createFromAssetPath($assetPathToMap));
-        $map = \json_decode(\file_get_contents($filePath), true);
-        $this->importMap(
-            \dirname($assetPathToMap),
-            $map
-        );
+        try {
+            $filePath = $this->namespaceRegistry->getFilePath(Asset::createFromAssetPath($assetPathToMap));
+            $map = \json_decode(\file_get_contents($filePath), true);
+            $this->importMap(
+                \dirname($assetPathToMap),
+                $map
+            );
+        }
+        catch (AssetsException $e)
+        {
+            if (null !== $this->logger)
+            {
+                $this->logger->error("Could not load dependency map at {path}.", [
+                    "path" => $assetPathToMap,
+                    "error" => $e->getMessage(),
+                ]);
+            }
+        }
     }
 
 
