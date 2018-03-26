@@ -39,12 +39,26 @@ class FileTypeRegistry
 
 
     /**
+     * Returns the file type for an asset
+     *
      * @param Asset $asset
      * @return FileType
      */
     public function getFileType (Asset $asset) : FileType
     {
-        return $this->fileTypes[$asset->getFileType()] ?? $this->genericFileType;
+        return $this->getByFileExtension($asset->getFileType());
+    }
+
+
+    /**
+     * Returns the file type by file extension
+     *
+     * @param string $extension
+     * @return FileType
+     */
+    public function getByFileExtension (string $extension) : FileType
+    {
+        return $this->fileTypes[$extension] ?? $this->genericFileType;
     }
 
 
