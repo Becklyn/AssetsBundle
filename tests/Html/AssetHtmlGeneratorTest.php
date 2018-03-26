@@ -5,6 +5,7 @@ namespace Tests\Becklyn\AssetsBundle\Html;
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
+use Becklyn\AssetsBundle\Dependency\DependencyMap;
 use Becklyn\AssetsBundle\Dependency\DependencyMapFactory;
 use Becklyn\AssetsBundle\File\FileTypeRegistry;
 use Becklyn\AssetsBundle\File\Type\Css\CssImportRewriter;
@@ -68,6 +69,10 @@ class AssetHtmlGeneratorTest extends TestCase
         $dependencyMapFactory = $this->getMockBuilder(DependencyMapFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
+
+        $dependencyMapFactory
+            ->method("getDependencyMap")
+            ->willReturn(new DependencyMap());
 
         $assetUrl
             ->method("generateUrl")
