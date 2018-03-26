@@ -90,7 +90,7 @@ class AssetHtmlGenerator
             if (1 === \preg_match('~^(https?:)?//~', $assetPath))
             {
                 $parts = explode("#", $assetPath, 2);
-                $fileType = $this->fileTypeRegistry->getFileType(\pathinfo($assetPath, \PATHINFO_EXTENSION));
+                $fileType = $this->fileTypeRegistry->getByFileExtension(\pathinfo($assetPath, \PATHINFO_EXTENSION));
                 $assetUrl = $parts[0];
                 $integrity = $parts[1] ?? "";
             }
