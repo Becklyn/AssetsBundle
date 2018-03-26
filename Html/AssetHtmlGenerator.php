@@ -90,15 +90,17 @@ class AssetHtmlGenerator
             if (1 === \preg_match('~^(https?:)?//~', $assetPath))
             {
                 $parts = explode("#", $assetPath, 2);
-                $fileType = $this->fileTypeRegistry->getByFileExtension(\pathinfo($assetPath, \PATHINFO_EXTENSION));
+                $extension = \pathinfo($assetPath, \PATHINFO_EXTENSION);
+                $fileType = $this->fileTypeRegistry->getByFileExtension($extension);
                 $assetUrl = $parts[0];
                 $integrity = $parts[1] ?? "";
             }
             else
             {
                 $asset = Asset::createFromAssetPath($assetPath);
-                $fileType = $this->fileTypeRegistry->getFileType($asset);
                 $assetUrl = $this->assetUrl->generateUrl($asset);
+                $fileType = $this->fileTypeRegistry->getFileType($asset);
+                $extension = $asset->getFileType();
                 $integrity = $this->isDebug ? "" : $this->getIntegrityHtml($asset);
             }
 
@@ -108,15 +110,11 @@ class AssetHtmlGenerator
             {
                 throw new AssetsException(sprintf(
                     "No HTML link format found for file of type: %s",
-                    $asset->getFileType()
+                    $extension
                 ));
             }
 
-            $html .= sprintf(
-                $htmlLinkFormat,
-                $assetUrl,
-                $integrity
-            );
+            $html .= sprintf($htmlLinkFormat, $assetUrl, $integrity);
         }
 
         return $html;
