@@ -73,7 +73,7 @@ class AssetHtmlGenerator
      *
      * @throws AssetsException
      */
-    public function linkAssets (array $assetPaths, bool $withDependencies) : string
+    public function linkAssets (array $assetPaths, bool $withDependencies = true) : string
     {
         if ($withDependencies)
         {
