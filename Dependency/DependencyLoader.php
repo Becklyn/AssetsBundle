@@ -36,6 +36,12 @@ class DependencyLoader
     {
         $this->namespaceRegistry = $namespaceRegistry;
         $this->logger = $logger;
+
+        // automatically try to load `@namespace/js/_dependencies.json` for every namespace
+        foreach ($namespaceRegistry as $namespace => $path)
+        {
+            $this->importFile("@{$namespace}/js/_dependencies.json");
+        }
     }
 
 
