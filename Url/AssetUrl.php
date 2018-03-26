@@ -5,11 +5,9 @@ namespace Becklyn\AssetsBundle\Url;
 
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
-use Becklyn\AssetsBundle\Asset\NamespacedAsset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 
 
