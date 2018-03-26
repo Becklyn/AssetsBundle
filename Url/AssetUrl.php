@@ -56,7 +56,7 @@ class AssetUrl
 
 
     /**
-     * @param string $assetPath
+     * @param Asset $asset
      * @return string
      * @throws AssetsException
      */
