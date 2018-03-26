@@ -31,29 +31,20 @@ class AssetsTwigExtension extends \Twig_Extension
 
 
     /**
-     * @var DependencyMap
-     */
-    private $dependencyMap;
-
-
-    /**
      *
-     * @param AssetHtmlGenerator   $htmlReferences
-     * @param AssetUrl             $assetUrl
-     * @param FileLoader           $fileLoader
-     * @param DependencyMapFactory $dependencyMapFactory
+     * @param AssetHtmlGenerator $htmlReferences
+     * @param AssetUrl           $assetUrl
+     * @param FileLoader         $fileLoader
      */
     public function __construct (
         AssetHtmlGenerator $htmlReferences,
         AssetUrl $assetUrl,
-        FileLoader $fileLoader,
-        DependencyMapFactory $dependencyMapFactory
+        FileLoader $fileLoader
     )
     {
         $this->htmlReferences = $htmlReferences;
         $this->assetUrl = $assetUrl;
         $this->fileLoader = $fileLoader;
-        $this->dependencyMap = $dependencyMapFactory->getDependencyMap();
     }
 
 
@@ -64,12 +55,7 @@ class AssetsTwigExtension extends \Twig_Extension
      */
     public function linkAssets (array $assetPaths, bool $withDependencies = true) : string
     {
-        if ($withDependencies)
-        {
-            $assetPaths = $this->dependencyMap->getImportsWithDependencies($assetPaths);
-        }
-
-        return $this->htmlReferences->linkAssets($assetPaths);
+        return $this->htmlReferences->linkAssets($assetPaths, $withDependencies);
     }
 
 

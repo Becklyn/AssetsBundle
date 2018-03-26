@@ -5,6 +5,7 @@ namespace Tests\Becklyn\AssetsBundle\Html;
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
+use Becklyn\AssetsBundle\Dependency\DependencyMapFactory;
 use Becklyn\AssetsBundle\File\FileTypeRegistry;
 use Becklyn\AssetsBundle\File\Type\Css\CssImportRewriter;
 use Becklyn\AssetsBundle\File\Type\CssFile;
@@ -14,6 +15,7 @@ use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Becklyn\AssetsBundle\Url\AssetUrl;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Asset\Packages;
+use Symfony\Component\DependencyInjection\Tests\Compiler\AutowireRequiredMethodsPassTest;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Tests\Becklyn\AssetsBundle\CreateHashedAssetTrait;
@@ -63,11 +65,15 @@ class AssetHtmlGeneratorTest extends TestCase
             "css" => new CssFile($importRewriter),
         ]);
 
+        $dependencyMapFactory = $this->getMockBuilder(DependencyMapFactory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $assetUrl
             ->method("generateUrl")
             ->willReturnCallback(function (Asset $asset) { return $asset->getAssetPath(); });
 
-        $generator = new AssetHtmlGenerator($registry, $assetUrl, $fileTypeRegistry, $isDebug);
+        $generator = new AssetHtmlGenerator($registry, $assetUrl, $fileTypeRegistry, $isDebug, $dependencyMapFactory);
         return [$generator, $registry, $assetUrl, $fileTypeRegistry];
     }
 
