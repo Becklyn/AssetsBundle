@@ -2,8 +2,9 @@
 
 namespace Becklyn\AssetsBundle\File;
 
-
 use Becklyn\AssetsBundle\Asset\Asset;
+use Becklyn\AssetsBundle\Exception\AssetsException;
+use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
@@ -24,6 +25,13 @@ class AssetMimeTypeGuesser
         'xml' => 'application/xml',
         'swf' => 'application/x-shockwave-flash',
         'flv' => 'video/x-flv',
+
+        // fonts
+        'woff' => 'application/font-woff',
+        'woff2' => 'application/font-woff2',
+        'ttf' => 'application/x-font-truetype',
+        'otf' => 'application/x-font-opentype',
+        'eot' => 'application/vnd.ms-fontobject',
 
         // images
         'png' => 'image/png',
@@ -76,11 +84,18 @@ class AssetMimeTypeGuesser
 
 
     /**
-     *
+     * @var NamespaceRegistry
      */
-    public function __construct ()
+    private $namespaceRegistry;
+
+
+    /**
+     * @param NamespaceRegistry $namespaceRegistry
+     */
+    public function __construct (NamespaceRegistry $namespaceRegistry)
     {
         $this->coreGuesser = MimeTypeGuesser::getInstance();
+        $this->namespaceRegistry = $namespaceRegistry;
     }
 
 
@@ -101,9 +116,10 @@ class AssetMimeTypeGuesser
                 return $predefinedType;
             }
 
-            return $this->coreGuesser->guess($asset->getFilePath());
+            $filePath = $this->namespaceRegistry->getFilePath($asset);
+            return $this->coreGuesser->guess($filePath);
         }
-        catch (Exception $e)
+        catch (AssetsException | Exception $e)
         {
             return "application/octet-stream";
         }
