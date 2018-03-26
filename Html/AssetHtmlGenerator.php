@@ -75,18 +75,33 @@ class AssetHtmlGenerator
      */
     public function linkAssets (array $assetPaths, bool $withDependencies = true) : string
     {
+        $html = "";
+
         if ($withDependencies)
         {
             $assetPaths = $this->dependencyMap->getImportsWithDependencies($assetPaths);
         }
 
-        /** @var Asset[] $assets */
-        $assets = \array_map([Asset::class, "createFromAssetPath"], $assetPaths);
-        $html = "";
-
-        foreach ($assets as $asset)
+        foreach ($assetPaths as $assetPath)
         {
-            $fileType = $this->fileTypeRegistry->getFileType($asset);
+            // allow URLs with integrated optional integrity.
+            // just pass it behind a hash:
+            // https://example.org/test.js#sha256hash
+            if (1 === \preg_match('~^(https?:)?//~', $assetPath))
+            {
+                $parts = explode("#", $assetPath, 2);
+                $fileType = $this->fileTypeRegistry->getFileType(\pathinfo($assetPath, \PATHINFO_EXTENSION));
+                $assetUrl = $parts[0];
+                $integrity = $parts[1] ?? "";
+            }
+            else
+            {
+                $asset = Asset::createFromAssetPath($assetPath);
+                $fileType = $this->fileTypeRegistry->getFileType($asset);
+                $assetUrl = $this->assetUrl->generateUrl($asset);
+                $integrity = $this->isDebug ? "" : $this->getIntegrityHtml($asset);
+            }
+
             $htmlLinkFormat = $fileType->getHtmlLinkFormat();
 
             if (null === $htmlLinkFormat)
@@ -99,8 +114,8 @@ class AssetHtmlGenerator
 
             $html .= sprintf(
                 $htmlLinkFormat,
-                $this->assetUrl->generateUrl($asset),
-                $this->isDebug ? "" : $this->getIntegrityHtml($asset)
+                $assetUrl,
+                $integrity
             );
         }
 
