@@ -100,15 +100,4 @@ class AssetUrl
             "path" => $filePath,
         ]);
     }
-
-
-    /**
-     * @param string $assetPath
-     * @return string
-     * @throws AssetsException
-     */
-    public function generateUrlFromAssetPath (string $assetPath) : string
-    {
-        return $this->generateUrl(Asset::createFromAssetPath($assetPath));
-    }
 }

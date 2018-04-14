@@ -37,6 +37,7 @@ services:
     Becklyn\AssetsBundle\File\Type\JavaScriptFile: ~
     Becklyn\AssetsBundle\File\Type\SvgFile: ~
     Becklyn\AssetsBundle\Finder\AssetsFinder: ~
+    Becklyn\AssetsBundle\Helper\AssetHelper: ~
     Becklyn\AssetsBundle\Html\AssetHtmlGenerator:
         public: true
         arguments:
