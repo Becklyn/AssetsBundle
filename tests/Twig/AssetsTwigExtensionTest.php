@@ -2,10 +2,9 @@
 
 namespace Tests\Becklyn\AssetsBundle\Twig;
 
+use Becklyn\AssetsBundle\Helper\AssetHelper;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
-use Becklyn\AssetsBundle\File\FileLoader;
 use Becklyn\AssetsBundle\Twig\AssetsTwigExtension;
-use Becklyn\AssetsBundle\Url\AssetUrl;
 use PHPUnit\Framework\TestCase;
 
 
@@ -20,15 +19,11 @@ class AssetsTwigExtensionTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $assetUrl = $this->getMockBuilder(AssetUrl::class)
+        $helper = $this->getMockBuilder(AssetHelper::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $fileLoader = $this->getMockBuilder(FileLoader::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $extension = new AssetsTwigExtension($htmlReferences, $assetUrl, $fileLoader);
+        $extension = new AssetsTwigExtension($htmlReferences, $helper);
         $functions = \array_map(
             function (\Twig_SimpleFunction $f)
             {

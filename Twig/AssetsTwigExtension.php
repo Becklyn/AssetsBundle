@@ -2,12 +2,8 @@
 
 namespace Becklyn\AssetsBundle\Twig;
 
-use Becklyn\AssetsBundle\Asset\Asset;
-use Becklyn\AssetsBundle\Dependency\DependencyMap;
-use Becklyn\AssetsBundle\Dependency\DependencyMapFactory;
+use Becklyn\AssetsBundle\Helper\AssetHelper;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
-use Becklyn\AssetsBundle\File\FileLoader;
-use Becklyn\AssetsBundle\Url\AssetUrl;
 
 
 class AssetsTwigExtension extends \Twig_Extension
@@ -19,57 +15,23 @@ class AssetsTwigExtension extends \Twig_Extension
 
 
     /**
-     * @var AssetUrl
+     * @var AssetHelper
      */
-    private $assetUrl;
-
-
-    /**
-     * @var FileLoader
-     */
-    private $fileLoader;
+    private $assetHelper;
 
 
     /**
      *
      * @param AssetHtmlGenerator $htmlReferences
-     * @param AssetUrl           $assetUrl
-     * @param FileLoader         $fileLoader
+     * @param AssetHelper        $assetHelper
      */
     public function __construct (
         AssetHtmlGenerator $htmlReferences,
-        AssetUrl $assetUrl,
-        FileLoader $fileLoader
+        AssetHelper $assetHelper
     )
     {
         $this->htmlReferences = $htmlReferences;
-        $this->assetUrl = $assetUrl;
-        $this->fileLoader = $fileLoader;
-    }
-
-
-    /**
-     * @param array $assetPaths
-     * @return string
-     * @throws \Becklyn\AssetsBundle\Exception\AssetsException
-     */
-    public function linkAssets (array $assetPaths, bool $withDependencies = true) : string
-    {
-        return $this->htmlReferences->linkAssets($assetPaths, $withDependencies);
-    }
-
-
-    /**
-     * Inlines the given asset
-     *
-     * @param array $assetPaths
-     * @return string
-     * @throws \Becklyn\AssetsBundle\Exception\AssetsException
-     */
-    public function inlineAsset (string $assetPath) : string
-    {
-        $asset = Asset::createFromAssetPath($assetPath);
-        return $this->fileLoader->loadFile($asset, FileLoader::MODE_UNTOUCHED);
+        $this->assetHelper = $assetHelper;
     }
 
 
@@ -79,9 +41,9 @@ class AssetsTwigExtension extends \Twig_Extension
     public function getFunctions ()
     {
         return [
-            new \Twig_SimpleFunction("asset", [$this->assetUrl, "generateUrlFromAssetPath"]),
-            new \Twig_SimpleFunction("asset_inline", [$this, "inlineAsset"], ["is_safe" => ["html"]]),
-            new \Twig_SimpleFunction("assets_link", [$this, "linkAssets"], ["is_safe" => ["html"]]),
+            new \Twig_SimpleFunction("asset", [$this->assetHelper, "getUrl"]),
+            new \Twig_SimpleFunction("asset_inline", [$this->assetHelper, "embed"], ["is_safe" => ["html"]]),
+            new \Twig_SimpleFunction("assets_link", [$this->htmlReferences, "linkAssets"], ["is_safe" => ["html"]]),
         ];
     }
 }
