@@ -93,13 +93,13 @@ class DependencyLoader
 
         foreach ($dependencyMap as $file => $dependencies)
         {
-            $this->dependencyMap["{$basePath}/{$file}.js"] = \array_map(
-                function (string $file) use ($basePath)
+            foreach ($dependencies as $dependency)
+            {
+                if (\preg_match('~(.*)\.js$~', $dependency))
                 {
-                    return "{$basePath}/{$file}";
-                },
-                $dependencies
-            );
+                    $this->dependencyMap["{$basePath}/{$file}.js"][] = "{$basePath}/{$dependency}";
+                }
+            }
         }
     }
 
