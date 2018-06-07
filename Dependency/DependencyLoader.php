@@ -95,7 +95,7 @@ class DependencyLoader
         {
             foreach ($dependencies as $dependency)
             {
-                if (\preg_match('~(.*)\.js$~', $dependency))
+                if ("js" === pathinfo($dependency, PATHINFO_EXTENSION))
                 {
                     $this->dependencyMap["{$basePath}/{$file}.js"][] = "{$basePath}/{$dependency}";
                 }
