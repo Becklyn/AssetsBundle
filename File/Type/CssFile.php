@@ -61,6 +61,6 @@ class CssFile extends FileType
      */
     public function processForProd (Asset $asset, string $fileContent) : string
     {
-        return $this->importRewriter->rewriteImports($asset, $fileContent);
+        return $this->importRewriter->rewriteStaticImports($asset, $fileContent);
     }
 }

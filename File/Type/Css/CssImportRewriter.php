@@ -2,9 +2,9 @@
 
 namespace Becklyn\AssetsBundle\File\Type\Css;
 
-
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
+use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 
 
 class CssImportRewriter
@@ -31,48 +31,16 @@ class CssImportRewriter
      * @param string $fileContent
      * @return string
      */
-    public function rewriteImports (Asset $asset, string $fileContent) : string
-    {return \preg_replace_callback(
-        '~url\\(\s*(?<path>.*?)\s*\\)~i',
-        function (array $matches) use ($asset)
-        {
-            return $this->replaceUrl($asset, $matches);
-        },
-        $fileContent
-    );
-    }
-
-
-    /**
-     * Replaces the URL with the replaced one
-     *
-     * @param Asset $asset
-     * @param array $matches
-     * @return string
-     */
-    private function replaceUrl (Asset $asset, array $matches) : string
+    public function rewriteStaticImports (Asset $asset, string $fileContent) : string
     {
-        $path = $matches["path"];
-        $openingQuote = substr($matches["path"], 0, 1);
-        $closingQuote = \substr($matches["path"], -1);
-        $usedQuotes = "";
-
-        // check if quoted and whether valid quoted
-        if ($openingQuote === "'" || $openingQuote === '"')
-        {
-            if ($openingQuote !== $closingQuote)
+        $importParser = new CssUrlImportParser();
+        return $importParser->replaceValidImports(
+            $fileContent,
+            function (string $path) use ($asset)
             {
-                // looks like invalid CSS, as there is a leading quote, but no closing one, so bail
-                return $matches[0];
+                return $this->rewritePathInStaticImport($asset, $path);
             }
-
-            // strip quotes from path
-            $path = \substr($path, 1, -1);
-            $usedQuotes = $openingQuote;
-        }
-
-        $path = $this->rewritePath($asset, $path);
-        return "url({$usedQuotes}{$path}{$usedQuotes})";
+        );
     }
 
 
@@ -83,7 +51,7 @@ class CssImportRewriter
      * @param string $path
      * @return string
      */
-    private function rewritePath (Asset $asset, string $path) : string
+    private function rewritePathInStaticImport (Asset $asset, string $path) : string
     {
         // pass all URLs untouched, either "//..." or "schema:", where schema is a typical schema, that includes
         // http: https: and data:

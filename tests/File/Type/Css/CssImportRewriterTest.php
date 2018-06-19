@@ -103,7 +103,7 @@ CSS;
 
         self::assertSame(
             $expected,
-            $rewriter->rewriteImports(new Asset("assets", "css/test.css"), $input)
+            $rewriter->rewriteStaticImports(new Asset("assets", "css/test.css"), $input)
         );
     }
 
@@ -131,7 +131,7 @@ CSS;
 
         self::assertSame(
             $expected,
-            $rewriter->rewriteImports(new Asset("assets", "css/test.css"), $input)
+            $rewriter->rewriteStaticImports(new Asset("assets", "css/test.css"), $input)
         );
     }
 
@@ -156,7 +156,7 @@ CSS;
 
         self::assertSame(
             $input,
-            $rewriter->rewriteImports(new Asset("assets", "css/test.css"), $input)
+            $rewriter->rewriteStaticImports(new Asset("assets", "css/test.css"), $input)
         );
     }
 
@@ -179,7 +179,7 @@ CSS;
 
         self::assertSame(
             $input,
-            $rewriter->rewriteImports(new Asset("assets", "css/test.css"), $input)
+            $rewriter->rewriteStaticImports(new Asset("assets", "css/test.css"), $input)
         );
     }
 }

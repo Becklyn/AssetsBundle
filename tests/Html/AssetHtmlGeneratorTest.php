@@ -58,7 +58,7 @@ class AssetHtmlGeneratorTest extends TestCase
             ->getMock();
 
         $importRewriter
-            ->method("rewriteImports")
+            ->method("rewriteStaticImports")
             ->willReturnArgument(1);
 
         $fileTypeRegistry = new FileTypeRegistry(new GenericFile(), [
