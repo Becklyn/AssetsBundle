@@ -8,14 +8,14 @@ use Becklyn\AssetsBundle\Asset\Asset;
 abstract class FileType
 {
     /**
-     * Adds the file header
+     * Processes the file content for development
      *
      * @param Asset  $asset
      * @param string $filePath
      * @param string $fileContent
      * @return string
      */
-    public function prependFileHeader (Asset $asset, string $filePath, string $fileContent) : string
+    public function processForDev (Asset $asset, string $filePath, string $fileContent) : string
     {
         return $fileContent;
     }

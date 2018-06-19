@@ -79,7 +79,7 @@ class FileLoader
             // prepend file header in dev and process in prod
             $fileContent = (self::MODE_PROD === $mode)
                 ? $fileType->processForProd($asset, $fileContent)
-                : $fileType->prependFileHeader($asset, $filePath, $fileContent);
+                : $fileType->processForDev($asset, $filePath, $fileContent);
         }
 
         return $fileContent;

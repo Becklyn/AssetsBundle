@@ -30,10 +30,13 @@ class CssFile extends FileType
     /**
      * @inheritDoc
      */
-    public function prependFileHeader (Asset $asset, string $filePath, string $fileContent) : string
+    public function processForDev (Asset $asset, string $filePath, string $fileContent) : string
     {
-        $header = $this->generateGenericFileHeader($asset, $filePath, '/*', '*/');
-        return $header . $fileContent;
+        // only rewrite namespaced imports in dev + add file header
+        $fileHeader = $this->generateGenericFileHeader($asset, $filePath, '/*', '*/');
+        $fileContent = $this->importRewriter->rewriteNamespacedImports($fileContent);
+
+        return $fileHeader . $fileContent;
     }
 
 
@@ -61,6 +64,8 @@ class CssFile extends FileType
      */
     public function processForProd (Asset $asset, string $fileContent) : string
     {
-        return $this->importRewriter->rewriteStaticImports($asset, $fileContent);
+        // rewrite namespaced + relative imports in prod
+        $fileContent = $this->importRewriter->rewriteNamespacedImports($fileContent);
+        return $this->importRewriter->rewriteRelativeImports($asset, $fileContent);
     }
 }
