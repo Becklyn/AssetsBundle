@@ -26,8 +26,8 @@ class AssetsFinderTest extends TestCase
 
     public function testCorrectFindings ()
     {
-        $namespaces = new NamespaceRegistry($this->fixtures, [
-            "bundles" => "bundles",
+        $namespaces = new NamespaceRegistry([
+            "bundles" => "{$this->fixtures}/bundles",
         ]);
 
         $finder = new AssetsFinder($namespaces);

@@ -33,8 +33,8 @@ class FileLoaderTest extends TestCase
 
     protected function setUp ()
     {
-        $this->namespaceRegistry = new NamespaceRegistry($this->fixtures, [
-            "bundles" => "public/bundles"
+        $this->namespaceRegistry = new NamespaceRegistry([
+            "bundles" => "{$this->fixtures}/public/bundles"
         ]);
 
         $fileTypes = new FileTypeRegistry(new GenericFile());
@@ -97,7 +97,7 @@ class FileLoaderTest extends TestCase
 
         $testFileType
             ->expects(self::once())
-            ->method("prependFileHeader")
+            ->method("processForDev")
             ->willReturnArgument(2);
 
         $fileTypes = new FileTypeRegistry(new GenericFile(), [
