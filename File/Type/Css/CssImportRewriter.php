@@ -4,7 +4,8 @@ namespace Becklyn\AssetsBundle\File\Type\Css;
 
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
-use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
+use Becklyn\AssetsBundle\Exception\AssetsException;
+use Becklyn\AssetsBundle\Url\AssetUrl;
 
 
 class CssImportRewriter
@@ -16,11 +17,47 @@ class CssImportRewriter
 
 
     /**
-     * @param AssetsCache $cache
+     * @var AssetUrl
      */
-    public function __construct (AssetsCache $cache)
+    private $assetUrl;
+
+
+    /**
+     * @param AssetsCache $cache
+     * @param AssetUrl    $assetUrl
+     */
+    public function __construct (AssetsCache $cache, AssetUrl $assetUrl)
     {
         $this->cache = $cache;
+        $this->assetUrl = $assetUrl;
+    }
+
+
+    /**
+     * Rewrites the path to namespaced assets
+     *
+     * @param string $fileContent
+     * @return string
+     */
+    public function rewriteNamespacedImports (string $fileContent) : string
+    {
+        $importParser = new CssUrlImportParser();
+        return $importParser->replaceValidImports(
+            $fileContent,
+            function (string $path)
+            {
+                try
+                {
+                    $asset = Asset::createFromAssetPath($path);
+                    return $this->assetUrl->generateUrl($asset);
+                }
+                catch (AssetsException $e)
+                {
+                    // wasn't an asset path
+                    return $path;
+                }
+            }
+        );
     }
 
 
@@ -31,7 +68,7 @@ class CssImportRewriter
      * @param string $fileContent
      * @return string
      */
-    public function rewriteStaticImports (Asset $asset, string $fileContent) : string
+    public function rewriteRelativeImports (Asset $asset, string $fileContent) : string
     {
         $importParser = new CssUrlImportParser();
         return $importParser->replaceValidImports(
