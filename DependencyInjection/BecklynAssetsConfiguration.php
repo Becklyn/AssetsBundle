@@ -35,7 +35,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                 ->arrayNode("dependency_maps")
                     ->scalarPrototype()->end()
                     ->defaultValue([])
-                    ->info("The paths to the dependency maps.")
+                    ->info("The paths to the dependency maps. In asset notation: e.g. `@namespace/js/_dependencies.json`")
                 ->end()
             ->end();
 
