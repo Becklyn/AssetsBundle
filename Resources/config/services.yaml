@@ -43,8 +43,7 @@ services:
         arguments:
             $isDebug: '%kernel.debug%'
 
-    Becklyn\AssetsBundle\Namespaces\NamespaceRegistry:
-        $projectDir: '%kernel.project_dir%'
+    Becklyn\AssetsBundle\Namespaces\NamespaceRegistry: ~
 
     Becklyn\AssetsBundle\Storage\AssetStorage: ~
     Becklyn\AssetsBundle\Twig\AssetsTwigExtension: ~
