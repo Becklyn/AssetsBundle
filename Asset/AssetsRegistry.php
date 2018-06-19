@@ -5,38 +5,25 @@ namespace Becklyn\AssetsBundle\Asset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\File\FileTypeRegistry;
 use Becklyn\AssetsBundle\Storage\AssetStorage;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
 
 
-class AssetsRegistry
+class AssetsRegistry implements ServiceSubscriberInterface
 {
     /**
-     * @var AssetsCache
+     * @var ContainerInterface
      */
-    private $cache;
+    private $locator;
 
 
     /**
-     * @var AssetStorage
+     *
+     * @param ContainerInterface $locator
      */
-    private $storage;
-
-
-    /**
-     * @var FileTypeRegistry
-     */
-    private $fileTypeRegistry;
-
-
-    /**
-     * @param AssetsCache      $cache
-     * @param AssetStorage     $storage
-     * @param FileTypeRegistry $fileTypeRegistry
-     */
-    public function __construct (AssetsCache $cache, AssetStorage $storage, FileTypeRegistry $fileTypeRegistry)
+    public function __construct (ContainerInterface $locator)
     {
-        $this->cache = $cache;
-        $this->storage = $storage;
-        $this->fileTypeRegistry = $fileTypeRegistry;
+        $this->locator = $locator;
     }
 
 
@@ -49,7 +36,8 @@ class AssetsRegistry
      */
     public function get (Asset $asset) : Asset
     {
-        $cachedAsset = $this->cache->get($asset);
+        $cache = $this->locator->get(AssetsCache::class);
+        $cachedAsset = $cache->get($asset);
 
         if (null !== $cachedAsset)
         {
@@ -68,11 +56,12 @@ class AssetsRegistry
      */
     public function add (array $assets, ?callable $progress) : void
     {
+        $fileTypeRegistry = $this->locator->get(FileTypeRegistry::class);
         $deferred = [];
 
         foreach ($assets as $asset)
         {
-            if ($this->fileTypeRegistry->importDeferred($asset))
+            if ($fileTypeRegistry->importDeferred($asset))
             {
                 $deferred[] = $asset;
                 continue;
@@ -107,8 +96,11 @@ class AssetsRegistry
      */
     private function addAsset (Asset $asset) : Asset
     {
-        $asset = $this->storage->import($asset);
-        $this->cache->add($asset);
+        $storage = $this->locator->get(AssetStorage::class);
+        $cache = $this->locator->get(AssetsCache::class);
+
+        $asset = $storage->import($asset);
+        $cache->add($asset);
 
         return $asset;
     }
@@ -120,7 +112,23 @@ class AssetsRegistry
      */
     public function clear () : void
     {
-        $this->storage->removeAllStoredFiles();
-        $this->cache->clear();
+        $storage = $this->locator->get(AssetStorage::class);
+        $cache = $this->locator->get(AssetsCache::class);
+
+        $storage->removeAllStoredFiles();
+        $cache->clear();
+    }
+
+
+    /**
+     * @return array
+     */
+    public static function getSubscribedServices ()
+    {
+        return [
+            AssetsCache::class,
+            AssetStorage::class,
+            FileTypeRegistry::class,
+        ];
     }
 }
