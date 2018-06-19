@@ -43,6 +43,17 @@ class CssFile extends FileType
     /**
      * @inheritDoc
      */
+    public function processForProd (Asset $asset, string $fileContent) : string
+    {
+        // rewrite namespaced + relative imports in prod
+        $fileContent = $this->importRewriter->rewriteNamespacedImports($fileContent);
+        return $this->importRewriter->rewriteRelativeImports($asset, $fileContent);
+    }
+
+
+    /**
+     * @inheritDoc
+     */
     public function importDeferred () : bool
     {
         // must be loaded deferred, as it might have dependencies on other files
@@ -56,16 +67,5 @@ class CssFile extends FileType
     public function getHtmlLinkFormat () : ?string
     {
         return '<link rel="stylesheet" href="%s"%s>';
-    }
-
-
-    /**
-     * @inheritDoc
-     */
-    public function processForProd (Asset $asset, string $fileContent) : string
-    {
-        // rewrite namespaced + relative imports in prod
-        $fileContent = $this->importRewriter->rewriteNamespacedImports($fileContent);
-        return $this->importRewriter->rewriteRelativeImports($asset, $fileContent);
     }
 }
