@@ -4,6 +4,7 @@ namespace Becklyn\AssetsBundle\DependencyInjection;
 
 use Becklyn\AssetsBundle\Dependency\DependencyLoader;
 use Becklyn\AssetsBundle\Dependency\DependencyMapFactory;
+use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
 use Becklyn\AssetsBundle\Storage\AssetStorage;
@@ -33,18 +34,41 @@ class BecklynAssetsExtension extends Extension
         );
         $loader->load("services.yaml");
 
+        // the namespace config, already prefixed by `kernel.project_dir`
+        $prefixedNamespaces = $this->prefixPaths($config["namespaces"], $container->getParameter('kernel.project_dir'));
+
         // update services config with configuration values
         $container->getDefinition(AssetStorage::class)
             ->setArgument('$publicPath', $config["public_path"])
             ->setArgument('$outputDir', $config["output_dir"]);
 
         $container->getDefinition(NamespaceRegistry::class)
-            ->setArgument('$namespaces', $config["namespaces"]);
+            ->setArgument('$namespaces', $prefixedNamespaces);
 
         $container->getDefinition(AssetsRouteLoader::class)
             ->setArgument('$outputDir', $config["output_dir"]);
 
-        $this->initializeDependencyMap($config, $container);
+        $this->initializeDependencyMap($config, $prefixedNamespaces, $container);
+    }
+
+
+    /**
+     * Prefixes the given paths automatically with the given prefix
+     *
+     * @param array<string, string>  $paths
+     * @param string $prefix
+     * @return array<string, string>
+     */
+    private function prefixPaths (array $paths, string $prefix) : array
+    {
+        $result = [];
+
+        foreach ($paths as $namespace => $path)
+        {
+            $result[$namespace] = "{$prefix}/" . trim($path, "/");
+        }
+
+        return $result;
     }
 
 
@@ -52,11 +76,13 @@ class BecklynAssetsExtension extends Extension
      * Initializes the dependency map
      *
      * @param array            $config
-     * @param ContainerBuilder $container
+     * @param array            $prefixedNamespaces
+     * @param ContainerBuilder $containerBuilder
+     * @throws AssetsException
      */
-    private function initializeDependencyMap (array $config, ContainerBuilder $container) : void
+    private function initializeDependencyMap (array $config, array $prefixedNamespaces, ContainerBuilder $container) : void
     {
-        $registry = new NamespaceRegistry($container->getParameter("kernel.project_dir"), $config["namespaces"]);
+        $registry = new NamespaceRegistry($prefixedNamespaces);
         $loader = new DependencyLoader($registry);
 
         foreach ($config["dependency_maps"] as $dependencyMap)

@@ -13,7 +13,7 @@ class SvgFile extends FileType
     /**
      * @inheritDoc
      */
-    public function prependFileHeader (Asset $asset, string $filePath, string $fileContent) : string
+    public function processForDev (Asset $asset, string $filePath, string $fileContent) : string
     {
         $header = $this->generateGenericFileHeader($asset, $filePath, '<!--', '-->');
         return $header . $fileContent;

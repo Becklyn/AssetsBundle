@@ -41,9 +41,9 @@ class AssetStorageTest extends TestCase
         $this->fixtures = dirname(__DIR__) . "/fixtures/public";
         $this->outDir = "{$this->fixtures}/out";
 
-        $namespaces = new NamespaceRegistry($this->fixtures, [
-            "bundles" => "bundles",
-            "other" => "other",
+        $namespaces = new NamespaceRegistry([
+            "bundles" => "{$this->fixtures}/bundles",
+            "other" => "{$this->fixtures}/other",
         ]);
 
         $fileTypeRegistry = new FileTypeRegistry(new GenericFile(), [

@@ -5,6 +5,7 @@ namespace Tests\Becklyn\AssetsBundle\File\Type\Css;
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
 use Becklyn\AssetsBundle\File\Type\Css\CssImportRewriter;
+use Becklyn\AssetsBundle\Url\AssetUrl;
 use PHPUnit\Framework\TestCase;
 
 
@@ -36,7 +37,15 @@ class CssImportRewriterTest extends TestCase
                 );
         }
 
-        return new CssImportRewriter($cache);
+        $assetUrl = $this->getMockBuilder(AssetUrl::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $assetUrl
+            ->method("generateUrl")
+            ->willReturn("");
+
+        return new CssImportRewriter($cache, $assetUrl);
     }
 
 
@@ -103,7 +112,7 @@ CSS;
 
         self::assertSame(
             $expected,
-            $rewriter->rewriteImports(new Asset("assets", "css/test.css"), $input)
+            $rewriter->rewriteRelativeImports(new Asset("assets", "css/test.css"), $input)
         );
     }
 
@@ -131,7 +140,7 @@ CSS;
 
         self::assertSame(
             $expected,
-            $rewriter->rewriteImports(new Asset("assets", "css/test.css"), $input)
+            $rewriter->rewriteRelativeImports(new Asset("assets", "css/test.css"), $input)
         );
     }
 
@@ -156,7 +165,7 @@ CSS;
 
         self::assertSame(
             $input,
-            $rewriter->rewriteImports(new Asset("assets", "css/test.css"), $input)
+            $rewriter->rewriteRelativeImports(new Asset("assets", "css/test.css"), $input)
         );
     }
 
@@ -179,7 +188,7 @@ CSS;
 
         self::assertSame(
             $input,
-            $rewriter->rewriteImports(new Asset("assets", "css/test.css"), $input)
+            $rewriter->rewriteRelativeImports(new Asset("assets", "css/test.css"), $input)
         );
     }
 }

@@ -9,6 +9,7 @@ use Becklyn\AssetsBundle\File\FileTypeRegistry;
 use Becklyn\AssetsBundle\File\Type\GenericFile;
 use Becklyn\AssetsBundle\Storage\AssetStorage;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Tests\Becklyn\AssetsBundle\CreateHashedAssetTrait;
 
 
@@ -26,7 +27,11 @@ class AssetsRegistryTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $registry = new AssetsRegistry($cache, $storage, new FileTypeRegistry(new GenericFile()));
+        $registry = new AssetsRegistry(new ServiceLocator([
+            AssetsCache::class => function () use ($cache) { return $cache; },
+            AssetStorage::class => function () use ($storage) { return $storage; },
+            FileTypeRegistry::class => function () { return new FileTypeRegistry(new GenericFile()); },
+        ]));
         return [$registry, $cache, $storage];
     }
 

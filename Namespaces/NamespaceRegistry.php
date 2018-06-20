@@ -18,19 +18,11 @@ class NamespaceRegistry implements \IteratorAggregate
 
 
     /**
-     * @var string
+     * @param array<string, string> $namespaces
+     * @throws AssetsException
      */
-    private $projectDir;
-
-
-    /**
-     * @param string $projectDir
-     * @param array  $namespaces
-     */
-    public function __construct (string $projectDir, array $namespaces = [])
+    public function __construct (array $namespaces = [])
     {
-        $this->projectDir = $projectDir;
-
         foreach ($namespaces as $namespace => $directory)
         {
             $this->addNamespace($namespace, $directory);
@@ -42,16 +34,11 @@ class NamespaceRegistry implements \IteratorAggregate
      * Adds a namespace
      *
      * @param string $namespace
-     * @param string $directory
+     * @param string $directory  the absolute path to the assets directory
      * @throws AssetsException
      */
     public function addNamespace (string $namespace, string $directory) : void
     {
-        // prepend directory with project root, if not already there
-        $dir = ($this->projectDir !== substr($directory, 0, strlen($this->projectDir)))
-            ? "{$this->projectDir}/" . trim($directory, "/")
-            : $directory;
-
         if (isset($this->namespaces[$namespace]))
         {
             throw new AssetsException(sprintf(
@@ -60,18 +47,16 @@ class NamespaceRegistry implements \IteratorAggregate
             ));
         }
 
-        if (is_dir($dir))
-        {
-            $this->namespaces[$namespace] = $dir;
-        }
-        else
+        if (!is_dir($directory))
         {
             throw new AssetsException(sprintf(
                 "Can't find assets dir when registering namespace '%s': %s",
                 $namespace,
-                $dir
+                $directory
             ));
         }
+
+        $this->namespaces[$namespace] = $directory;
     }
 
 
