@@ -89,12 +89,27 @@ class AssetHtmlGenerator
             // https://example.org/test.js#sha256hash
             if (1 === \preg_match('~^(https?:)?//~', $assetPath))
             {
-                $parts = explode("#", $assetPath, 2);
-                $assetUrl = $parts[0];
-                \parse_str($parts[1] ?? "", $urlParameters);
-                $integrity = $urlParameters["integrity"] ?? "";
-                $extension = $urlParameters["type"] ?? \pathinfo($assetUrl, \PATHINFO_EXTENSION);
-                $fileType = $this->fileTypeRegistry->getByFileExtension($extension);
+                $fragment = \parse_url($assetPath, \PHP_URL_FRAGMENT);
+                $fileExtension = \pathinfo(\parse_url($assetPath, \PHP_URL_PATH), \PATHINFO_EXTENSION);
+                $assetUrl = $assetPath;
+                $integrity = "";
+
+                if (null !== $fragment)
+                {
+                    $assetUrl = \str_replace("#{$fragment}", "", $assetPath);
+                    \parse_str($fragment, $urlParameters);
+
+                    if (isset($urlParameters["integrity"]))
+                    {
+                        $integrity = sprintf(' integrity="%s"', $urlParameters["integrity"]);
+                    }
+                    $extension = $urlParameters["type"] ?? $fileExtension;
+                    $fileType = $this->fileTypeRegistry->getByFileExtension($extension);
+                }
+                else
+                {
+                    $fileType = $this->fileTypeRegistry->getByFileExtension($fileExtension);
+                }
             }
             else
             {

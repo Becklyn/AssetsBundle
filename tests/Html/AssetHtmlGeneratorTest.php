@@ -191,4 +191,71 @@ class AssetHtmlGeneratorTest extends TestCase
         $html = $generator->linkAssets(["@a/first.css", "@b/second.css"]);
         self::assertContains('integrity="', $html);
     }
+
+
+    /**
+     * @return array
+     */
+    public function provideHttpImports () : array
+    {
+        return [
+            [
+                [
+                    "http://example.org/test.css",
+                ],
+                '<link rel="stylesheet" href="http://example.org/test.css">',
+            ],
+            [
+                [
+                    "http://example.org/test.js",
+                ],
+                '<script defer src="http://example.org/test.js"></script>',
+            ],
+            [
+                [
+                    "http://example.org/test.js?query=abc",
+                ],
+                '<script defer src="http://example.org/test.js?query=abc"></script>',
+            ],
+            [
+                [
+                    "http://example.org/test#type=css",
+                ],
+                '<link rel="stylesheet" href="http://example.org/test">',
+            ],
+            [
+                [
+                    "http://example.org/test#type=css&integrity=abc",
+                ],
+                '<link rel="stylesheet" href="http://example.org/test" integrity="abc">',
+            ],
+            [
+                [
+                    "http://www.example.org/de/_js/js/routing?callback=fos.Router.setData#type=js",
+                ],
+                '<script defer src="http://www.example.org/de/_js/js/routing?callback=fos.Router.setData"></script>',
+            ],
+        ];
+    }
+
+
+    /**
+     * @dataProvider provideHttpImports
+     *
+     * @param array  $assets
+     * @param string $expectedOutput
+     * @throws \Becklyn\AssetsBundle\Exception\AssetsException
+     */
+    public function testHttpImports (array $assets, string $expectedOutput) : void
+    {
+        /**
+         * @type AssetHtmlGenerator $generator
+         * @type \PHPUnit_Framework_MockObject_MockObject $registry
+         */
+        [$generator] = $this->buildGenerator(false);
+
+
+        $html = $generator->linkAssets($assets);
+        self::assertSame($expectedOutput, $html);
+    }
 }
