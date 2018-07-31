@@ -6,7 +6,10 @@ services:
 
     Becklyn\AssetsBundle\Asset\AssetsCache: ~
     Becklyn\AssetsBundle\Asset\AssetsRegistry: ~
-    Becklyn\AssetsBundle\Cache\CacheWarmer: ~
+
+    Becklyn\AssetsBundle\Cache\CacheWarmer:
+        $isDebug: '%kernel.debug%'
+
     Becklyn\AssetsBundle\Command\AssetsInstallCommand: ~
 
     Becklyn\AssetsBundle\Command\AssetsNamespacesCommand:
