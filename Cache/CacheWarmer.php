@@ -25,13 +25,21 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
 
 
     /**
+     * @var bool
+     */
+    private $isDebug;
+
+
+    /**
      * @param AssetsRegistry $registry
      * @param AssetsFinder   $finder
+     * @param bool           $isDebug
      */
-    public function __construct (AssetsRegistry $registry, AssetsFinder $finder)
+    public function __construct (AssetsRegistry $registry, AssetsFinder $finder, bool $isDebug)
     {
         $this->registry = $registry;
         $this->finder = $finder;
+        $this->isDebug = $isDebug;
     }
 
 
@@ -63,6 +71,20 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
         if (null !== $io)
         {
             $io->section("Cache Warm up");
+        }
+
+        if ($this->isDebug)
+        {
+            if (null !== $io)
+            {
+                $io->comment("Skipping, as the assets are not dumped in debug mode.");
+            }
+
+            return;
+        }
+
+        if (null !== $io)
+        {
             $io->text("Searching for all assets in the bundles/ directory...");
         }
 
