@@ -217,6 +217,18 @@ class AssetHtmlGeneratorTest extends TestCase
                 ],
                 '<script defer src="http://example.org/test.js?query=abc"></script>',
             ],
+            "JS file with unknown fragment, which will be ignored" => [
+                [
+                    "http://example.org/test.js#random=fragment",
+                ],
+                '<script defer src="http://example.org/test.js"></script>',
+            ],
+            "CSS file with unknown fragment, which will be ignored" => [
+                [
+                    "http://example.org/test#type=css",
+                ],
+                '<link rel="stylesheet" href="http://example.org/test">',
+            ],
             "CSS file with explicit defined type" => [
                 [
                     "http://example.org/test#type=css",
