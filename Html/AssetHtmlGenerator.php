@@ -99,7 +99,7 @@ class AssetHtmlGenerator
                     $assetUrl = \str_replace("#{$fragment}", "", $assetPath);
                     \parse_str($fragment, $urlParameters);
 
-                    if (isset($urlParameters["integrity"]))
+                    if (isset($urlParameters["integrity"]) && "" !== $urlParameters["integrity"])
                     {
                         $integrity = sprintf(' integrity="%s"', $urlParameters["integrity"]);
                     }
