@@ -199,37 +199,37 @@ class AssetHtmlGeneratorTest extends TestCase
     public function provideHttpImports () : array
     {
         return [
-            [
+            "CSS file" => [
                 [
                     "http://example.org/test.css",
                 ],
                 '<link rel="stylesheet" href="http://example.org/test.css">',
             ],
-            [
+            "JS file" => [
                 [
                     "http://example.org/test.js",
                 ],
                 '<script defer src="http://example.org/test.js"></script>',
             ],
-            [
+            "JS file with query params" => [
                 [
                     "http://example.org/test.js?query=abc",
                 ],
                 '<script defer src="http://example.org/test.js?query=abc"></script>',
             ],
-            [
+            "CSS file with explicit defined type" => [
                 [
                     "http://example.org/test#type=css",
                 ],
                 '<link rel="stylesheet" href="http://example.org/test">',
             ],
-            [
+            "CSS file with explicit defined type and integrity" => [
                 [
                     "http://example.org/test#type=css&integrity=abc",
                 ],
                 '<link rel="stylesheet" href="http://example.org/test" integrity="abc">',
             ],
-            [
+            "JS file with explicit defined type and query params" => [
                 [
                     "http://www.example.org/de/_js/js/routing?callback=fos.Router.setData#type=js",
                 ],
