@@ -25,7 +25,7 @@ class JavaScriptFile extends FileType
      */
     public function getHtmlLinkFormat () : ?string
     {
-        return '<script defer src="%s"%s></script>';
+        return '<script defer src="%s"%s%s></script>';
     }
 
 

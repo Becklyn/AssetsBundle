@@ -235,11 +235,59 @@ class AssetHtmlGeneratorTest extends TestCase
                 ],
                 '<link rel="stylesheet" href="http://example.org/test">',
             ],
+            "CSS file with explicit defined type and an empty integrity, which will be ignored" => [
+                [
+                    "http://example.org/test#type=css&integrity=",
+                ],
+                '<link rel="stylesheet" href="http://example.org/test">',
+            ],
+            "CSS file with explicit defined type and an empty crossorigin, which will be ignored" => [
+                [
+                    "http://example.org/test#type=css&crossorigin=",
+                ],
+                '<link rel="stylesheet" href="http://example.org/test">',
+            ],
+            "CSS with explicit defined type and empty integrity + crossorigin, which both will be ignored" => [
+                [
+                    "http://example.org/test#type=css&integrity=&crossorigin=",
+                ],
+                '<link rel="stylesheet" href="http://example.org/test">',
+            ],
             "CSS file with explicit defined type and integrity" => [
                 [
                     "http://example.org/test#type=css&integrity=abc",
                 ],
                 '<link rel="stylesheet" href="http://example.org/test" integrity="abc">',
+            ],
+            "CSS file with explicit defined type and integrirty and crossorigin" => [
+                [
+                    "http://example.org/test#type=css&integrity=abc&crossorigin=anonymous",
+                ],
+                '<link rel="stylesheet" href="http://example.org/test" integrity="abc" crossorigin="anonymous">',
+            ],
+            "JS file with crossorigin" => [
+                [
+                    "http://example.org/test.js#crossorigin=use-credentials",
+                ],
+                '<script defer src="http://example.org/test.js" crossorigin="use-credentials"></script>',
+            ],
+            "JS file with explicit defined type and an empty integrity, which will be ignored" => [
+                [
+                    "http://example.org/test#type=js&integrity=",
+                ],
+                '<script defer src="http://example.org/test"></script>',
+            ],
+            "JS file with explicit defined type and an empty crossorigin, which will be ignored" => [
+                [
+                    "http://example.org/test#type=js&crossorigin=",
+                ],
+                '<script defer src="http://example.org/test"></script>',
+            ],
+            "JS with explicit defined type and empty integrity + crossorigin, which both will be ignored" => [
+                [
+                    "http://example.org/test#type=js&integrity=&crossorigin=",
+                ],
+                '<script defer src="http://example.org/test"></script>',
             ],
             "JS file with explicit defined type and query params" => [
                 [
