@@ -93,16 +93,23 @@ class AssetHtmlGenerator
                 $fileExtension = \pathinfo(\parse_url($assetPath, \PHP_URL_PATH), \PATHINFO_EXTENSION);
                 $assetUrl = $assetPath;
                 $integrity = "";
+                $crossOrigin = "";
 
                 if (null !== $fragment)
                 {
                     $assetUrl = \str_replace("#{$fragment}", "", $assetPath);
                     \parse_str($fragment, $urlParameters);
 
-                    if (isset($urlParameters["integrity"]))
+                    if (isset($urlParameters["integrity"]) && "" !== $urlParameters["integrity"])
                     {
                         $integrity = sprintf(' integrity="%s"', $urlParameters["integrity"]);
                     }
+
+                    if (isset($urlParameters["crossorigin"]) && "" !== $urlParameters["crossorigin"])
+                    {
+                        $crossOrigin = sprintf(' crossorigin="%s"', $urlParameters["crossorigin"]);
+                    }
+
                     $extension = $urlParameters["type"] ?? $fileExtension;
                     $fileType = $this->fileTypeRegistry->getByFileExtension($extension);
                 }
@@ -118,6 +125,8 @@ class AssetHtmlGenerator
                 $fileType = $this->fileTypeRegistry->getFileType($asset);
                 $extension = $asset->getFileType();
                 $integrity = $this->isDebug ? "" : $this->getIntegrityHtml($asset);
+                // Internal URLs don't need any `crossorigin` configuration
+                $crossOrigin = "";
             }
 
             $htmlLinkFormat = $fileType->getHtmlLinkFormat();
@@ -130,7 +139,7 @@ class AssetHtmlGenerator
                 ));
             }
 
-            $html .= sprintf($htmlLinkFormat, $assetUrl, $integrity);
+            $html .= sprintf($htmlLinkFormat, $assetUrl, $integrity, $crossOrigin);
         }
 
         return $html;

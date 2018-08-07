@@ -66,6 +66,6 @@ class CssFile extends FileType
      */
     public function getHtmlLinkFormat () : ?string
     {
-        return '<link rel="stylesheet" href="%s"%s>';
+        return '<link rel="stylesheet" href="%s"%s%s>';
     }
 }
