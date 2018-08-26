@@ -11,6 +11,9 @@ use Becklyn\AssetsBundle\Exception\AssetsException;
  */
 class NamespaceRegistry implements \IteratorAggregate
 {
+    const THROW_ON_MISSING = true;
+    const IGNORE_MISSING = false;
+
     /**
      * @var array<string,string>
      */
@@ -19,7 +22,6 @@ class NamespaceRegistry implements \IteratorAggregate
 
     /**
      * @param array<string, string> $namespaces
-     * @throws AssetsException
      */
     public function __construct (array $namespaces = [])
     {
@@ -34,10 +36,11 @@ class NamespaceRegistry implements \IteratorAggregate
      * Adds a namespace
      *
      * @param string $namespace
-     * @param string $directory  the absolute path to the assets directory
+     * @param string $directory the absolute path to the assets directory
+     * @param bool   $failOnMissingDir
      * @throws AssetsException
      */
-    public function addNamespace (string $namespace, string $directory) : void
+    public function addNamespace (string $namespace, string $directory, bool $failOnMissingDir = self::THROW_ON_MISSING) : void
     {
         if (isset($this->namespaces[$namespace]))
         {
@@ -49,11 +52,16 @@ class NamespaceRegistry implements \IteratorAggregate
 
         if (!is_dir($directory))
         {
-            throw new AssetsException(sprintf(
-                "Can't find assets dir when registering namespace '%s': %s",
-                $namespace,
-                $directory
-            ));
+            if (self::THROW_ON_MISSING === $failOnMissingDir)
+            {
+                throw new AssetsException(sprintf(
+                    "Can't find assets dir when registering namespace '%s': %s",
+                    $namespace,
+                    $directory
+                ));
+            }
+
+            return;
         }
 
         $this->namespaces[$namespace] = $directory;
