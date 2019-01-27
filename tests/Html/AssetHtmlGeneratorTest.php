@@ -225,9 +225,9 @@ class AssetHtmlGeneratorTest extends TestCase
             ],
             "CSS file with unknown fragment, which will be ignored" => [
                 [
-                    "http://example.org/test#type=css",
+                    "http://example.org/test.css#random=fragment",
                 ],
-                '<link rel="stylesheet" href="http://example.org/test">',
+                '<link rel="stylesheet" href="http://example.org/test.css">',
             ],
             "CSS file with explicit defined type" => [
                 [
