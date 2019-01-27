@@ -16,8 +16,10 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder ()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('becklyn_assets');
+        $treeBuilder = new TreeBuilder("becklyn_assets");
+        $rootNode = \method_exists($treeBuilder, "getRootNode")
+            ? $treeBuilder->getRootNode()
+            : $treeBuilder->root("becklyn_assets");
 
         $rootNode
             ->children()
@@ -51,7 +53,10 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
      */
     public static function appendNamespaces (string $description)
     {
-        $node = (new TreeBuilder())->root("namespaces");
+        $treeBuilder = new TreeBuilder("namespaces");
+        $node = \method_exists($treeBuilder, "getRootNode")
+            ? $treeBuilder->getRootNode()
+            : $treeBuilder->root("namespaces");
 
         $node
             ->scalarPrototype()->end()
