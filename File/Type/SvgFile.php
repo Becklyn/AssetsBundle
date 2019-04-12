@@ -15,7 +15,9 @@ class SvgFile extends FileType
      */
     public function processForDev (Asset $asset, string $filePath, string $fileContent) : string
     {
-        $header = $this->generateGenericFileHeader($asset, $filePath, '<!--', '-->');
-        return $header . $fileContent;
+        // the comment must be at the bottom, because if the SVG has a <?xml .. tag, it needs to be the
+        // very first thing in the file and this debug info would be above it.
+        $footer = $this->generateGenericFileDebugInfo($asset, $filePath, '<!--', '-->');
+        return $fileContent . $footer;
     }
 }

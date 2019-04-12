@@ -16,7 +16,7 @@ trait GenericFileHeaderTrait
      * @param string $closingComment
      * @return string
      */
-    private function generateGenericFileHeader (Asset $asset, string $filePath, string $openingComment, string $closingComment) : string
+    private function generateGenericFileDebugInfo (Asset $asset, string $filePath, string $openingComment, string $closingComment) : string
     {
         // keep the blank line at the end, as php strips blank lines at the end of HEREDOC
         return <<<HEADER

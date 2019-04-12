@@ -15,7 +15,7 @@ class JavaScriptFile extends FileType
      */
     public function processForDev (Asset $asset, string $filePath, string $fileContent) : string
     {
-        $header = $this->generateGenericFileHeader($asset, $filePath, '/*', '*/');
+        $header = $this->generateGenericFileDebugInfo($asset, $filePath, '/*', '*/');
         return $header . $fileContent;
     }
 

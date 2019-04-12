@@ -33,7 +33,7 @@ class CssFile extends FileType
     public function processForDev (Asset $asset, string $filePath, string $fileContent) : string
     {
         // only rewrite namespaced imports in dev + add file header
-        $fileHeader = $this->generateGenericFileHeader($asset, $filePath, '/*', '*/');
+        $fileHeader = $this->generateGenericFileDebugInfo($asset, $filePath, '/*', '*/');
         $fileContent = $this->importRewriter->rewriteNamespacedImports($fileContent);
 
         return $fileHeader . $fileContent;
