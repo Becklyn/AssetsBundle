@@ -49,6 +49,7 @@ services:
     Becklyn\AssetsBundle\Namespaces\NamespaceRegistry: ~
 
     Becklyn\AssetsBundle\Storage\AssetStorage: ~
+    Becklyn\AssetsBundle\Storage\Compression\GzipCompression: ~
     Becklyn\AssetsBundle\Twig\AssetsTwigExtension: ~
 
     Becklyn\AssetsBundle\Url\AssetUrl:

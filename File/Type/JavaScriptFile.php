@@ -36,4 +36,13 @@ class JavaScriptFile extends FileType
     {
         return false;
     }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function shouldBeGzipCompressed () : bool
+    {
+        return true;
+    }
 }

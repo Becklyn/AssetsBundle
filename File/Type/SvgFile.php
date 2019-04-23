@@ -20,4 +20,13 @@ class SvgFile extends FileType
         $footer = $this->generateGenericFileDebugInfo($asset, $filePath, '<!--', '-->');
         return $fileContent . $footer;
     }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function shouldBeGzipCompressed () : bool
+    {
+        return true;
+    }
 }

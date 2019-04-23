@@ -20,6 +20,7 @@
         "symfony/filesystem": "^3.3|^4.0",
         "symfony/finder": "^3.3|^4.0",
         "symfony/http-kernel": "^3.3|^4.0",
+        "symfony/process": "^3.3|^4.0",
         "symfony/routing": "^3.3|^4.0",
         "twig/twig": "^1.27|^2.1"
     },
