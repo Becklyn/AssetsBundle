@@ -41,7 +41,7 @@ class GzipCompression
         // Mapping of command names to their required parameters
         $availableCommands = [
             "zopfli" => [],
-            "gzip2" => ["--best", "--keep"],
+            "gzip" => ["--best", "--keep"],
         ];
 
         foreach ($availableCommands as $name => $arguments)
