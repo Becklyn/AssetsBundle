@@ -131,3 +131,21 @@ Normally these commands are not required, as the bundle automatically registers 
 
 This command prints an overview over all registered namespaces.
 This is especially useful if you register paths programmatically outside of your configuration.
+
+
+## nginx Integration
+
+Your project can cache the dumped assets indefinitely, as the file names are derived from the content.
+
+```nginx
+location /assets {
+    add_header Cache-Control "public, max-age=31536000, immutable";
+    add_header Vary "Accept-Encoding";
+    log_not_found off;
+    
+    # only activate if it is supported
+    gzip_static on;
+    
+    # be sure to add all security headers (like X-Frame-Options and HSTS or X-Content-Type-Options here as well)    
+}
+```
