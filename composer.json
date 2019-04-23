@@ -1,10 +1,15 @@
 {
     "name": "becklyn/assets-bundle",
-    "description": "High-performance asset handling for symfony projects.",
-    "keywords": ["becklyn", "asset", "assets", "symfony"],
-    "license": "BSD-3-Clause",
     "type": "symfony-bundle",
+    "description": "High-performance asset handling for symfony projects.",
+    "keywords": [
+        "becklyn",
+        "asset",
+        "assets",
+        "symfony"
+    ],
     "homepage": "https://github.com/Becklyn/AssetsBundle",
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Becklyn Studios",
@@ -13,30 +18,34 @@
     ],
     "require": {
         "php": "^7.1",
-        "symfony/cache": "^3.3|^4.0",
-        "symfony/config": "^3.3|^4.0",
-        "symfony/console": "^3.3|^4.0",
-        "symfony/dependency-injection": "^3.3|^4.0",
-        "symfony/filesystem": "^3.3|^4.0",
-        "symfony/finder": "^3.3|^4.0",
-        "symfony/http-kernel": "^3.3|^4.0",
-        "symfony/process": "^3.3|^4.0",
-        "symfony/routing": "^3.3|^4.0",
-        "twig/twig": "^1.27|^2.1"
+        "symfony/cache": "^3.3 || ^4.0",
+        "symfony/config": "^3.3 || ^4.0",
+        "symfony/console": "^3.3 || ^4.0",
+        "symfony/dependency-injection": "^3.3 || ^4.0",
+        "symfony/filesystem": "^3.3 || ^4.0",
+        "symfony/finder": "^3.3 || ^4.0",
+        "symfony/http-kernel": "^3.3 || ^4.0",
+        "symfony/process": "^3.3 || ^4.0",
+        "symfony/routing": "^3.3 || ^4.0",
+        "twig/twig": "^1.27 || ^2.1"
     },
     "conflict": {
         "symfony/asset": "*"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^3.3|^4.0"
-    },
-    "autoload": {
-        "psr-4": {"Becklyn\\AssetsBundle\\": ""}
-    },
-    "autoload-dev": {
-        "psr-4": {"Tests\\Becklyn\\AssetsBundle\\": "tests/"}
+        "symfony/phpunit-bridge": "^3.3 || ^4.0"
     },
     "config": {
         "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Becklyn\\AssetsBundle\\": ""
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Becklyn\\AssetsBundle\\": "tests/"
+        }
     }
 }
