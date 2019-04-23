@@ -69,4 +69,15 @@ abstract class FileType
     {
         return true;
     }
+
+
+    /**
+     * Returns whether the file type is compressible via HZIP
+     *
+     * @return bool
+     */
+    public function shouldBeGzipCompressed () : bool
+    {
+        return false;
+    }
 }

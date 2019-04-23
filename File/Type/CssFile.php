@@ -68,4 +68,13 @@ class CssFile extends FileType
     {
         return '<link rel="stylesheet" href="%s"%s%s>';
     }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function shouldBeGzipCompressed () : bool
+    {
+        return true;
+    }
 }
