@@ -47,6 +47,7 @@ class GzipCompression
         foreach ($availableCommands as $name => $arguments)
         {
             $process = new Process(["command", "-v", $name]);
+            $process->setTimeout(10);
             $process->run();
             $output = \trim($process->getOutput());
 
