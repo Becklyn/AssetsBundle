@@ -4,9 +4,11 @@ namespace Becklyn\AssetsBundle\Twig;
 
 use Becklyn\AssetsBundle\Helper\AssetHelper;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 
-class AssetsTwigExtension extends \Twig_Extension
+class AssetsTwigExtension extends AbstractExtension
 {
     /**
      * @var AssetHtmlGenerator
@@ -41,9 +43,9 @@ class AssetsTwigExtension extends \Twig_Extension
     public function getFunctions ()
     {
         return [
-            new \Twig_SimpleFunction("asset", [$this->assetHelper, "getUrl"]),
-            new \Twig_SimpleFunction("asset_inline", [$this->assetHelper, "embed"], ["is_safe" => ["html"]]),
-            new \Twig_SimpleFunction("assets_link", [$this->htmlReferences, "linkAssets"], ["is_safe" => ["html"]]),
+            new TwigFunction("asset", [$this->assetHelper, "getUrl"]),
+            new TwigFunction("asset_inline", [$this->assetHelper, "embed"], ["is_safe" => ["html"]]),
+            new TwigFunction("assets_link", [$this->htmlReferences, "linkAssets"], ["is_safe" => ["html"]]),
         ];
     }
 }
