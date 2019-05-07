@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\File;
 
@@ -6,7 +6,6 @@ use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Exception\FileNotFoundException;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
-
 
 class FileLoader
 {
@@ -39,14 +38,15 @@ class FileLoader
 
 
     /**
-     * Loads an asset's file content
+     * Loads an asset's file content.
      *
      * @param Asset $asset
-     * @param bool  $mode   one of the MODE_* constants
+     * @param bool  $mode  one of the MODE_* constants
      *
-     * @return string
      * @throws AssetsException
      * @throws FileNotFoundException
+     *
+     * @return string
      */
     public function loadFile (Asset $asset, ?bool $mode) : string
     {
@@ -54,7 +54,7 @@ class FileLoader
 
         if (!\is_file($filePath))
         {
-            throw new FileNotFoundException(sprintf(
+            throw new FileNotFoundException(\sprintf(
                 "Asset '%s' not found at '%s'.",
                 $asset->getAssetPath(),
                 $filePath
@@ -65,7 +65,7 @@ class FileLoader
 
         if (false === $fileContent)
         {
-            throw new FileNotFoundException(sprintf(
+            throw new FileNotFoundException(\sprintf(
                 "Can't read asset file '%s' at '%s'.",
                 $asset->getAssetPath(),
                 $filePath
@@ -87,12 +87,13 @@ class FileLoader
 
 
     /**
-     * Returns the file path for the given asset
+     * Returns the file path for the given asset.
      *
      * @param Asset $asset
-     * @return string
      *
      * @throws AssetsException
+     *
+     * @return string
      */
     public function getFilePath (Asset $asset)
     {

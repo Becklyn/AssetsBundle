@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Dependency;
 
@@ -6,7 +6,6 @@ use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Psr\Log\LoggerInterface;
-
 
 class DependencyLoader
 {
@@ -46,7 +45,7 @@ class DependencyLoader
 
 
     /**
-     * Imports all dependencies from the given dependencies file
+     * Imports all dependencies from the given dependencies file.
      *
      * @param string $assetPathToMap
      */
@@ -82,20 +81,20 @@ class DependencyLoader
 
 
     /**
-     * Imports dependencies from the given map
+     * Imports dependencies from the given map.
      *
      * @param string $basePath
      * @param array  $dependencyMap
      */
     public function importMap (string $basePath, array $dependencyMap) : void
     {
-        $basePath = rtrim($basePath, "/");
+        $basePath = \rtrim($basePath, "/");
 
         foreach ($dependencyMap as $file => $dependencies)
         {
             foreach ($dependencies as $dependency)
             {
-                if ("js" === pathinfo($dependency, PATHINFO_EXTENSION))
+                if ("js" === \pathinfo($dependency, \PATHINFO_EXTENSION))
                 {
                     $this->dependencyMap["{$basePath}/{$file}.js"][] = "{$basePath}/{$dependency}";
                 }

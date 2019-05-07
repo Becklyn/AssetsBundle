@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Command;
 
@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-
 
 class AssetsInstallCommand extends Command
 {
@@ -34,7 +33,7 @@ class AssetsInstallCommand extends Command
     /**
      * @inheritdoc
      */
-    protected function configure ()
+    protected function configure () : void
     {
         $this
             ->setDescription("Installs the assets. Clears the dump directory, re-adds all files and fills the cache.")
@@ -51,7 +50,7 @@ class AssetsInstallCommand extends Command
     /**
      * @inheritdoc
      */
-    protected function execute (InputInterface $input, OutputInterface $output)
+    protected function execute (InputInterface $input, OutputInterface $output) : void
     {
         $io = new SymfonyStyle($input, $output);
 

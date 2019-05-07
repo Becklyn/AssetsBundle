@@ -66,6 +66,7 @@ class GzipCompression
      * Tries to compress the given file and writes the output to the same path with added ".gz".
      *
      * @param string $filePath
+     *
      * @return bool whether the file was compressed
      */
     public function compressFile (string $filePath) : bool

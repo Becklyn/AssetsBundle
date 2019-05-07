@@ -2,13 +2,11 @@
 
 namespace Becklyn\AssetsBundle\Helper;
 
-
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Exception\FileNotFoundException;
 use Becklyn\AssetsBundle\File\FileLoader;
 use Becklyn\AssetsBundle\Url\AssetUrl;
-
 
 /**
  * A convenience wrapper around the most commonly used tools of this bundle.
@@ -42,13 +40,16 @@ class AssetHelper
 
 
     /**
-     * Returns the file content of the asset untouched
+     * Returns the file content of the asset untouched.
      *
      * @api
+     *
      * @param string $assetPath
-     * @return string
+     *
      * @throws AssetsException
      * @throws FileNotFoundException
+     *
+     * @return string
      */
     public function embed (string $assetPath) : string
     {
@@ -60,12 +61,15 @@ class AssetHelper
 
 
     /**
-     * Gets the asset URL for the given asset path
+     * Gets the asset URL for the given asset path.
      *
      * @api
+     *
      * @param string $assetPath
-     * @return string
+     *
      * @throws AssetsException
+     *
+     * @return string
      */
     public function getUrl (string $assetPath) : string
     {

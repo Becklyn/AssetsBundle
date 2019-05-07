@@ -1,12 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Asset;
 
 use Psr\Cache\CacheItemPoolInterface;
 
-
 /**
- * The main cache handler for assets
+ * The main cache handler for assets.
  */
 class AssetsCache
 {
@@ -43,7 +42,7 @@ class AssetsCache
 
 
     /**
-     * Returns the cached asset
+     * Returns the cached asset.
      *
      * @param Asset $asset
      *
@@ -56,7 +55,7 @@ class AssetsCache
 
 
     /**
-     * Adds an asset to the cache
+     * Adds an asset to the cache.
      *
      * @param string $assetPath
      */
@@ -68,7 +67,7 @@ class AssetsCache
 
 
     /**
-     * Clears the cache
+     * Clears the cache.
      */
     public function clear () : void
     {
@@ -77,7 +76,7 @@ class AssetsCache
 
 
     /**
-     * Sets and stores the new assets array
+     * Sets and stores the new assets array.
      *
      * @param array $newAssets
      */

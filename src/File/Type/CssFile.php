@@ -1,10 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\File\Type;
 
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\File\Type\Css\CssImportRewriter;
-
 
 class CssFile extends FileType
 {
@@ -18,7 +17,6 @@ class CssFile extends FileType
 
 
     /**
-     *
      * @param CssImportRewriter $importRewriter
      */
     public function __construct (CssImportRewriter $importRewriter)

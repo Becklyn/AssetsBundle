@@ -1,14 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Asset\Asset;
-use Becklyn\AssetsBundle\Asset\AssetStorage;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
 use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
-
 
 class AssetsCacheTest extends TestCase
 {
@@ -29,11 +27,11 @@ class AssetsCacheTest extends TestCase
     }
 
 
-    public function testCacheInitialization ()
+    public function testCacheInitialization () : void
     {
         /**
-         * @type \PHPUnit_Framework_MockObject_MockObject|CacheItemPoolInterface $cachePool
-         * @type \PHPUnit_Framework_MockObject_MockObject $cacheItem
+         * @var \PHPUnit_Framework_MockObject_MockObject|CacheItemPoolInterface
+         * @var \PHPUnit_Framework_MockObject_MockObject                        $cacheItem
          */
         [$cachePool, $cacheItem] = $this->prepare();
 
@@ -56,11 +54,11 @@ class AssetsCacheTest extends TestCase
     }
 
 
-    public function testEmptyInitialization ()
+    public function testEmptyInitialization () : void
     {
         /**
-         * @type \PHPUnit_Framework_MockObject_MockObject|CacheItemPoolInterface $cachePool
-         * @type \PHPUnit_Framework_MockObject_MockObject $cacheItem
+         * @var \PHPUnit_Framework_MockObject_MockObject|CacheItemPoolInterface
+         * @var \PHPUnit_Framework_MockObject_MockObject                        $cacheItem
          */
         [$cachePool, $cacheItem] = $this->prepare();
 
@@ -78,11 +76,11 @@ class AssetsCacheTest extends TestCase
     }
 
 
-    public function testAdd ()
+    public function testAdd () : void
     {
         /**
-         * @type \PHPUnit_Framework_MockObject_MockObject|CacheItemPoolInterface $cachePool
-         * @type \PHPUnit_Framework_MockObject_MockObject $cacheItem
+         * @var \PHPUnit_Framework_MockObject_MockObject|CacheItemPoolInterface
+         * @var \PHPUnit_Framework_MockObject_MockObject                        $cacheItem
          */
         [$cachePool, $cacheItem] = $this->prepare();
 
@@ -108,11 +106,11 @@ class AssetsCacheTest extends TestCase
     }
 
 
-    public function testClear ()
+    public function testClear () : void
     {
         /**
-         * @type \PHPUnit_Framework_MockObject_MockObject|CacheItemPoolInterface $cachePool
-         * @type \PHPUnit_Framework_MockObject_MockObject $cacheItem
+         * @var \PHPUnit_Framework_MockObject_MockObject|CacheItemPoolInterface
+         * @var \PHPUnit_Framework_MockObject_MockObject                        $cacheItem
          */
         [$cachePool, $cacheItem] = $this->prepare();
 

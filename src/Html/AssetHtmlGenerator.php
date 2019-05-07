@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Html;
 
@@ -9,7 +9,6 @@ use Becklyn\AssetsBundle\Dependency\DependencyMapFactory;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\File\FileTypeRegistry;
 use Becklyn\AssetsBundle\Url\AssetUrl;
-
 
 class AssetHtmlGenerator
 {
@@ -44,7 +43,6 @@ class AssetHtmlGenerator
 
 
     /**
-     *
      * @param AssetsRegistry       $registry
      * @param AssetUrl             $assetUrl
      * @param FileTypeRegistry     $fileTypeRegistry
@@ -68,7 +66,6 @@ class AssetHtmlGenerator
 
 
     /**
-     *
      * @param string[] $assetPaths
      *
      * @throws AssetsException
@@ -102,12 +99,12 @@ class AssetHtmlGenerator
 
                     if (isset($urlParameters["integrity"]) && "" !== $urlParameters["integrity"])
                     {
-                        $integrity = sprintf(' integrity="%s"', $urlParameters["integrity"]);
+                        $integrity = \sprintf(' integrity="%s"', $urlParameters["integrity"]);
                     }
 
                     if (isset($urlParameters["crossorigin"]) && "" !== $urlParameters["crossorigin"])
                     {
-                        $crossOrigin = sprintf(' crossorigin="%s"', $urlParameters["crossorigin"]);
+                        $crossOrigin = \sprintf(' crossorigin="%s"', $urlParameters["crossorigin"]);
                     }
 
                     $extension = $urlParameters["type"] ?? $fileExtension;
@@ -133,13 +130,13 @@ class AssetHtmlGenerator
 
             if (null === $htmlLinkFormat)
             {
-                throw new AssetsException(sprintf(
+                throw new AssetsException(\sprintf(
                     "No HTML link format found for file of type: %s",
                     $extension
                 ));
             }
 
-            $html .= sprintf($htmlLinkFormat, $assetUrl, $integrity, $crossOrigin);
+            $html .= \sprintf($htmlLinkFormat, $assetUrl, $integrity, $crossOrigin);
         }
 
         return $html;
@@ -147,17 +144,19 @@ class AssetHtmlGenerator
 
 
     /**
-     * Returns the integrity HTML snippet
+     * Returns the integrity HTML snippet.
      *
      * @param Asset $asset
-     * @return string
+     *
      * @throws AssetsException
+     *
+     * @return string
      */
     private function getIntegrityHtml (Asset $asset) : string
     {
         return $this->isDebug
             ? ""
-            : sprintf(
+            : \sprintf(
                 ' integrity="sha256-%s"',
                 $this->registry->get($asset)->getHash()
             );

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\File;
 
@@ -7,7 +7,6 @@ use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
-
 
 class AssetMimeTypeGuesser
 {
@@ -103,6 +102,7 @@ class AssetMimeTypeGuesser
      * Guesses the mime type.
      *
      * @param Asset $asset
+     *
      * @return string
      */
     public function guess (Asset $asset) : string

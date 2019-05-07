@@ -1,9 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Becklyn\AssetsBundle\Html;
 
 use Becklyn\AssetsBundle\Asset\Asset;
-use Becklyn\AssetsBundle\Asset\AssetsCache;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
 use Becklyn\AssetsBundle\Dependency\DependencyMap;
 use Becklyn\AssetsBundle\Dependency\DependencyMapFactory;
@@ -15,12 +14,7 @@ use Becklyn\AssetsBundle\File\Type\JavaScriptFile;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Becklyn\AssetsBundle\Url\AssetUrl;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Asset\Packages;
-use Symfony\Component\DependencyInjection\Tests\Compiler\AutowireRequiredMethodsPassTest;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\RouterInterface;
 use Tests\Becklyn\AssetsBundle\CreateHashedAssetTrait;
-
 
 class AssetHtmlGeneratorTest extends TestCase
 {
@@ -29,7 +23,7 @@ class AssetHtmlGeneratorTest extends TestCase
     private $js = [];
     private $css = [];
 
-    protected function setUp ()
+    protected function setUp () : void
     {
         $this->js = [
             $this->createdHashedAsset("out", "js/first.js", "j1"),
@@ -83,12 +77,12 @@ class AssetHtmlGeneratorTest extends TestCase
     }
 
 
-    public function testDebugJS ()
+    public function testDebugJS () : void
     {
         /**
-         * @type AssetHtmlGenerator $generator
-         * @type \PHPUnit_Framework_MockObject_MockObject $registry
-         * @type \PHPUnit_Framework_MockObject_MockObject $assetUrl
+         * @var AssetHtmlGenerator
+         * @var \PHPUnit_Framework_MockObject_MockObject $registry
+         * @var \PHPUnit_Framework_MockObject_MockObject $assetUrl
          */
         [$generator, $registry, $assetUrl] = $this->buildGenerator(true);
 
@@ -109,19 +103,19 @@ class AssetHtmlGeneratorTest extends TestCase
             ->withConsecutive(...$assets);
 
         $html = $generator->linkAssets([$assets[0]->getAssetPath(), $assets[1]->getAssetPath()]);
-        self::assertEquals(
+        self::assertSame(
             '<script defer src="@bundles/a/first.js"></script><script defer src="@bundles/b/second.js"></script>',
             $html
         );
     }
 
 
-    public function testDebugCSS ()
+    public function testDebugCSS () : void
     {
         /**
-         * @type AssetHtmlGenerator $generator
-         * @type \PHPUnit_Framework_MockObject_MockObject $registry
-         * @type \PHPUnit_Framework_MockObject_MockObject $assetUrl
+         * @var AssetHtmlGenerator
+         * @var \PHPUnit_Framework_MockObject_MockObject $registry
+         * @var \PHPUnit_Framework_MockObject_MockObject $assetUrl
          */
         [$generator, $registry, $assetUrl] = $this->buildGenerator(true);
 
@@ -142,18 +136,18 @@ class AssetHtmlGeneratorTest extends TestCase
             ->withConsecutive(...$assets);
 
         $html = $generator->linkAssets([$assets[0]->getAssetPath(), $assets[1]->getAssetPath()]);
-        self::assertEquals(
+        self::assertSame(
             '<link rel="stylesheet" href="@bundles/a/first.css"><link rel="stylesheet" href="@bundles/b/second.css">',
             $html
         );
     }
 
 
-    public function testProductionJS ()
+    public function testProductionJS () : void
     {
         /**
-         * @type AssetHtmlGenerator $generator
-         * @type \PHPUnit_Framework_MockObject_MockObject $registry
+         * @var AssetHtmlGenerator
+         * @var \PHPUnit_Framework_MockObject_MockObject $registry
          */
         [$generator, $registry] = $this->buildGenerator(false);
 
@@ -171,11 +165,11 @@ class AssetHtmlGeneratorTest extends TestCase
     }
 
 
-    public function testProductionCSS ()
+    public function testProductionCSS () : void
     {
         /**
-         * @type AssetHtmlGenerator $generator
-         * @type \PHPUnit_Framework_MockObject_MockObject $registry
+         * @var AssetHtmlGenerator
+         * @var \PHPUnit_Framework_MockObject_MockObject $registry
          */
         [$generator, $registry] = $this->buildGenerator(false);
 
@@ -304,13 +298,14 @@ class AssetHtmlGeneratorTest extends TestCase
      *
      * @param array  $assets
      * @param string $expectedOutput
+     *
      * @throws \Becklyn\AssetsBundle\Exception\AssetsException
      */
     public function testHttpImports (array $assets, string $expectedOutput) : void
     {
         /**
-         * @type AssetHtmlGenerator $generator
-         * @type \PHPUnit_Framework_MockObject_MockObject $registry
+         * @var AssetHtmlGenerator
+         * @var \PHPUnit_Framework_MockObject_MockObject $registry
          */
         [$generator] = $this->buildGenerator(false);
 

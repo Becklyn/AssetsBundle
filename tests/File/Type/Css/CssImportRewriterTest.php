@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Becklyn\AssetsBundle\File\Type\Css;
 
@@ -8,14 +8,14 @@ use Becklyn\AssetsBundle\File\Type\Css\CssImportRewriter;
 use Becklyn\AssetsBundle\Url\AssetUrl;
 use PHPUnit\Framework\TestCase;
 
-
 class CssImportRewriterTest extends TestCase
 {
     /**
-     * Builds a CSS processor with a pathmap, that maps used asset paths to generated ones
+     * Builds a CSS processor with a pathmap, that maps used asset paths to generated ones.
      *
      * @param array $pathMap
      * @param bool  $isDebug
+     *
      * @return array
      */
     private function getRewriter (array $pathMap = []) : CssImportRewriter
@@ -50,15 +50,15 @@ class CssImportRewriterTest extends TestCase
 
 
     /**
-     * Tests that quotes are preserved and whitespace is stripped
+     * Tests that quotes are preserved and whitespace is stripped.
      */
-    public function testNormalizationAndQuotes ()
+    public function testNormalizationAndQuotes () : void
     {
         $rewriter = $this->getRewriter([
             "@assets/img/logo.svg" => "123",
         ]);
 
-        $input = <<<CSS
+        $input = <<<'CSS'
 .first {
     background-image: url("../img/logo.svg");
 }
@@ -84,7 +84,7 @@ class CssImportRewriterTest extends TestCase
 }
 CSS;
 
-        $expected = <<<CSS
+        $expected = <<<'CSS'
 .first {
     background-image: url("../img/logo.123.svg");
 }
@@ -118,21 +118,21 @@ CSS;
 
 
     /**
-     * Tests that the file name is correctly replaced
+     * Tests that the file name is correctly replaced.
      */
-    public function testReplace ()
+    public function testReplace () : void
     {
         $rewriter = $this->getRewriter([
             "@assets/img/logo.svg" => "123",
         ]);
 
-        $input = <<<CSS
+        $input = <<<'CSS'
 .first {
     background-image: url("../img/logo.svg");
 }
 CSS;
 
-        $expected = <<<CSS
+        $expected = <<<'CSS'
 .first {
     background-image: url("../img/logo.123.svg");
 }
@@ -146,13 +146,13 @@ CSS;
 
 
     /**
-     * Tests that invalid quotes are preserved
+     * Tests that invalid quotes are preserved.
      */
-    public function testInvalidQuotesPreserved ()
+    public function testInvalidQuotesPreserved () : void
     {
         $rewriter = $this->getRewriter([]);
 
-        $input = <<<CSS
+        $input = <<<'CSS'
 .first {
     background-image: url("../img/logo.svg);
     background-image: url('../img/logo.svg);
@@ -171,13 +171,13 @@ CSS;
 
 
     /**
-     * Tests that invalid paths are ignored and preserved
+     * Tests that invalid paths are ignored and preserved.
      */
-    public function testInvalidPathsIgnored ()
+    public function testInvalidPathsIgnored () : void
     {
         $rewriter = $this->getRewriter([]);
 
-        $input = <<<CSS
+        $input = <<<'CSS'
 .first {
     background-image: url("../../../../img/logo.svg");
 }

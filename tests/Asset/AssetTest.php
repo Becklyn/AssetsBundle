@@ -1,10 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Asset\Asset;
 use PHPUnit\Framework\TestCase;
-
 
 class AssetTest extends TestCase
 {
@@ -30,9 +29,10 @@ class AssetTest extends TestCase
      * @param string $path
      * @param string $expectedNamespace
      * @param string $expectedPath
+     *
      * @throws \Becklyn\AssetsBundle\Exception\AssetsException
      */
-    public function testCreateFromPath (string $path, string $expectedNamespace, string $expectedPath)
+    public function testCreateFromPath (string $path, string $expectedNamespace, string $expectedPath) : void
     {
         $asset = Asset::createFromAssetPath($path);
         self::assertSame($expectedNamespace, $asset->getNamespace());
@@ -59,21 +59,22 @@ class AssetTest extends TestCase
 
     /**
      * @dataProvider provideFailedCreateFromPath
-     * @expectedException Becklyn\AssetsBundle\Exception\AssetsException
+     * @expectedException \Becklyn\AssetsBundle\Exception\AssetsException
      *
      * @param string $path
+     *
      * @throws \Becklyn\AssetsBundle\Exception\AssetsException
      */
-    public function testFailedCreateFromPath (string $path)
+    public function testFailedCreateFromPath (string $path) : void
     {
         Asset::createFromAssetPath($path);
     }
 
 
     /**
-     * Tests, that no other properties are copied over when generating a relative asset
+     * Tests, that no other properties are copied over when generating a relative asset.
      */
-    public function testRelativeCreationResetsProperties ()
+    public function testRelativeCreationResetsProperties () : void
     {
         $asset = new Asset("namespace", "path.jpg");
         $asset->setHash("my-hash");

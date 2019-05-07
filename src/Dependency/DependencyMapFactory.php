@@ -1,10 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Dependency;
 
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Psr\Log\LoggerInterface;
-
 
 class DependencyMapFactory
 {
@@ -76,7 +75,7 @@ class DependencyMapFactory
 
 
     /**
-     * Regenerates the dependency map
+     * Regenerates the dependency map.
      *
      * @return DependencyMap
      */

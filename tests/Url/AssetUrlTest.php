@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Becklyn\AssetsBundle\Url;
 
@@ -9,7 +9,6 @@ use Becklyn\AssetsBundle\Url\AssetUrl;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\RouterInterface;
-
 
 class AssetUrlTest extends TestCase
 {
@@ -26,16 +25,16 @@ class AssetUrlTest extends TestCase
         return [
             new AssetUrl($registry, $router, $isDebug, null),
             $router,
-            $registry
+            $registry,
         ];
     }
 
 
-    public function testDev ()
+    public function testDev () : void
     {
         /**
-         * @type AssetUrl $assetUrl
-         * @type \PHPUnit_Framework_MockObject_MockObject $router
+         * @var AssetUrl
+         * @var \PHPUnit_Framework_MockObject_MockObject $router
          */
         [$assetUrl, $router] = $this->buildObject(true);
 
@@ -46,7 +45,7 @@ class AssetUrlTest extends TestCase
             ->method("generate")
             ->with("becklyn_assets.embed", [
                 "namespace" => "namespace",
-                "path" => "test.jpg"
+                "path" => "test.jpg",
             ])
             ->willReturn("example");
 
@@ -54,12 +53,12 @@ class AssetUrlTest extends TestCase
     }
 
 
-    public function testProd ()
+    public function testProd () : void
     {
         /**
-         * @type AssetUrl $assetUrl
-         * @type \PHPUnit_Framework_MockObject_MockObject $router
-         * @type \PHPUnit_Framework_MockObject_MockObject $registry
+         * @var AssetUrl
+         * @var \PHPUnit_Framework_MockObject_MockObject $router
+         * @var \PHPUnit_Framework_MockObject_MockObject $registry
          */
         [$assetUrl, $router, $registry] = $this->buildObject(false);
 
@@ -89,16 +88,16 @@ class AssetUrlTest extends TestCase
 
 
     /**
-     * Missing file in prod WITHOUT logger:
+     * Missing file in prod WITHOUT logger:.
      *
      * just returns the default path
      */
-    public function testMissingFileInProd ()
+    public function testMissingFileInProd () : void
     {
         /**
-         * @type AssetUrl $assetUrl
-         * @type \PHPUnit_Framework_MockObject_MockObject $router
-         * @type \PHPUnit_Framework_MockObject_MockObject $registry
+         * @var AssetUrl
+         * @var \PHPUnit_Framework_MockObject_MockObject $router
+         * @var \PHPUnit_Framework_MockObject_MockObject $registry
          */
         [$assetUrl, $router, $registry] = $this->buildObject(false);
 
@@ -124,11 +123,11 @@ class AssetUrlTest extends TestCase
 
 
     /**
-     * Missing file in prod WITH logger:
+     * Missing file in prod WITH logger:.
      *
      * logs an error and returns the default path
      */
-    public function testMissingFileInProdWithLogger ()
+    public function testMissingFileInProdWithLogger () : void
     {
         $registry = $this->getMockBuilder(AssetsRegistry::class)
             ->disableOriginalConstructor()
@@ -165,18 +164,18 @@ class AssetUrlTest extends TestCase
 
 
     /**
-     * Missing file in dev:
+     * Missing file in dev:.
      *
      * Throw exception
      *
-     * @expectedException Becklyn\AssetsBundle\Exception\AssetsException
+     * @expectedException \Becklyn\AssetsBundle\Exception\AssetsException
      */
-    public function testMissingFileInDev ()
+    public function testMissingFileInDev () : void
     {
         /**
-         * @type AssetUrl $assetUrl
-         * @type \PHPUnit_Framework_MockObject_MockObject $router
-         * @type \PHPUnit_Framework_MockObject_MockObject $registry
+         * @var AssetUrl
+         * @var \PHPUnit_Framework_MockObject_MockObject $router
+         * @var \PHPUnit_Framework_MockObject_MockObject $registry
          */
         [$assetUrl, $router, $registry] = $this->buildObject(true);
 

@@ -1,7 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Dependency;
-
 
 class DependencyMap
 {
@@ -12,7 +11,7 @@ class DependencyMap
 
 
     /**
-     * Constructs the dependency map
+     * Constructs the dependency map.
      *
      * Please note that every list of dependencies MUST include the file itself
      *
@@ -25,9 +24,10 @@ class DependencyMap
 
 
     /**
-     * Returns the imports with all dependencies
+     * Returns the imports with all dependencies.
      *
      * @param array $imports
+     *
      * @return array
      */
     public function getImportsWithDependencies (array $imports)

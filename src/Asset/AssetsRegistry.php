@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Asset;
 
@@ -7,7 +7,6 @@ use Becklyn\AssetsBundle\File\FileTypeRegistry;
 use Becklyn\AssetsBundle\Storage\AssetStorage;
 use Psr\Container\ContainerInterface;
 use Symfony\Contracts\Service\ServiceSubscriberInterface;
-
 
 class AssetsRegistry implements ServiceSubscriberInterface
 {
@@ -18,7 +17,6 @@ class AssetsRegistry implements ServiceSubscriberInterface
 
 
     /**
-     *
      * @param ContainerInterface $locator
      */
     public function __construct (ContainerInterface $locator)
@@ -28,11 +26,13 @@ class AssetsRegistry implements ServiceSubscriberInterface
 
 
     /**
-     * Gets the asset from the cache and adds it, if it is missing
+     * Gets the asset from the cache and adds it, if it is missing.
      *
      * @param string $assetPath
-     * @return Asset
+     *
      * @throws AssetsException
+     *
+     * @return Asset
      */
     public function get (Asset $asset) : Asset
     {
@@ -49,9 +49,10 @@ class AssetsRegistry implements ServiceSubscriberInterface
 
 
     /**
-     * Adds a list of asset paths
+     * Adds a list of asset paths.
      *
      * @param Asset[] $assets
+     *
      * @throws AssetsException
      */
     public function add (array $assets, ?callable $progress) : void
@@ -88,11 +89,13 @@ class AssetsRegistry implements ServiceSubscriberInterface
 
 
     /**
-     * Adds an asset to the registry
+     * Adds an asset to the registry.
      *
      * @param string $assetPath
-     * @return Asset
+     *
      * @throws AssetsException
+     *
+     * @return Asset
      */
     private function addAsset (Asset $asset) : Asset
     {
@@ -108,7 +111,7 @@ class AssetsRegistry implements ServiceSubscriberInterface
 
 
     /**
-     * Clears the assets registry
+     * Clears the assets registry.
      */
     public function clear () : void
     {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Storage;
 
@@ -9,9 +9,8 @@ use Becklyn\AssetsBundle\File\FileTypeRegistry;
 use Becklyn\AssetsBundle\Storage\Compression\GzipCompression;
 use Symfony\Component\Filesystem\Filesystem;
 
-
 /**
- * Generates the asset instances
+ * Generates the asset instances.
  */
 class AssetStorage
 {
@@ -49,8 +48,8 @@ class AssetStorage
      * @param FileLoader       $fileLoader
      * @param FileTypeRegistry $fileTypeRegistry
      * @param GzipCompression  $compression
-     * @param string           $publicPath the absolute path to the public/ (or web/) directory
-     * @param string           $outputDir  the output dir relative to the public/ directory
+     * @param string           $publicPath       the absolute path to the public/ (or web/) directory
+     * @param string           $outputDir        the output dir relative to the public/ directory
      */
     public function __construct (
         FileLoader $fileLoader,
@@ -63,17 +62,19 @@ class AssetStorage
         $this->fileLoader = $fileLoader;
         $this->fileTypeRegistry = $fileTypeRegistry;
         $this->compression = $compression;
-        $this->storagePath = rtrim($publicPath, "/") . "/" . trim($outputDir, "/");
+        $this->storagePath = \rtrim($publicPath, "/") . "/" . \trim($outputDir, "/");
         $this->filesystem = new Filesystem();
     }
 
 
     /**
-     * Imports the given asset
+     * Imports the given asset.
      *
      * @param string $assetPath
-     * @return Asset
+     *
      * @throws AssetsException
+     *
+     * @return Asset
      */
     public function import (Asset $asset) : Asset
     {
@@ -88,7 +89,7 @@ class AssetStorage
         $outputPath = "{$this->storagePath}/{$asset->getNamespace()}/{$asset->getDumpFilePath()}";
 
         // ensure that the target directory exists
-        $this->filesystem->mkdir(dirname($outputPath));
+        $this->filesystem->mkdir(\dirname($outputPath));
 
         // copy file
         $this->filesystem->dumpFile($outputPath, $fileContent);
@@ -103,7 +104,7 @@ class AssetStorage
 
 
     /**
-     * Removes all stored files
+     * Removes all stored files.
      */
     public function removeAllStoredFiles () : void
     {

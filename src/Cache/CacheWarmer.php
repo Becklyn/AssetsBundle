@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Cache;
 
@@ -8,7 +8,6 @@ use Becklyn\AssetsBundle\Finder\AssetsFinder;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
-
 
 class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
 {
@@ -46,7 +45,7 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
     /**
      * @param SymfonyStyle|null $io
      */
-    public function clearCache (?SymfonyStyle $io)
+    public function clearCache (?SymfonyStyle $io) : void
     {
         $this->registry->clear();
 
@@ -59,12 +58,13 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
 
 
     /**
-     * Warms up the cache
+     * Warms up the cache.
      *
      * @param SymfonyStyle|null $io
+     *
      * @throws AssetsException
      */
-    public function fillCache (?SymfonyStyle $io)
+    public function fillCache (?SymfonyStyle $io) : void
     {
         $progressBar = null;
 
@@ -92,14 +92,14 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
 
         if (null !== $io)
         {
-            $io->text(sprintf(
+            $io->text(\sprintf(
                 "Found <fg=yellow>%d asset%s</>.",
-                count($assets),
-                count($assets) !== 1 ? "s" : ""
+                \count($assets),
+                1 !== \count($assets) ? "s" : ""
             ));
         }
 
-        if (0 === count($assets))
+        if (0 === \count($assets))
         {
             return;
         }
@@ -107,7 +107,7 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
         if (null !== $io)
         {
             $io->newLine();
-            $progressBar = $io->createProgressBar(count($assets));
+            $progressBar = $io->createProgressBar(\count($assets));
         }
 
         $progressCallback = (null !== $progressBar)
@@ -136,7 +136,7 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
     /**
      * @inheritdoc
      */
-    public function warmUp ($cacheDir)
+    public function warmUp ($cacheDir) : void
     {
         $this->clearCache(null);
         $this->fillCache(null);
@@ -146,7 +146,7 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
     /**
      * @param string $cacheDir
      */
-    public function clear ($cacheDir)
+    public function clear ($cacheDir) : void
     {
         $this->clearCache(null);
     }

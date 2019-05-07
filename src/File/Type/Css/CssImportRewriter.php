@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\File\Type\Css;
 
@@ -6,7 +6,6 @@ use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Url\AssetUrl;
-
 
 class CssImportRewriter
 {
@@ -34,9 +33,10 @@ class CssImportRewriter
 
 
     /**
-     * Rewrites the path to namespaced assets
+     * Rewrites the path to namespaced assets.
      *
      * @param string $fileContent
+     *
      * @return string
      */
     public function rewriteNamespacedImports (string $fileContent) : string
@@ -62,10 +62,11 @@ class CssImportRewriter
 
 
     /**
-     * Rewrites all imports to use the names from the cache
+     * Rewrites all imports to use the names from the cache.
      *
      * @param Asset  $asset
      * @param string $fileContent
+     *
      * @return string
      */
     public function rewriteRelativeImports (Asset $asset, string $fileContent) : string
@@ -82,10 +83,11 @@ class CssImportRewriter
 
 
     /**
-     * Rewrites the path to fix the local path to an update one
+     * Rewrites the path to fix the local path to an update one.
      *
      * @param string $assetPath
      * @param string $path
+     *
      * @return string
      */
     private function rewritePathInStaticImport (Asset $asset, string $path) : string

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Controller;
 
@@ -9,7 +9,6 @@ use Becklyn\AssetsBundle\File\FileLoader;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
 
 class EmbedController
 {
@@ -46,6 +45,7 @@ class EmbedController
 
     /**
      * @param string $path
+     *
      * @return BinaryFileResponse
      */
     public function embed (string $namespace, string $path) : Response

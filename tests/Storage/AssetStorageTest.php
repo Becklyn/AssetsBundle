@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Becklyn\AssetsBundle\Storage;
 
@@ -12,7 +12,6 @@ use Becklyn\AssetsBundle\Storage\AssetStorage;
 use Becklyn\AssetsBundle\Storage\Compression\GzipCompression;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
-
 
 class AssetStorageTest extends TestCase
 {
@@ -37,9 +36,9 @@ class AssetStorageTest extends TestCase
     /**
      * @inheritdoc
      */
-    public function setUp ()
+    protected function setUp () : void
     {
-        $this->fixtures = dirname(__DIR__) . "/fixtures/public";
+        $this->fixtures = \dirname(__DIR__) . "/fixtures/public";
         $this->outDir = "{$this->fixtures}/out";
 
         $namespaces = new NamespaceRegistry([
@@ -48,7 +47,7 @@ class AssetStorageTest extends TestCase
         ]);
 
         $fileTypeRegistry = new FileTypeRegistry(new GenericFile(), [
-            "js" => new class extends FileType {
+            "js" => new class() extends FileType {
                 public function shouldIncludeHashInFileName () : bool
                 {
                     return false;
@@ -71,7 +70,7 @@ class AssetStorageTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown ()
+    protected function tearDown () : void
     {
         $fs = new Filesystem();
         $fs->remove($this->outDir);
@@ -79,9 +78,9 @@ class AssetStorageTest extends TestCase
 
 
     /**
-     * Test file import with hashed file name
+     * Test file import with hashed file name.
      */
-    public function testGenerate ()
+    public function testGenerate () : void
     {
         $expectedOutputFilePath = "test/css/app2.zu+_RiyZqaqqHgSHa3Xv.css";
         $outputPath = "{$this->outDir}/assets/other/{$expectedOutputFilePath}";
@@ -101,9 +100,9 @@ class AssetStorageTest extends TestCase
 
 
     /**
-     * Tests the file generation with a file type that should not include hashes in the file name
+     * Tests the file generation with a file type that should not include hashes in the file name.
      */
-    public function testGenerateWithoutHash ()
+    public function testGenerateWithoutHash () : void
     {
         $expectedOutputFilePath = "test/js/test.js";
         $outputPath = "{$this->outDir}/assets/bundles/{$expectedOutputFilePath}";
@@ -122,7 +121,7 @@ class AssetStorageTest extends TestCase
     }
 
 
-    public function testBundleStripping ()
+    public function testBundleStripping () : void
     {
         $asset = $this->storage->import(new Asset("bundles", "test/css/app.css"));
 
@@ -131,7 +130,7 @@ class AssetStorageTest extends TestCase
     }
 
 
-    public function testClear ()
+    public function testClear () : void
     {
         $fs = new Filesystem();
         $assetsDir = "{$this->outDir}/assets";

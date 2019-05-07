@@ -1,14 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\File;
 
 use Becklyn\AssetsBundle\Asset\Asset;
-use Becklyn\AssetsBundle\File\Type\CssFile;
 use Becklyn\AssetsBundle\File\Type\FileType;
-use Becklyn\AssetsBundle\File\Type\GenericFile;
-use Becklyn\AssetsBundle\File\Type\JavaScriptFile;
-use Becklyn\AssetsBundle\File\Type\SvgFile;
-
 
 class FileTypeRegistry
 {
@@ -19,7 +14,7 @@ class FileTypeRegistry
 
 
     /**
-     * The file types mapped by file extension
+     * The file types mapped by file extension.
      *
      * @var array<string,FileType>
      */
@@ -27,9 +22,8 @@ class FileTypeRegistry
 
 
     /**
-     *
      * @param FileType $genericFileType
-     * @param array    $specializedFileTypes    the mapping of `extension => FileType` of all specialized file types
+     * @param array    $specializedFileTypes the mapping of `extension => FileType` of all specialized file types
      */
     public function __construct (FileType $genericFileType, array $specializedFileTypes = [])
     {
@@ -39,9 +33,10 @@ class FileTypeRegistry
 
 
     /**
-     * Returns the file type for an asset
+     * Returns the file type for an asset.
      *
      * @param Asset $asset
+     *
      * @return FileType
      */
     public function getFileType (Asset $asset) : FileType
@@ -51,9 +46,10 @@ class FileTypeRegistry
 
 
     /**
-     * Returns the file type by file extension
+     * Returns the file type by file extension.
      *
      * @param string $extension
+     *
      * @return FileType
      */
     public function getByFileExtension (string $extension) : FileType
@@ -63,9 +59,10 @@ class FileTypeRegistry
 
 
     /**
-     * Returns whether the given asset should be imported deferred
+     * Returns whether the given asset should be imported deferred.
      *
      * @param Asset $asset
+     *
      * @return bool
      */
     public function importDeferred (Asset $asset) : bool

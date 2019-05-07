@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Twig;
 
@@ -6,7 +6,6 @@ use Becklyn\AssetsBundle\Helper\AssetHelper;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
-
 
 class AssetsTwigExtension extends AbstractExtension
 {
@@ -23,7 +22,6 @@ class AssetsTwigExtension extends AbstractExtension
 
 
     /**
-     *
      * @param AssetHtmlGenerator $htmlReferences
      * @param AssetHelper        $assetHelper
      */

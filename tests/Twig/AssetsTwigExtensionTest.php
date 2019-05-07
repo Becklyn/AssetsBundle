@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Becklyn\AssetsBundle\Twig;
 
@@ -7,13 +7,12 @@ use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Becklyn\AssetsBundle\Twig\AssetsTwigExtension;
 use PHPUnit\Framework\TestCase;
 
-
 class AssetsTwigExtensionTest extends TestCase
 {
     /**
-     * Assert that the exposed twig functions don't change
+     * Assert that the exposed twig functions don't change.
      */
-    public function testMethodNames ()
+    public function testMethodNames () : void
     {
         $htmlReferences = $this->getMockBuilder(AssetHtmlGenerator::class)
             ->disableOriginalConstructor()

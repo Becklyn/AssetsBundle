@@ -1,7 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Url;
-
 
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
@@ -9,7 +8,6 @@ use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\RouterInterface;
-
 
 class AssetUrl
 {
@@ -38,7 +36,6 @@ class AssetUrl
 
 
     /**
-     *
      * @param AssetsRegistry       $assetsRegistry
      * @param RouterInterface      $router
      * @param bool                 $isDebug
@@ -55,8 +52,10 @@ class AssetUrl
 
     /**
      * @param Asset $asset
-     * @return string
+     *
      * @throws AssetsException
+     *
+     * @return string
      */
     public function generateUrl (Asset $asset) : string
     {

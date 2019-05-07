@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Command;
 
@@ -7,7 +7,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-
 
 class AssetsNamespacesCommand extends Command
 {
@@ -41,7 +40,7 @@ class AssetsNamespacesCommand extends Command
     /**
      * @inheritdoc
      */
-    protected function configure ()
+    protected function configure () : void
     {
         $this
             ->setDescription("Displays an overview of all registered asset namespaces.");
@@ -85,21 +84,22 @@ class AssetsNamespacesCommand extends Command
 
 
     /**
-     * Makes the path relative to the project dir
+     * Makes the path relative to the project dir.
      *
      * @param string $path
+     *
      * @return string
      */
     private function makePathRelative (string $path) : string
     {
-        return ($this->projectDir === substr($path, 0, strlen($this->projectDir)))
-            ? substr($path, strlen($this->projectDir) + 1)
+        return ($this->projectDir === \substr($path, 0, \strlen($this->projectDir)))
+            ? \substr($path, \strlen($this->projectDir) + 1)
             : $path;
     }
 
 
     /**
-     * Fetches and prepares the namespaces
+     * Fetches and prepares the namespaces.
      *
      * @return array
      */
@@ -136,11 +136,12 @@ class AssetsNamespacesCommand extends Command
 
 
     /**
-     * Generates the table rows
+     * Generates the table rows.
      *
      * @param array $namespaces
      * @param bool  $hasDuplicatePath
      * @param array $pathMap
+     *
      * @return array
      */
     private function generateTableRows (array $namespaces, bool $hasDuplicatePath, array $pathMap) : array
@@ -168,16 +169,17 @@ class AssetsNamespacesCommand extends Command
         }
 
         // sort namespaces alphabetically
-        ksort($rows);
+        \ksort($rows);
 
         return  $rows;
     }
 
 
     /**
-     * Generates the table headers
+     * Generates the table headers.
      *
      * @param bool $hasDuplicatePath
+     *
      * @return array
      */
     private function generateTableHeaders (bool $hasDuplicatePath) : array
@@ -194,9 +196,10 @@ class AssetsNamespacesCommand extends Command
 
 
     /**
-     * Returns whether the app has a duplicate path
+     * Returns whether the app has a duplicate path.
      *
      * @param array $pathMap
+     *
      * @return bool
      */
     private function hasDuplicatePath (array $pathMap) : bool

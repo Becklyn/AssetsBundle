@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\DependencyInjection;
 
@@ -13,13 +13,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-
 class BecklynAssetsExtension extends Extension
 {
     /**
      * @inheritdoc
      */
-    public function load (array $configs, ContainerBuilder $container)
+    public function load (array $configs, ContainerBuilder $container) : void
     {
         // process config
         $config = $this->processConfiguration(
@@ -53,10 +52,11 @@ class BecklynAssetsExtension extends Extension
 
 
     /**
-     * Prefixes the given paths automatically with the given prefix
+     * Prefixes the given paths automatically with the given prefix.
      *
-     * @param array<string, string>  $paths
-     * @param string $prefix
+     * @param array<string, string> $paths
+     * @param string                $prefix
+     *
      * @return array<string, string>
      */
     private function prefixPaths (array $paths, string $prefix) : array
@@ -65,7 +65,7 @@ class BecklynAssetsExtension extends Extension
 
         foreach ($paths as $namespace => $path)
         {
-            $result[$namespace] = "{$prefix}/" . trim($path, "/");
+            $result[$namespace] = "{$prefix}/" . \trim($path, "/");
         }
 
         return $result;
@@ -73,11 +73,12 @@ class BecklynAssetsExtension extends Extension
 
 
     /**
-     * Initializes the dependency map
+     * Initializes the dependency map.
      *
      * @param array            $config
      * @param array            $prefixedNamespaces
      * @param ContainerBuilder $containerBuilder
+     *
      * @throws AssetsException
      */
     private function initializeDependencyMap (array $config, array $prefixedNamespaces, ContainerBuilder $container) : void

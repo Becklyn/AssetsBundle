@@ -1,9 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\File\Type;
 
 use Becklyn\AssetsBundle\Asset\Asset;
-
 
 class JavaScriptFile extends FileType
 {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\Finder;
 
@@ -6,9 +6,8 @@ use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Symfony\Component\Finder\Finder;
 
-
 /**
- * Finds all assets in the bundles directory of the project
+ * Finds all assets in the bundles directory of the project.
  */
 class AssetsFinder
 {
@@ -28,7 +27,7 @@ class AssetsFinder
 
 
     /**
-     * Finds all assets in the namespaces
+     * Finds all assets in the namespaces.
      *
      * @return Asset[]
      */

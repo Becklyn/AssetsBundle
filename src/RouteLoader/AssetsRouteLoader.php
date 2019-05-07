@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\RouteLoader;
 
@@ -7,7 +7,6 @@ use Becklyn\AssetsBundle\Controller\EmbedController;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
-
 
 class AssetsRouteLoader extends Loader
 {
@@ -42,7 +41,7 @@ class AssetsRouteLoader extends Loader
             ],
             [
                 "namespace" => Asset::NAMESPACE_REGEX,
-                "path" => ".*?"
+                "path" => ".*?",
             ]
         );
 
@@ -57,6 +56,6 @@ class AssetsRouteLoader extends Loader
      */
     public function supports ($resource, $type = null)
     {
-        return $type === "becklyn-assets";
+        return "becklyn-assets" === $type;
     }
 }
