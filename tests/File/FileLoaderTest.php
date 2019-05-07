@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Becklyn\AssetsBundle\File;
 
@@ -9,7 +9,6 @@ use Becklyn\AssetsBundle\File\Type\FileType;
 use Becklyn\AssetsBundle\File\Type\GenericFile;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use PHPUnit\Framework\TestCase;
-
 
 class FileLoaderTest extends TestCase
 {
@@ -31,10 +30,10 @@ class FileLoaderTest extends TestCase
     private $namespaceRegistry;
 
 
-    protected function setUp ()
+    protected function setUp () : void
     {
         $this->namespaceRegistry = new NamespaceRegistry([
-            "bundles" => "{$this->fixtures}/public/bundles"
+            "bundles" => "{$this->fixtures}/public/bundles",
         ]);
 
         $fileTypes = new FileTypeRegistry(new GenericFile());
@@ -58,7 +57,7 @@ class FileLoaderTest extends TestCase
      * @param Asset  $asset
      * @param string $expectedFile
      */
-    public function testValid (Asset $asset, string $expectedFile)
+    public function testValid (Asset $asset, string $expectedFile) : void
     {
         self::assertStringEqualsFile($expectedFile, $this->loader->loadFile($asset, FileLoader::MODE_UNTOUCHED));
     }
@@ -76,20 +75,21 @@ class FileLoaderTest extends TestCase
 
     /**
      * @dataProvider dataProviderInvalid
+     *
      * @param Asset $asset
      *
      * @expectedException \Becklyn\AssetsBundle\Exception\AssetsException
      */
-    public function testInvalid (Asset $asset)
+    public function testInvalid (Asset $asset) : void
     {
         $this->loader->loadFile($asset, FileLoader::MODE_UNTOUCHED);
     }
 
 
     /**
-     * Tests, that the custom file type is correctly called in dev
+     * Tests, that the custom file type is correctly called in dev.
      */
-    public function testCustomProcessorCalledInDev ()
+    public function testCustomProcessorCalledInDev () : void
     {
         $testFileType = $this->getMockBuilder(FileType::class)
             ->disableOriginalConstructor()
@@ -110,9 +110,9 @@ class FileLoaderTest extends TestCase
 
 
     /**
-     * Tests, that the custom file type is correctly called in prod
+     * Tests, that the custom file type is correctly called in prod.
      */
-    public function testCustomProcessorCalledInProd ()
+    public function testCustomProcessorCalledInProd () : void
     {
         $testFileType = $this->getMockBuilder(FileType::class)
             ->disableOriginalConstructor()
@@ -133,9 +133,9 @@ class FileLoaderTest extends TestCase
 
 
     /**
-     * Tests, that the custom file type is correctly called in prod
+     * Tests, that the custom file type is correctly called in prod.
      */
-    public function testCustomProcessorNotCalledInUntouched ()
+    public function testCustomProcessorNotCalledInUntouched () : void
     {
         $testFileType = $this->getMockBuilder(FileType::class)
             ->disableOriginalConstructor()
@@ -155,9 +155,9 @@ class FileLoaderTest extends TestCase
 
 
     /**
-     * Tests, that the fallback type is correctly called
+     * Tests, that the fallback type is correctly called.
      */
-    public function testFallbackType ()
+    public function testFallbackType () : void
     {
         $testFileType = $this->getMockBuilder(FileType::class)
             ->disableOriginalConstructor()

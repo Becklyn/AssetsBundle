@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Becklyn\AssetsBundle\Asset;
 
-use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsCache;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
 use Becklyn\AssetsBundle\File\FileTypeRegistry;
@@ -11,7 +10,6 @@ use Becklyn\AssetsBundle\Storage\AssetStorage;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Tests\Becklyn\AssetsBundle\CreateHashedAssetTrait;
-
 
 class AssetsRegistryTest extends TestCase
 {
@@ -36,12 +34,12 @@ class AssetsRegistryTest extends TestCase
     }
 
 
-    public function testAutomaticGeneration ()
+    public function testAutomaticGeneration () : void
     {
         /**
-         * @type AssetsRegistry                                        $registry
-         * @type \PHPUnit_Framework_MockObject_MockObject|AssetsCache  $cache
-         * @type \PHPUnit_Framework_MockObject_MockObject|AssetStorage $storage
+         * @var AssetsRegistry
+         * @var \PHPUnit_Framework_MockObject_MockObject|AssetsCache  $cache
+         * @var \PHPUnit_Framework_MockObject_MockObject|AssetStorage $storage
          */
         [$registry, $cache, $storage] = $this->prepare();
 
@@ -57,12 +55,12 @@ class AssetsRegistryTest extends TestCase
     }
 
 
-    public function testClear ()
+    public function testClear () : void
     {
         /**
-         * @type AssetsRegistry                                        $registry
-         * @type \PHPUnit_Framework_MockObject_MockObject|AssetsCache  $cache
-         * @type \PHPUnit_Framework_MockObject_MockObject|AssetStorage $storage
+         * @var AssetsRegistry
+         * @var \PHPUnit_Framework_MockObject_MockObject|AssetsCache  $cache
+         * @var \PHPUnit_Framework_MockObject_MockObject|AssetStorage $storage
          */
         [$registry, $cache, $storage] = $this->prepare();
 

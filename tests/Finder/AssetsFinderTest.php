@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Becklyn\AssetsBundle\Finder;
 
@@ -6,7 +6,6 @@ use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Finder\AssetsFinder;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use PHPUnit\Framework\TestCase;
-
 
 class AssetsFinderTest extends TestCase
 {
@@ -19,12 +18,12 @@ class AssetsFinderTest extends TestCase
     /**
      * @inheritdoc
      */
-    public function setUp ()
+    protected function setUp () : void
     {
-        $this->fixtures = dirname(__DIR__) . "/fixtures/public";
+        $this->fixtures = \dirname(__DIR__) . "/fixtures/public";
     }
 
-    public function testCorrectFindings ()
+    public function testCorrectFindings () : void
     {
         $namespaces = new NamespaceRegistry([
             "bundles" => "{$this->fixtures}/bundles",

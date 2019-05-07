@@ -1,9 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Becklyn\AssetsBundle\File;
 
 use PHPUnit\Framework\TestCase;
-
 
 class FilePathTest extends TestCase
 {
@@ -35,7 +34,7 @@ class FilePathTest extends TestCase
 
 
     /**
-     * Tests that paths are correctly resolved
+     * Tests that paths are correctly resolved.
      *
      * @dataProvider provideResolvePath
      *

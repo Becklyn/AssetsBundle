@@ -6,7 +6,6 @@ use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use PHPUnit\Framework\TestCase;
 
-
 class NamespaceRegistryTest extends TestCase
 {
     /**
@@ -18,13 +17,13 @@ class NamespaceRegistryTest extends TestCase
     /**
      * @inheritdoc
      */
-    public function setUp ()
+    protected function setUp () : void
     {
-        $this->fixtures = dirname(__DIR__) . "/fixtures/public";
+        $this->fixtures = \dirname(__DIR__) . "/fixtures/public";
     }
 
 
-    public function testValid ()
+    public function testValid () : void
     {
         $namespaces = new NamespaceRegistry();
         $path = "{$this->fixtures}/bundles";
@@ -36,7 +35,7 @@ class NamespaceRegistryTest extends TestCase
     }
 
 
-    public function testMissingWithFail ()
+    public function testMissingWithFail () : void
     {
         $this->expectException(AssetsException::class);
         $namespaces = new NamespaceRegistry();
@@ -44,7 +43,7 @@ class NamespaceRegistryTest extends TestCase
     }
 
 
-    public function testMissingWithoutFail ()
+    public function testMissingWithoutFail () : void
     {
         $namespaces = new NamespaceRegistry();
         $namespaces->addNamespace("missing", "{$this->fixtures}/doesnt_exist", NamespaceRegistry::IGNORE_MISSING);
