@@ -17,11 +17,8 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
     public function getConfigTreeBuilder ()
     {
         $treeBuilder = new TreeBuilder("becklyn_assets");
-        $rootNode = \method_exists($treeBuilder, "getRootNode")
-            ? $treeBuilder->getRootNode()
-            : $treeBuilder->root("becklyn_assets");
 
-        $rootNode
+        $treeBuilder->getRootNode()
             ->children()
                 ->append(self::appendNamespaces(
                     "All namespace directories, where assets are searched. Relative to `kernel.project_dir`."
@@ -53,12 +50,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
      */
     public static function appendNamespaces (string $description)
     {
-        $treeBuilder = new TreeBuilder("namespaces");
-        $node = \method_exists($treeBuilder, "getRootNode")
-            ? $treeBuilder->getRootNode()
-            : $treeBuilder->root("namespaces");
-
-        $node
+        return (new TreeBuilder("namespaces"))->getRootNode()
             ->scalarPrototype()->end()
             ->validate()
             ->ifTrue(
@@ -101,7 +93,5 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
             ->end()
             ->info($description)
             ->defaultValue([]);
-
-        return $node;
     }
 }
