@@ -9,6 +9,7 @@ use Becklyn\AssetsBundle\File\Type\FileType;
 use Becklyn\AssetsBundle\File\Type\GenericFile;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Becklyn\AssetsBundle\Storage\AssetStorage;
+use Becklyn\AssetsBundle\Storage\Compression\GzipCompression;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -58,6 +59,7 @@ class AssetStorageTest extends TestCase
         $this->storage = new AssetStorage(
             new FileLoader($namespaces, $fileTypeRegistry),
             $fileTypeRegistry,
+            new GzipCompression(),
             $this->outDir,
             "assets"
         );
