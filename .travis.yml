@@ -1,20 +1,28 @@
 language: php
 
+cache:
+    directories:
+        - $HOME/.composer/cache/files
+
 git:
     depth: 1
 
 php:
-    - 7.1
+    - "7.2"
+    - "7.3"
 
 before_install:
-    - composer require php-coveralls/php-coveralls
-    - composer self-update --stable
+    - composer require php-coveralls/php-coveralls --prefer-dist --no-interaction --no-progress
+    - composer global require localheinz/composer-normalize --prefer-dist --no-interaction --no-progress
 
 install:
-    - composer install
+    - composer install --prefer-dist --no-interaction --no-progress
 
 script:
     - mkdir -p build/logs
+    - composer normalize --indent-size 4 --indent-style space --dry-run
+    - php vendor/bin/php-cs-fixer fix --diff --config vendor/becklyn/php-cs/.php_cs.dist --dry-run --no-interaction
+    - php vendor/bin/phpstan analyse -l 4 --memory-limit 4G --ansi -c phpstan.neon . --no-interaction --no-progress
     - ./vendor/bin/simple-phpunit -c phpunit.xml --coverage-clover build/logs/clover.xml
 
 after_script:
