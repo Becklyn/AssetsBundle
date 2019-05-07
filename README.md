@@ -23,6 +23,14 @@ becklyn_assets:
     prefix: /_assets/
 ```
 
+To use the static compression of assets, install `zopfli` or `gzip`.
+
+```bash
+apt install zopfli
+# or
+brew install zopfli
+```
+
 
 Info / Purpose
 --------------
