@@ -57,7 +57,7 @@ class AssetsCache
     /**
      * Adds an asset to the cache.
      *
-     * @param string $assetPath
+     * @param Asset $asset
      */
     public function add (Asset $asset) : void
     {

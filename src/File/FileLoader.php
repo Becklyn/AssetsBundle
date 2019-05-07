@@ -26,7 +26,6 @@ class FileLoader
 
 
     /**
-     * @param bool              $isDebug
      * @param NamespaceRegistry $namespaceRegistry
      * @param FileTypeRegistry  $fileTypeRegistry
      */

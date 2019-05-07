@@ -6,7 +6,6 @@ use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\File\AssetMimeTypeGuesser;
 use Becklyn\AssetsBundle\File\FileLoader;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -46,7 +45,7 @@ class EmbedController
     /**
      * @param string $path
      *
-     * @return BinaryFileResponse
+     * @return Response
      */
     public function embed (string $namespace, string $path) : Response
     {

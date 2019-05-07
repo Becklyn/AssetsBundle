@@ -28,7 +28,7 @@ class AssetsRegistry implements ServiceSubscriberInterface
     /**
      * Gets the asset from the cache and adds it, if it is missing.
      *
-     * @param string $assetPath
+     * @param Asset $asset
      *
      * @throws AssetsException
      *
@@ -91,7 +91,7 @@ class AssetsRegistry implements ServiceSubscriberInterface
     /**
      * Adds an asset to the registry.
      *
-     * @param string $assetPath
+     * @param Asset $asset
      *
      * @throws AssetsException
      *

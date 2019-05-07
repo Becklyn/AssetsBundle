@@ -4,7 +4,6 @@ namespace Becklyn\AssetsBundle\DependencyInjection;
 
 use Becklyn\AssetsBundle\Dependency\DependencyLoader;
 use Becklyn\AssetsBundle\Dependency\DependencyMapFactory;
-use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
 use Becklyn\AssetsBundle\Storage\AssetStorage;
@@ -77,9 +76,7 @@ class BecklynAssetsExtension extends Extension
      *
      * @param array            $config
      * @param array            $prefixedNamespaces
-     * @param ContainerBuilder $containerBuilder
-     *
-     * @throws AssetsException
+     * @param ContainerBuilder $container
      */
     private function initializeDependencyMap (array $config, array $prefixedNamespaces, ContainerBuilder $container) : void
     {

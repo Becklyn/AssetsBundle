@@ -70,7 +70,7 @@ class AssetStorage
     /**
      * Imports the given asset.
      *
-     * @param string $assetPath
+     * @param Asset $asset
      *
      * @throws AssetsException
      *

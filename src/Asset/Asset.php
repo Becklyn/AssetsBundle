@@ -42,8 +42,8 @@ class Asset
 
 
     /**
+     * @param string $namespace
      * @param string $filePath
-     * @param string $hash
      */
     public function __construct (string $namespace, string $filePath)
     {

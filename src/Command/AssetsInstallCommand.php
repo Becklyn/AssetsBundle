@@ -50,7 +50,7 @@ class AssetsInstallCommand extends Command
     /**
      * @inheritdoc
      */
-    protected function execute (InputInterface $input, OutputInterface $output) : void
+    protected function execute (InputInterface $input, OutputInterface $output) : ?int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -63,5 +63,6 @@ class AssetsInstallCommand extends Command
         }
 
         $io->success("finished");
+        return 0;
     }
 }

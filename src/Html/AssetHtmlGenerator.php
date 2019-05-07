@@ -87,7 +87,7 @@ class AssetHtmlGenerator
             if (1 === \preg_match('~^(https?:)?//~', $assetPath))
             {
                 $fragment = \parse_url($assetPath, \PHP_URL_FRAGMENT);
-                $fileExtension = \pathinfo(\parse_url($assetPath, \PHP_URL_PATH), \PATHINFO_EXTENSION);
+                $extension = \pathinfo(\parse_url($assetPath, \PHP_URL_PATH), \PATHINFO_EXTENSION);
                 $assetUrl = $assetPath;
                 $integrity = "";
                 $crossOrigin = "";
@@ -107,13 +107,13 @@ class AssetHtmlGenerator
                         $crossOrigin = \sprintf(' crossorigin="%s"', $urlParameters["crossorigin"]);
                     }
 
-                    $extension = $urlParameters["type"] ?? $fileExtension;
-                    $fileType = $this->fileTypeRegistry->getByFileExtension($extension);
+                    if (isset($urlParameters["type"]))
+                    {
+                        $extension = $urlParameters["type"];
+                    }
                 }
-                else
-                {
-                    $fileType = $this->fileTypeRegistry->getByFileExtension($fileExtension);
-                }
+
+                $fileType = $this->fileTypeRegistry->getByFileExtension($extension);
             }
             else
             {

@@ -1,0 +1,13 @@
+parameters:
+    level: 4
+
+    reportUnmatchedIgnoredErrors: false
+
+    excludes_analyse:
+        - node_modules
+        - tests
+        - vendor
+
+    ignoreErrors:
+        - '#Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::#'
+        - '#Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface::#'

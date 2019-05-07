@@ -85,7 +85,7 @@ class CssImportRewriter
     /**
      * Rewrites the path to fix the local path to an update one.
      *
-     * @param string $assetPath
+     * @param Asset  $asset
      * @param string $path
      *
      * @return string
