@@ -41,7 +41,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Becklyn\\AssetsBundle\\": ""
+            "Becklyn\\AssetsBundle\\": "src/"
         }
     },
     "autoload-dev": {
