@@ -34,7 +34,7 @@
         "symfony/asset": "*"
     },
     "require-dev": {
-        "becklyn/php-cs": "^1.0.13",
+        "becklyn/php-cs": "^1.1",
         "symfony/phpunit-bridge": "^4.2"
     },
     "config": {
