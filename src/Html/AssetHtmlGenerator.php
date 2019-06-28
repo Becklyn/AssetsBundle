@@ -4,11 +4,14 @@ namespace Becklyn\AssetsBundle\Html;
 
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
+use Becklyn\AssetsBundle\Data\AssetEmbed;
 use Becklyn\AssetsBundle\Dependency\DependencyMap;
 use Becklyn\AssetsBundle\Dependency\DependencyMapFactory;
 use Becklyn\AssetsBundle\Exception\AssetsException;
+use Becklyn\AssetsBundle\Exception\NotEmbeddableFileTypeException;
 use Becklyn\AssetsBundle\File\FileTypeRegistry;
 use Becklyn\AssetsBundle\Url\AssetUrl;
+use Becklyn\HtmlBuilder\Builder\HtmlBuilder;
 
 class AssetHtmlGenerator
 {
@@ -62,6 +65,7 @@ class AssetHtmlGenerator
         $this->fileTypeRegistry = $fileTypeRegistry;
         $this->isDebug = $isDebug;
         $this->dependencyMap = $dependencyMapFactory->getDependencyMap();
+        $this->htmlBuilder = new HtmlBuilder();
     }
 
 
@@ -74,38 +78,29 @@ class AssetHtmlGenerator
     {
         $html = "";
 
-        if ($withDependencies)
-        {
-            $assetPaths = $this->dependencyMap->getImportsWithDependencies($assetPaths);
-        }
+        $assetEmbeds = $withDependencies
+            ? $this->dependencyMap->getImportsWithDependencies($assetPaths)
+            : \array_map(function (string $path) { return new AssetEmbed($path); }, $assetPaths);
 
-        foreach ($assetPaths as $assetPath)
+        foreach ($assetEmbeds as $embed)
         {
             // allow URLs with integrated optional integrity.
             // just pass it behind a hash:
             // https://example.org/test.js#sha256hash
-            if (1 === \preg_match('~^(https?:)?//~', $assetPath))
+            if ($embed->isExternal())
             {
-                $fragment = \parse_url($assetPath, \PHP_URL_FRAGMENT);
-                $extension = \pathinfo(\parse_url($assetPath, \PHP_URL_PATH), \PATHINFO_EXTENSION);
-                $assetUrl = $assetPath;
-                $integrity = "";
-                $crossOrigin = "";
+                $fragment = \parse_url($embed->getAssetPath(), \PHP_URL_FRAGMENT);
+                $extension = \pathinfo(\parse_url($embed->getAssetPath(), \PHP_URL_PATH), \PATHINFO_EXTENSION);
+                $embed->setUrl($embed->getAssetPath());
 
                 if (null !== $fragment)
                 {
-                    $assetUrl = \str_replace("#{$fragment}", "", $assetPath);
+                    $embed->setUrl(\str_replace("#{$fragment}", "", $embed));
                     \parse_str($fragment, $urlParameters);
 
-                    if (isset($urlParameters["integrity"]) && "" !== $urlParameters["integrity"])
-                    {
-                        $integrity = \sprintf(' integrity="%s"', $urlParameters["integrity"]);
-                    }
-
-                    if (isset($urlParameters["crossorigin"]) && "" !== $urlParameters["crossorigin"])
-                    {
-                        $crossOrigin = \sprintf(' crossorigin="%s"', $urlParameters["crossorigin"]);
-                    }
+                    $embed
+                        ->setAttribute("integrity", $urlParameters["integrity"] ?? null)
+                        ->setAttribute("crossorigin", $urlParameters["crossorigin"] ?? null);
 
                     if (isset($urlParameters["type"]))
                     {
@@ -117,48 +112,30 @@ class AssetHtmlGenerator
             }
             else
             {
-                $asset = Asset::createFromAssetPath($assetPath);
-                $assetUrl = $this->assetUrl->generateUrl($asset);
+                $asset = Asset::createFromAssetPath($embed->getAssetPath());
+                $embed->setUrl($this->assetUrl->generateUrl($asset));
                 $fileType = $this->fileTypeRegistry->getFileType($asset);
                 $extension = $asset->getFileType();
-                $integrity = $this->isDebug ? "" : $this->getIntegrityHtml($asset);
-                // Internal URLs don't need any `crossorigin` configuration
-                $crossOrigin = "";
+
+                if (!$this->isDebug)
+                {
+                    $embed->setAttribute("integrity", $this->registry->get($asset)->getHash());
+                }
             }
 
-            $htmlLinkFormat = $fileType->getHtmlLinkFormat();
-
-            if (null === $htmlLinkFormat)
+            try
+            {
+                $html .= $this->htmlBuilder->buildElement($fileType->buildElementForEmbed($embed));
+            }
+            catch (NotEmbeddableFileTypeException $e)
             {
                 throw new AssetsException(\sprintf(
                     "No HTML link format found for file of type: %s",
                     $extension
-                ));
+                ), $e);
             }
-
-            $html .= \sprintf($htmlLinkFormat, $assetUrl, $integrity, $crossOrigin);
         }
 
         return $html;
-    }
-
-
-    /**
-     * Returns the integrity HTML snippet.
-     *
-     * @param Asset $asset
-     *
-     * @throws AssetsException
-     *
-     * @return string
-     */
-    private function getIntegrityHtml (Asset $asset) : string
-    {
-        return $this->isDebug
-            ? ""
-            : \sprintf(
-                ' integrity="sha256-%s"',
-                $this->registry->get($asset)->getHash()
-            );
     }
 }

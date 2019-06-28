@@ -2,6 +2,8 @@
 
 namespace Becklyn\AssetsBundle\Dependency;
 
+use Becklyn\AssetsBundle\Data\AssetEmbed;
+
 class DependencyMap
 {
     /**
@@ -28,29 +30,60 @@ class DependencyMap
      *
      * @param array $imports
      *
-     * @return array
+     * @return AssetEmbed[]
      */
-    public function getImportsWithDependencies (array $imports)
+    public function getImportsWithDependencies (array $imports) : array
     {
         $toLoad = [];
 
         foreach ($imports as $import)
         {
-            $dependencies = $this->map[$import] ?? null;
+            $dirname = \dirname($import);
+            $basename = \basename($import);
 
-            if (null !== $dependencies)
+            if ("js" === \pathinfo($basename, \PATHINFO_EXTENSION))
             {
-                foreach ($dependencies as $dependency)
+                $legacy = "{$dirname}/_legacy.{$basename}";
+
+                if (\array_key_exists($import, $this->map) && \array_key_exists($legacy, $this->map))
                 {
-                    $toLoad[$dependency] = true;
+                    $toLoad = $this->loadForSingleImport($toLoad, $import, ["type" => "module"]);
+                    $toLoad = $this->loadForSingleImport($toLoad, $legacy, ["nomodule" => true]);
                 }
+
+                continue;
             }
-            else
-            {
-                $toLoad[$import] = true;
-            }
+
+            // load normally
+            $toLoad = $this->loadForSingleImport($toLoad, $import);
         }
 
-        return \array_keys($toLoad);
+        return $toLoad;
+    }
+
+
+    /**
+     * @param string $import
+     *
+     * @return AssetEmbed[]
+     */
+    private function loadForSingleImport (array $allImports, string $import, array $embedAttributes = []) : array
+    {
+        $dependencies = $this->map[$import] ?? null;
+
+        // add dependencies before the script itself
+        if (null !== $dependencies)
+        {
+            foreach ($dependencies as $dependency)
+            {
+                $allImports[$dependency] = new AssetEmbed($dependency, $embedAttributes);
+            }
+        }
+        else
+        {
+            $allImports[$import] = new AssetEmbed($import, $embedAttributes);
+        }
+
+        return $allImports;
     }
 }

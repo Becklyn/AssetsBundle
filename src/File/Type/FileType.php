@@ -3,6 +3,10 @@
 namespace Becklyn\AssetsBundle\File\Type;
 
 use Becklyn\AssetsBundle\Asset\Asset;
+use Becklyn\AssetsBundle\Data\AssetEmbed;
+use Becklyn\AssetsBundle\Exception\AssetsException;
+use Becklyn\AssetsBundle\Exception\NotEmbeddableFileTypeException;
+use Becklyn\HtmlBuilder\Node\HtmlElement;
 
 abstract class FileType
 {
@@ -47,17 +51,14 @@ abstract class FileType
 
 
     /**
-     * Returns the link format to link to this file type from HTML.
+     * Returns the element for embedding this file type.
      *
-     * Is passed to sprintf() with the following parameters:
-     *      1: the url
-     *      2: integrity HTML attribute
-     *
-     * @return string|null
+     * @throws NotEmbeddableFileTypeException
+     * @return HtmlElement
      */
-    public function getHtmlLinkFormat () : ?string
+    public function buildElementForEmbed (AssetEmbed $embed) : HtmlElement
     {
-        return null;
+        throw new NotEmbeddableFileTypeException();
     }
 
 
