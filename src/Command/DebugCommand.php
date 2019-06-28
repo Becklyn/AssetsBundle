@@ -2,6 +2,7 @@
 
 namespace Becklyn\AssetsBundle\Command;
 
+use Becklyn\AssetsBundle\Command\Debug\NamespacesPrinter;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Finder\AssetsFinder;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
@@ -11,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
-class DebugAssetsCommand extends Command
+class DebugCommand extends Command
 {
     public static $defaultName = "becklyn:assets:debug";
 
@@ -40,16 +41,24 @@ class DebugAssetsCommand extends Command
 
 
     /**
+     * @var NamespacesPrinter
+     */
+    private $namespacesPrinter;
+
+
+    /**
      *
      * @param AssetsFinder      $finder
      * @param NamespaceRegistry $namespaceRegistry
      * @param Filesystem        $filesystem
+     * @param NamespacesPrinter $namespacesPrinter
      * @param string            $projectDir
      */
     public function __construct (
         AssetsFinder $finder,
         NamespaceRegistry $namespaceRegistry,
         Filesystem $filesystem,
+        NamespacesPrinter $namespacesPrinter,
         string $projectDir
     )
     {
@@ -58,6 +67,7 @@ class DebugAssetsCommand extends Command
         $this->namespaceRegistry = $namespaceRegistry;
         $this->filesystem = $filesystem;
         $this->projectDir = $projectDir;
+        $this->namespacesPrinter = $namespacesPrinter;
     }
 
 
@@ -69,9 +79,13 @@ class DebugAssetsCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->title("Debug Assets");
 
+        $success = $this->namespacesPrinter->printNamespaceInfo($io);
         $this->printFindableAssets($io);
-        return 0;
+        return $success
+            ? 0
+            : 1;
     }
+
 
 
     /**
@@ -86,11 +100,7 @@ class DebugAssetsCommand extends Command
         foreach ($assets as $asset)
         {
             try {
-                $filePath = \rtrim($this->filesystem->makePathRelative(
-                    $this->namespaceRegistry->getFilePath($asset),
-                    $this->projectDir
-                ), "/");
-
+                $filePath = $this->makePathRelative($this->namespaceRegistry->getFilePath($asset));
             }
             catch (AssetsException $e)
             {
@@ -109,5 +119,20 @@ class DebugAssetsCommand extends Command
             "Asset",
             "Path"
         ], $rows);
+    }
+
+
+    /**
+     * Makes the path relative to the project dir.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    private function makePathRelative (string $path) : string
+    {
+        return ($this->projectDir === \substr($path, 0, \strlen($this->projectDir)))
+            ? \substr($path, \strlen($this->projectDir) + 1)
+            : $path;
     }
 }
