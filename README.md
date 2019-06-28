@@ -20,7 +20,7 @@ Load the routes (preferably only in `dev`):
 ```yaml
 becklyn_assets:
     resource: "@BecklynAssetsBundle/Resources/config/routes.yaml"
-    prefix: /_assets/
+    prefix: /
 ```
 
 To use the static compression of assets, install `zopfli` or `gzip`.
