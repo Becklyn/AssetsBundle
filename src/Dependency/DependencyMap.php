@@ -49,16 +49,15 @@ class DependencyMap
                 {
                     $toLoad = $this->loadForSingleImport($toLoad, $import, ["type" => "module"]);
                     $toLoad = $this->loadForSingleImport($toLoad, $legacy, ["nomodule" => true]);
+                    continue;
                 }
-
-                continue;
             }
 
             // load normally
             $toLoad = $this->loadForSingleImport($toLoad, $import);
         }
 
-        return $toLoad;
+        return \array_values($toLoad);
     }
 
 
