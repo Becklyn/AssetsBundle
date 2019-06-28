@@ -64,13 +64,16 @@ class NamespacesPrinter
         }
 
         return true;
-    }/**
- * Generates the table headers.
- *
- * @param bool $hasDuplicatePath
- *
- * @return array
- */
+    }
+
+
+    /**
+     * Generates the table headers.
+     *
+     * @param bool $hasDuplicatePath
+     *
+     * @return array
+     */
     private function generateTableHeaders (bool $hasDuplicatePath) : array
     {
         $headers = ["Namespace", "Relative Path"];
