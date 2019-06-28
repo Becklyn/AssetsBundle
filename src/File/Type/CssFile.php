@@ -9,7 +9,6 @@ class CssFile extends FileType
 {
     use GenericFileHeaderTrait;
 
-
     /**
      * @var CssImportRewriter
      */

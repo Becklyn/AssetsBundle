@@ -25,8 +25,8 @@ class AssetsInstallCommand extends Command
      */
     public function __construct (CacheWarmer $cacheWarmer)
     {
-        $this->cacheWarmer = $cacheWarmer;
         parent::__construct(self::$defaultName);
+        $this->cacheWarmer = $cacheWarmer;
     }
 
 

@@ -4,11 +4,12 @@ namespace Becklyn\AssetsBundle\File;
 
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\File\Type\FileType;
+use Becklyn\AssetsBundle\File\Type\GenericFile;
 
 class FileTypeRegistry
 {
     /**
-     * @var FileType
+     * @var GenericFile
      */
     private $genericFileType;
 
@@ -25,7 +26,7 @@ class FileTypeRegistry
      * @param FileType $genericFileType
      * @param array    $specializedFileTypes the mapping of `extension => FileType` of all specialized file types
      */
-    public function __construct (FileType $genericFileType, array $specializedFileTypes = [])
+    public function __construct (GenericFile $genericFileType, array $specializedFileTypes = [])
     {
         $this->genericFileType = $genericFileType;
         $this->fileTypes = $specializedFileTypes;

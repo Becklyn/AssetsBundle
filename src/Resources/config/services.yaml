@@ -2,59 +2,25 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            $isDebug: '%kernel.debug%'
+            $projectDir: '%kernel.project_dir%'
 
-
-    Becklyn\AssetsBundle\Asset\AssetsCache: ~
-    Becklyn\AssetsBundle\Asset\AssetsRegistry: ~
-
-    Becklyn\AssetsBundle\Cache\CacheWarmer:
-        $isDebug: '%kernel.debug%'
-
-    Becklyn\AssetsBundle\Command\AssetsInstallCommand: ~
-
-    Becklyn\AssetsBundle\Command\AssetsNamespacesCommand:
-        $projectDir: '%kernel.project_dir%'
+    Becklyn\AssetsBundle\:
+        resource: '../../*'
+        exclude: '../../{Asset/Asset.php,DependencyInjection,Exception,Resources,BecklynAssetsBundle.php}'
 
     Becklyn\AssetsBundle\Controller\EmbedController:
-        arguments:
-            $isDebug: '%kernel.debug%'
         public: true
 
-    # configured in bundle extension
-    Becklyn\AssetsBundle\Dependency\DependencyMapFactory:
-        $isDebug: '%kernel.debug%'
-
-    Becklyn\AssetsBundle\File\AssetMimeTypeGuesser: ~
-    Becklyn\AssetsBundle\File\FileLoader: ~
-
     Becklyn\AssetsBundle\File\FileTypeRegistry:
-        $genericFileType: '@Becklyn\AssetsBundle\File\Type\GenericFile'
         $specializedFileTypes:
             css: '@Becklyn\AssetsBundle\File\Type\CssFile'
             js: '@Becklyn\AssetsBundle\File\Type\JavaScriptFile'
             svg: '@Becklyn\AssetsBundle\File\Type\SvgFile'
 
-    Becklyn\AssetsBundle\File\Type\Css\CssImportRewriter: ~
-    Becklyn\AssetsBundle\File\Type\CssFile: ~
-    Becklyn\AssetsBundle\File\Type\GenericFile: ~
-    Becklyn\AssetsBundle\File\Type\JavaScriptFile: ~
-    Becklyn\AssetsBundle\File\Type\SvgFile: ~
-    Becklyn\AssetsBundle\Finder\AssetsFinder: ~
-    Becklyn\AssetsBundle\Helper\AssetHelper: ~
     Becklyn\AssetsBundle\Html\AssetHtmlGenerator:
         public: true
-        arguments:
-            $isDebug: '%kernel.debug%'
-
-    Becklyn\AssetsBundle\Namespaces\NamespaceRegistry: ~
-
-    Becklyn\AssetsBundle\Storage\AssetStorage: ~
-    Becklyn\AssetsBundle\Storage\Compression\GzipCompression: ~
-    Becklyn\AssetsBundle\Twig\AssetsTwigExtension: ~
-
-    Becklyn\AssetsBundle\Url\AssetUrl:
-        $isDebug: '%kernel.debug%'
-
 
     # Register route loader
     Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader:
