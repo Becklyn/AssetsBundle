@@ -4,7 +4,6 @@ namespace Becklyn\AssetsBundle\File\Type;
 
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Data\AssetEmbed;
-use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Exception\NotEmbeddableFileTypeException;
 use Becklyn\HtmlBuilder\Node\HtmlElement;
 
@@ -54,6 +53,7 @@ abstract class FileType
      * Returns the element for embedding this file type.
      *
      * @throws NotEmbeddableFileTypeException
+     *
      * @return HtmlElement
      */
     public function buildElementForEmbed (AssetEmbed $embed) : HtmlElement

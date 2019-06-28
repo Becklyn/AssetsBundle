@@ -2,8 +2,6 @@
 
 namespace Becklyn\AssetsBundle\Exception;
 
-
 class NotEmbeddableFileTypeException extends AssetsException
 {
-
 }

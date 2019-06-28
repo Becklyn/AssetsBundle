@@ -23,8 +23,8 @@ class FileTypeRegistry
 
 
     /**
-     * @param FileType $genericFileType
-     * @param array    $specializedFileTypes the mapping of `extension => FileType` of all specialized file types
+     * @param GenericFile $genericFileType
+     * @param array       $specializedFileTypes the mapping of `extension => FileType` of all specialized file types
      */
     public function __construct (GenericFile $genericFileType, array $specializedFileTypes = [])
     {

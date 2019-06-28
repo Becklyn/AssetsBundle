@@ -46,6 +46,12 @@ class AssetHtmlGenerator
 
 
     /**
+     * @var HtmlBuilder
+     */
+    private $htmlBuilder;
+
+
+    /**
      * @param AssetsRegistry       $registry
      * @param AssetUrl             $assetUrl
      * @param FileTypeRegistry     $fileTypeRegistry

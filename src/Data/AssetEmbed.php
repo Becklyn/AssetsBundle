@@ -2,7 +2,6 @@
 
 namespace Becklyn\AssetsBundle\Data;
 
-
 use Becklyn\HtmlBuilder\Node\HtmlAttributes;
 
 class AssetEmbed
@@ -28,7 +27,6 @@ class AssetEmbed
 
 
     /**
-     *
      * @param string $assetPath
      * @param array  $attributes
      */
