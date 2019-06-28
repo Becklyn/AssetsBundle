@@ -99,12 +99,13 @@ class DebugCommand extends Command
 
         foreach ($assets as $asset)
         {
-            try {
+            try
+            {
                 $filePath = $this->makePathRelative($this->namespaceRegistry->getFilePath($asset));
             }
             catch (AssetsException $e)
             {
-                $filePath = "?";
+                $filePath = "<fg=red>Error ({$e->getMessage()})</>";
             }
 
             $rows[$asset->getAssetPath()] = [
