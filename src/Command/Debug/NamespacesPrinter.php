@@ -1,18 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Becklyn\AssetsBundle\Command;
+namespace Becklyn\AssetsBundle\Command\Debug;
+
 
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class AssetsNamespacesCommand extends Command
+class NamespacesPrinter
 {
-    public static $defaultName = "becklyn:assets:namespaces";
-
-
     /**
      * @var NamespaceRegistry
      */
@@ -31,31 +26,20 @@ class AssetsNamespacesCommand extends Command
      */
     public function __construct (NamespaceRegistry $namespaceRegistry, string $projectDir)
     {
-        parent::__construct(self::$defaultName);
         $this->namespaceRegistry = $namespaceRegistry;
         $this->projectDir = $projectDir;
     }
 
 
     /**
-     * @inheritdoc
+     * @param SymfonyStyle $io
+     *
+     * @return bool whether the namespaces have an issue
      */
-    protected function configure () : void
+    public function printNamespaceInfo (SymfonyStyle $io) : bool
     {
-        $this
-            ->setDescription("Displays an overview of all registered asset namespaces.");
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    protected function execute (InputInterface $input, OutputInterface $output)
-    {
-        $io = new SymfonyStyle($input, $output);
-
-        $io->title("Becklyn Assets: Namespaces");
-        $io->comment("Displays all bundle namespaces and their associated paths.\nAll paths are relative to <fg=blue>%kernel.project_dir%</>.");
+        $io->section("Namespaces");
+        $io->comment("Displays all bundle namespaces and their associated paths.");
 
         $namespaces = $this->fetchNamespaces($this->namespaceRegistry);
 
@@ -63,7 +47,7 @@ class AssetsNamespacesCommand extends Command
         if (empty($namespaces))
         {
             $io->warning("No asset namespaces registered.");
-            return 1;
+            return false;
         }
 
         // display
@@ -79,22 +63,48 @@ class AssetsNamespacesCommand extends Command
             $io->note("Warning:\nThere are multiple namespaces pointing to the same directory.\nTry to reuse existing namespaces before creating new ones.");
         }
 
-        return 0;
+        return true;
     }
 
 
     /**
-     * Makes the path relative to the project dir.
+     * Generates the table headers.
      *
-     * @param string $path
+     * @param bool $hasDuplicatePath
      *
-     * @return string
+     * @return array
      */
-    private function makePathRelative (string $path) : string
+    private function generateTableHeaders (bool $hasDuplicatePath) : array
     {
-        return ($this->projectDir === \substr($path, 0, \strlen($this->projectDir)))
-            ? \substr($path, \strlen($this->projectDir) + 1)
-            : $path;
+        $headers = ["Namespace", "Relative Path"];
+
+        if ($hasDuplicatePath)
+        {
+            \array_unshift($headers, "");
+        }
+
+        return $headers;
+    }
+
+
+    /**
+     * Returns whether the app has a duplicate path.
+     *
+     * @param array $pathMap
+     *
+     * @return bool
+     */
+    private function hasDuplicatePath (array $pathMap) : bool
+    {
+        foreach ($pathMap as $count)
+        {
+            if (1 < $count)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -176,42 +186,16 @@ class AssetsNamespacesCommand extends Command
 
 
     /**
-     * Generates the table headers.
+     * Makes the path relative to the project dir.
      *
-     * @param bool $hasDuplicatePath
+     * @param string $path
      *
-     * @return array
+     * @return string
      */
-    private function generateTableHeaders (bool $hasDuplicatePath) : array
+    private function makePathRelative (string $path) : string
     {
-        $headers = ["Namespace", "Relative Path"];
-
-        if ($hasDuplicatePath)
-        {
-            \array_unshift($headers, "");
-        }
-
-        return $headers;
-    }
-
-
-    /**
-     * Returns whether the app has a duplicate path.
-     *
-     * @param array $pathMap
-     *
-     * @return bool
-     */
-    private function hasDuplicatePath (array $pathMap) : bool
-    {
-        foreach ($pathMap as $count)
-        {
-            if (1 < $count)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return ($this->projectDir === \substr($path, 0, \strlen($this->projectDir)))
+            ? \substr($path, \strlen($this->projectDir) + 1)
+            : $path;
     }
 }
