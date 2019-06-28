@@ -101,12 +101,18 @@ class AssetHtmlGenerator
 
                 if (null !== $fragment)
                 {
-                    $embed->setUrl(\str_replace("#{$fragment}", "", $embed));
+                    $embed->setUrl(\str_replace("#{$fragment}", "", $embed->getAssetPath()));
                     \parse_str($fragment, $urlParameters);
 
-                    $embed
-                        ->setAttribute("integrity", $urlParameters["integrity"] ?? null)
-                        ->setAttribute("crossorigin", $urlParameters["crossorigin"] ?? null);
+                    foreach (["integrity", "crossorigin"] as $param)
+                    {
+                        $value = \trim($urlParameters[$param] ?? "");
+
+                        if ("" !== $value)
+                        {
+                            $embed->setAttribute($param, $value);
+                        }
+                    }
 
                     if (isset($urlParameters["type"]))
                     {
