@@ -251,19 +251,19 @@ class AssetHtmlGeneratorTest extends TestCase
                 [
                     "http://example.org/test#type=css&integrity=abc",
                 ],
-                '<link rel="stylesheet" href="http://example.org/test" integrity="abc">',
+                '<link integrity="abc" rel="stylesheet" href="http://example.org/test">',
             ],
             "CSS file with explicit defined type and integrirty and crossorigin" => [
                 [
                     "http://example.org/test#type=css&integrity=abc&crossorigin=anonymous",
                 ],
-                '<link rel="stylesheet" href="http://example.org/test" integrity="abc" crossorigin="anonymous">',
+                '<link integrity="abc" crossorigin="anonymous" rel="stylesheet" href="http://example.org/test">',
             ],
             "JS file with crossorigin" => [
                 [
                     "http://example.org/test.js#crossorigin=use-credentials",
                 ],
-                '<script defer src="http://example.org/test.js" crossorigin="use-credentials"></script>',
+                '<script crossorigin="use-credentials" defer src="http://example.org/test.js"></script>',
             ],
             "JS file with explicit defined type and an empty integrity, which will be ignored" => [
                 [

@@ -2,6 +2,7 @@
 
 namespace Becklyn\AssetsBundle\tests\Dependency;
 
+use Becklyn\AssetsBundle\Data\AssetEmbed;
 use Becklyn\AssetsBundle\Dependency\DependencyMap;
 use PHPUnit\Framework\TestCase;
 
@@ -19,8 +20,8 @@ class DependencyMapTest extends TestCase
     protected function setUp () : void
     {
         $this->map = new DependencyMap([
-            "a" => [1, 2, "a-dep"],
-            "b" => [1, "b-dep"],
+            "a" => ["1", "2", "a-dep"],
+            "b" => ["1", "b-dep"],
         ]);
     }
 
@@ -31,7 +32,7 @@ class DependencyMapTest extends TestCase
     public function testUniqueAndCorrectOrder () : void
     {
         $load = $this->map->getImportsWithDependencies(["a", "b"]);
-        self::assertSame([1, 2, "a-dep", "b-dep"], $load);
+        $this->assertAssetEmbedOrder(["1", "2", "a-dep", "b-dep"], $load);
     }
 
 
@@ -41,6 +42,24 @@ class DependencyMapTest extends TestCase
     public function testMissing () : void
     {
         $load = $this->map->getImportsWithDependencies(["a", "c", "b"]);
-        self::assertSame([1, 2, "a-dep", "c", "b-dep"], $load);
+        $this->assertAssetEmbedOrder(["1", "2", "a-dep", "c", "b-dep"], $load);
+    }
+
+
+    /**
+     * @param array $expected
+     * @param array $embeds
+     */
+    private function assertAssetEmbedOrder (array $expected, array $embeds)
+    {
+        $prepared = \array_map(
+            function (AssetEmbed $embed)
+            {
+                return $embed->getAssetPath();
+            },
+            $embeds
+        );
+
+        self::assertSame($expected, $prepared);
     }
 }
