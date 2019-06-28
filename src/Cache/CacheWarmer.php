@@ -138,8 +138,11 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
      */
     public function warmUp ($cacheDir) : void
     {
-        $this->clearCache(null);
-        $this->fillCache(null);
+        if (!$this->isDebug)
+        {
+            $this->clearCache(null);
+            $this->fillCache(null);
+        }
     }
 
 
