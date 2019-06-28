@@ -167,7 +167,7 @@ class FileLoaderTest extends TestCase
             ->expects(self::never())
             ->method("processForProd");
 
-        $genericFileType = $this->getMockBuilder(FileType::class)
+        $genericFileType = $this->getMockBuilder(GenericFile::class)
             ->disableOriginalConstructor()
             ->getMock();
 

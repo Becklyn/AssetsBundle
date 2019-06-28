@@ -3,7 +3,9 @@
 namespace Becklyn\AssetsBundle\File\Type;
 
 use Becklyn\AssetsBundle\Asset\Asset;
+use Becklyn\AssetsBundle\Data\AssetEmbed;
 use Becklyn\AssetsBundle\File\Type\Css\CssImportRewriter;
+use Becklyn\HtmlBuilder\Node\HtmlElement;
 
 class CssFile extends FileType
 {
@@ -61,9 +63,14 @@ class CssFile extends FileType
     /**
      * @inheritDoc
      */
-    public function getHtmlLinkFormat () : ?string
+    public function buildElementForEmbed (AssetEmbed $embed) : HtmlElement
     {
-        return '<link rel="stylesheet" href="%s"%s%s>';
+        return new HtmlElement(
+            "link",
+            $embed->getAttributes()
+                ->set("rel", "stylesheet")
+                ->set("href", $embed->getUrl())
+        );
     }
 
 

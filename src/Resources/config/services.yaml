@@ -8,7 +8,7 @@ services:
 
     Becklyn\AssetsBundle\:
         resource: '../../*'
-        exclude: '../../{Asset/Asset.php,DependencyInjection,Exception,Resources,BecklynAssetsBundle.php}'
+        exclude: '../../{Asset/Asset.php,Data,DependencyInjection,Exception,Resources,BecklynAssetsBundle.php}'
 
     Becklyn\AssetsBundle\Controller\EmbedController:
         public: true

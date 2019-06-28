@@ -19,6 +19,7 @@
     "require": {
         "php": "^7.2",
         "ext-json": "*",
+        "becklyn/html-builder": "^2.0",
         "symfony/cache": "^4.2",
         "symfony/config": "^4.2",
         "symfony/console": "^4.2",

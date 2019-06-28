@@ -3,6 +3,8 @@
 namespace Becklyn\AssetsBundle\File\Type;
 
 use Becklyn\AssetsBundle\Asset\Asset;
+use Becklyn\AssetsBundle\Data\AssetEmbed;
+use Becklyn\HtmlBuilder\Node\HtmlElement;
 
 class JavaScriptFile extends FileType
 {
@@ -22,9 +24,14 @@ class JavaScriptFile extends FileType
     /**
      * @inheritDoc
      */
-    public function getHtmlLinkFormat () : ?string
+    public function buildElementForEmbed (AssetEmbed $embed) : HtmlElement
     {
-        return '<script defer src="%s"%s%s></script>';
+        return new HtmlElement(
+            "script",
+            $embed->getAttributes()
+                ->set("defer", true)
+                ->set("src", $embed->getUrl())
+        );
     }
 
 

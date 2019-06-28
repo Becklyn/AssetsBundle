@@ -47,7 +47,6 @@ class DebugCommand extends Command
 
 
     /**
-     *
      * @param AssetsFinder      $finder
      * @param NamespaceRegistry $namespaceRegistry
      * @param Filesystem        $filesystem
@@ -110,7 +109,7 @@ class DebugCommand extends Command
 
             $rows[$asset->getAssetPath()] = [
                 "<fg=yellow>@{$asset->getNamespace()}</>/{$asset->getFilePath()}",
-                $filePath
+                $filePath,
             ];
         }
 
@@ -118,7 +117,7 @@ class DebugCommand extends Command
 
         $io->table([
             "Asset",
-            "Path"
+            "Path",
         ], $rows);
     }
 

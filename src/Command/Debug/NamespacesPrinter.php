@@ -2,7 +2,6 @@
 
 namespace Becklyn\AssetsBundle\Command\Debug;
 
-
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
