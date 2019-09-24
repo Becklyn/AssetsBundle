@@ -64,7 +64,7 @@ class NamespaceRegistry implements \IteratorAggregate
             return;
         }
 
-        $this->namespaces[$namespace] = $directory;
+        $this->namespaces[$namespace] = \rtrim($directory, "/");
     }
 
 

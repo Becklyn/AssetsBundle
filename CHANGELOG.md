@@ -1,3 +1,9 @@
+2.6.0
+=====
+
+*   Added support for the new `_modern.entry.js` + `entry.js` builds (this is the new way Kaba builds the entries, the old way is `_legacy.entry.js` + `entry.js`).
+*   Fixed a bug where a dependency that was both required in legacy + modern builds was only loaded once for one of the entries.
+
 2.5.0
 =====
 

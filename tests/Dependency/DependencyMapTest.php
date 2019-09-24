@@ -22,6 +22,10 @@ class DependencyMapTest extends TestCase
         $this->map = new DependencyMap([
             "a" => ["1", "2", "a-dep"],
             "b" => ["1", "b-dep"],
+            "c.js" => ["1", "c_modern"],
+            "_legacy.c.js" => ["1", "c_legacy"],
+            "d.js" => ["1", "d_legacy"],
+            "_modern.d.js" => ["1", "d_modern"],
         ]);
     }
 
@@ -60,6 +64,47 @@ class DependencyMapTest extends TestCase
             $embeds
         );
 
-        self::assertSame($expected, $prepared);
+        self::assertSame($expected, \array_values($prepared));
+    }
+
+
+    /**
+     *
+     */
+    public function testModernBuilds ()
+    {
+        $load = $this->map->getImportsWithDependencies(["c.js"]);
+
+        $prepared = \array_map(
+            function (AssetEmbed $embed)
+            {
+                return $embed->getAssetPath();
+            },
+            $load
+        );
+
+        self::assertContains("1", $prepared);
+        self::assertContains("c_modern", $prepared);
+        self::assertContains("c_legacy", $prepared);
+    }
+
+
+    /**
+     *
+     */
+    public function testDuplicatedDependenciesBuilds ()
+    {
+        $load = $this->map->getImportsWithDependencies(["d.js"]);
+
+        self::assertArrayHasKey("1", $load);
+        self::assertArrayHasKey("d_legacy", $load);
+        self::assertArrayHasKey("d_modern", $load);
+
+        self::assertSame("module", $load["d_modern"]->getAttributes()->get("type"));
+        self::assertSame(true, $load["d_legacy"]->getAttributes()->get("nomodule"));
+
+        // as 1 is a shared dependency of modern + legacy builds, it should not have any attribute.
+        self::assertNull($load["1"]->getAttributes()->get("type"));
+        self::assertNull($load["1"]->getAttributes()->get("nomodule"));
     }
 }
