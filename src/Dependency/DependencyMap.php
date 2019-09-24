@@ -7,9 +7,9 @@ use Becklyn\AssetsBundle\Dependency\Dependency\AssetDependency;
 
 class DependencyMap
 {
-    private const MODERN = true;
-    private const LEGACY = false;
-    private const NEUTRAL = null;
+    private const NEUTRAL = 0;
+    private const MODERN = 1;
+    private const LEGACY = 2;
 
     /**
      * @var string[][]
@@ -90,11 +90,11 @@ class DependencyMap
     /**
      * @param AssetDependency[] $allImports
      * @param string            $import
-     * @param bool|null         $modernOrLegacy
+     * @param int               $modernOrLegacy
      *
      * @return AssetDependency[]
      */
-    private function loadForSingleImport (array $allImports, string $import, ?bool $modernOrLegacy) : array
+    private function loadForSingleImport (array $allImports, string $import, int $modernOrLegacy) : array
     {
         $dependencies = $this->map[$import] ?? null;
 
@@ -118,11 +118,11 @@ class DependencyMap
     /**
      * @param string            $name
      * @param AssetDependency[] $map
-     * @param bool|null         $modernOrLegacy
+     * @param int               $modernOrLegacy
      *
      * @return AssetDependency[]
      */
-    private function createDependency (string $name, array $map, ?bool $modernOrLegacy) : array
+    private function createDependency (string $name, array $map, int $modernOrLegacy) : array
     {
         if (!\array_key_exists($name, $map))
         {
