@@ -7,7 +7,8 @@ use Becklyn\AssetsBundle\File\FilePath;
 
 class Asset
 {
-    const NAMESPACE_REGEX = '[a-z][a-z0-9_]*?';
+    public const NAMESPACE_REGEX = '[a-z][a-z0-9_]*?';
+    public const HASH_PREFIX = "sha256";
 
     //region Fields
     /**

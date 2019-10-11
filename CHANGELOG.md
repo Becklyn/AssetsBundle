@@ -1,3 +1,9 @@
+2.6.1
+=====
+
+*   Fixed a bug where the algorithm was missing from the `integrity` attribute in prod environment.
+
+
 2.6.0
 =====
 
