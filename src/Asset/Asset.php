@@ -8,7 +8,12 @@ use Becklyn\AssetsBundle\File\FilePath;
 class Asset
 {
     public const NAMESPACE_REGEX = '[a-z][a-z0-9_]*?';
-    public const HASH_PREFIX = "sha256";
+
+    /**
+     * The hashing algorithm to generate the fingerprints from. Must be compatible for both the `hash()` function
+     * in PHP, as well as prefix in the HTML `integrity` attribute.
+     */
+    public const HASH_ALGORITHM = "sha256";
 
     //region Fields
     /**

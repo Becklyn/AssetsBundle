@@ -143,7 +143,7 @@ class AssetHtmlGenerator
                     $hash = $this->registry->get($asset)->getHash();
 
                     $integrityHash = null !== $hash
-                        ? \sprintf("%s-%s", \strtolower(Asset::HASH_PREFIX), $hash)
+                        ? \sprintf("%s-%s", Asset::HASH_ALGORITHM, $hash)
                         : "";
 
                     $embed->setAttribute("integrity", $integrityHash);
