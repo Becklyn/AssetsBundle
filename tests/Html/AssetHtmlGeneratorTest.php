@@ -80,7 +80,7 @@ class AssetHtmlGeneratorTest extends TestCase
     public function testDebugJS () : void
     {
         /**
-         * @var AssetHtmlGenerator
+         * @var AssetHtmlGenerator                       $generator
          * @var \PHPUnit_Framework_MockObject_MockObject $registry
          * @var \PHPUnit_Framework_MockObject_MockObject $assetUrl
          */
@@ -146,7 +146,7 @@ class AssetHtmlGeneratorTest extends TestCase
     public function testProductionJS () : void
     {
         /**
-         * @var AssetHtmlGenerator
+         * @var AssetHtmlGenerator                       $generator
          * @var \PHPUnit_Framework_MockObject_MockObject $registry
          */
         [$generator, $registry] = $this->buildGenerator(false);
@@ -161,14 +161,14 @@ class AssetHtmlGeneratorTest extends TestCase
             );
 
         $html = $generator->linkAssets(["@a/first.js", "@b/second.js"]);
-        self::assertContains('integrity="', $html);
+        self::assertContains(\sprintf('integrity="%s-hash', Asset::HASH_ALGORITHM), $html);
     }
 
 
     public function testProductionCSS () : void
     {
         /**
-         * @var AssetHtmlGenerator
+         * @var AssetHtmlGenerator                       $generator
          * @var \PHPUnit_Framework_MockObject_MockObject $registry
          */
         [$generator, $registry] = $this->buildGenerator(false);
@@ -183,7 +183,7 @@ class AssetHtmlGeneratorTest extends TestCase
             );
 
         $html = $generator->linkAssets(["@a/first.css", "@b/second.css"]);
-        self::assertContains('integrity="', $html);
+        self::assertContains(\sprintf('integrity="%s-hash', Asset::HASH_ALGORITHM), $html);
     }
 
 

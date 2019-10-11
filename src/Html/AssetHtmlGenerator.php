@@ -76,6 +76,15 @@ class AssetHtmlGenerator
 
 
     /**
+     * @return AssetsRegistry
+     */
+    public function getRegistry () : AssetsRegistry
+    {
+        return $this->registry;
+    }
+
+
+    /**
      * @param string[] $assetPaths
      *
      * @throws AssetsException
@@ -131,7 +140,13 @@ class AssetHtmlGenerator
 
                 if (!$this->isDebug)
                 {
-                    $embed->setAttribute("integrity", $this->registry->get($asset)->getHash());
+                    $hash = $this->registry->get($asset)->getHash();
+
+                    $integrityHash = null !== $hash
+                        ? \sprintf("%s-%s", Asset::HASH_ALGORITHM, $hash)
+                        : "";
+
+                    $embed->setAttribute("integrity", $integrityHash);
                 }
             }
 

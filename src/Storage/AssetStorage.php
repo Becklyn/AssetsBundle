@@ -82,7 +82,7 @@ class AssetStorage
         $fileType = $this->fileTypeRegistry->getFileType($asset);
 
         $asset->setHash(
-            \base64_encode(\hash("sha256", $fileContent, true)),
+            \base64_encode(\hash(Asset::HASH_ALGORITHM, $fileContent, true)),
             $fileType->shouldIncludeHashInFileName()
         );
 
