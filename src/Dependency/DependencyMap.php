@@ -21,8 +21,6 @@ class DependencyMap
      * Constructs the dependency map.
      *
      * Please note that every list of dependencies MUST include the file itself
-     *
-     * @param array $dependencyMap
      */
     public function __construct (array $dependencyMap = [])
     {
@@ -32,8 +30,6 @@ class DependencyMap
 
     /**
      * Returns the imports with all dependencies.
-     *
-     * @param array $imports
      *
      * @return AssetEmbed[]
      */
@@ -89,8 +85,6 @@ class DependencyMap
 
     /**
      * @param AssetDependency[] $allImports
-     * @param string            $import
-     * @param int               $modernOrLegacy
      *
      * @return AssetDependency[]
      */
@@ -116,9 +110,7 @@ class DependencyMap
 
 
     /**
-     * @param string            $name
      * @param AssetDependency[] $map
-     * @param int               $modernOrLegacy
      *
      * @return AssetDependency[]
      */

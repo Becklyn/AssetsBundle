@@ -31,7 +31,6 @@ class AssetsCache
 
 
     /**
-     * @param CacheItemPoolInterface $pool
      */
     public function __construct (CacheItemPoolInterface $pool)
     {
@@ -43,10 +42,6 @@ class AssetsCache
 
     /**
      * Returns the cached asset.
-     *
-     * @param Asset $asset
-     *
-     * @return Asset|null
      */
     public function get (Asset $asset) : ?Asset
     {
@@ -56,8 +51,6 @@ class AssetsCache
 
     /**
      * Adds an asset to the cache.
-     *
-     * @param Asset $asset
      */
     public function add (Asset $asset) : void
     {
@@ -77,8 +70,6 @@ class AssetsCache
 
     /**
      * Sets and stores the new assets array.
-     *
-     * @param array $newAssets
      */
     private function setAssets (array $newAssets) : void
     {

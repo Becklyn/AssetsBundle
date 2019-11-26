@@ -8,13 +8,6 @@ trait GenericFileHeaderTrait
 {
     /**
      * Returns a generic file header.
-     *
-     * @param Asset  $asset
-     * @param string $filePath
-     * @param string $openingComment
-     * @param string $closingComment
-     *
-     * @return string
      */
     private function generateGenericFileDebugInfo (Asset $asset, string $filePath, string $openingComment, string $closingComment) : string
     {

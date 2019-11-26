@@ -100,7 +100,7 @@ class AssetHtmlGeneratorTest extends TestCase
         $assetUrl
             ->expects(self::exactly(2))
             ->method("generateUrl")
-            ->withConsecutive(...$assets);
+            ->withConsecutive([$assets[0]], [$assets[1]]);
 
         $html = $generator->linkAssets([$assets[0]->getAssetPath(), $assets[1]->getAssetPath()]);
         self::assertSame(
@@ -133,7 +133,7 @@ class AssetHtmlGeneratorTest extends TestCase
         $assetUrl
             ->expects(self::exactly(2))
             ->method("generateUrl")
-            ->withConsecutive(...$assets);
+            ->withConsecutive([$assets[0]], [$assets[1]]);
 
         $html = $generator->linkAssets([$assets[0]->getAssetPath(), $assets[1]->getAssetPath()]);
         self::assertSame(

@@ -34,9 +34,7 @@ class NamespaceRegistry implements \IteratorAggregate
     /**
      * Adds a namespace.
      *
-     * @param string $namespace
-     * @param string $directory        the absolute path to the assets directory
-     * @param bool   $failOnMissingDir
+     * @param string $directory the absolute path to the assets directory
      *
      * @throws AssetsException
      */
@@ -80,11 +78,7 @@ class NamespaceRegistry implements \IteratorAggregate
     /**
      * Returns the path to the namespace.
      *
-     * @param string $namespace
-     *
      * @throws AssetsException
-     *
-     * @return string
      */
     public function getPath (string $namespace) : string
     {
@@ -103,11 +97,7 @@ class NamespaceRegistry implements \IteratorAggregate
     /**
      * Returns the full file path for the given asset.
      *
-     * @param Asset $asset
-     *
      * @throws AssetsException
-     *
-     * @return string
      */
     public function getFilePath (Asset $asset) : string
     {

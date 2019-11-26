@@ -18,7 +18,6 @@ class CssFile extends FileType
 
 
     /**
-     * @param CssImportRewriter $importRewriter
      */
     public function __construct (CssImportRewriter $importRewriter)
     {

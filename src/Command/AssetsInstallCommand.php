@@ -21,7 +21,6 @@ class AssetsInstallCommand extends Command
 
 
     /**
-     * @param CacheWarmer $cacheWarmer
      */
     public function __construct (CacheWarmer $cacheWarmer)
     {

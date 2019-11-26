@@ -36,10 +36,6 @@ class AssetUrl
 
 
     /**
-     * @param AssetsRegistry       $assetsRegistry
-     * @param RouterInterface      $router
-     * @param bool                 $isDebug
-     * @param LoggerInterface|null $logger
      */
     public function __construct (AssetsRegistry $assetsRegistry, RouterInterface $router, bool $isDebug, ?LoggerInterface $logger)
     {
@@ -51,11 +47,7 @@ class AssetUrl
 
 
     /**
-     * @param Asset $asset
-     *
      * @throws AssetsException
-     *
-     * @return string
      */
     public function generateUrl (Asset $asset) : string
     {

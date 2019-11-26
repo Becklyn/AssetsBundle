@@ -27,8 +27,6 @@ class AssetEmbed
 
 
     /**
-     * @param string $assetPath
-     * @param array  $attributes
      */
     public function __construct (string $assetPath, array $attributes = [])
     {
@@ -39,10 +37,7 @@ class AssetEmbed
 
     //region Accessors
     /**
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return self
+     * @param mixed $value
      */
     public function setAttribute (string $name, $value) : self
     {
@@ -52,7 +47,6 @@ class AssetEmbed
 
 
     /**
-     * @return string
      */
     public function getAssetPath () : string
     {
@@ -61,7 +55,6 @@ class AssetEmbed
 
 
     /**
-     * @return HtmlAttributes
      */
     public function getAttributes () : HtmlAttributes
     {
@@ -70,7 +63,6 @@ class AssetEmbed
 
 
     /**
-     * @return bool
      */
     public function isExternal () : bool
     {
@@ -79,7 +71,6 @@ class AssetEmbed
 
 
     /**
-     * @return string|null
      */
     public function getUrl () : ?string
     {
@@ -88,7 +79,6 @@ class AssetEmbed
 
 
     /**
-     * @param string|null $url
      */
     public function setUrl (?string $url) : void
     {

@@ -52,11 +52,6 @@ class AssetHtmlGenerator
 
 
     /**
-     * @param AssetsRegistry       $registry
-     * @param AssetUrl             $assetUrl
-     * @param FileTypeRegistry     $fileTypeRegistry
-     * @param bool                 $isDebug
-     * @param DependencyMapFactory $dependencyMapFactory
      */
     public function __construct (
         AssetsRegistry $registry,
@@ -76,7 +71,6 @@ class AssetHtmlGenerator
 
 
     /**
-     * @return AssetsRegistry
      */
     public function getRegistry () : AssetsRegistry
     {

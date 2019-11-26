@@ -29,8 +29,6 @@ class AssetHelper
 
 
     /**
-     * @param FileLoader $fileLoader
-     * @param AssetUrl   $assetUrl
      */
     public function __construct (FileLoader $fileLoader, AssetUrl $assetUrl)
     {
@@ -44,12 +42,8 @@ class AssetHelper
      *
      * @api
      *
-     * @param string $assetPath
-     *
      * @throws AssetsException
      * @throws FileNotFoundException
-     *
-     * @return string
      */
     public function embed (string $assetPath) : string
     {
@@ -65,11 +59,7 @@ class AssetHelper
      *
      * @api
      *
-     * @param string $assetPath
-     *
      * @throws AssetsException
-     *
-     * @return string
      */
     public function getUrl (string $assetPath) : string
     {

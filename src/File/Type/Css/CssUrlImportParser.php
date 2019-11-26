@@ -7,11 +7,6 @@ class CssUrlImportParser
     /**
      * Replaces all valid imports with the result of the $contentReplaceFunction.
      * The function receives the cleaned path as argument (without the quotes and the function must not add quotes).
-     *
-     * @param string   $fileContent
-     * @param callable $contentReplaceFunction
-     *
-     * @return string
      */
     public function replaceValidImports (string $fileContent, callable $contentReplaceFunction) : string
     {
@@ -28,11 +23,6 @@ class CssUrlImportParser
 
     /**
      * Replaces all valid imports with the result of the content replace function.
-     *
-     * @param array    $matches
-     * @param callable $contentReplaceFunction
-     *
-     * @return string
      */
     private function ensureValidImportAndReplace (array $matches, callable $contentReplaceFunction) : string
     {

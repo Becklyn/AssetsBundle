@@ -23,7 +23,6 @@ class AssetDependency
 
 
     /**
-     * @param string $name
      */
     public function __construct (string $name)
     {
@@ -50,7 +49,6 @@ class AssetDependency
 
 
     /**
-     * @return AssetEmbed
      */
     public function getAssetEmbed () : AssetEmbed
     {

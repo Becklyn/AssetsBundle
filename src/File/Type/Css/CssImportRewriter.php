@@ -22,8 +22,6 @@ class CssImportRewriter
 
 
     /**
-     * @param AssetsCache $cache
-     * @param AssetUrl    $assetUrl
      */
     public function __construct (AssetsCache $cache, AssetUrl $assetUrl)
     {
@@ -34,10 +32,6 @@ class CssImportRewriter
 
     /**
      * Rewrites the path to namespaced assets.
-     *
-     * @param string $fileContent
-     *
-     * @return string
      */
     public function rewriteNamespacedImports (string $fileContent) : string
     {
@@ -63,11 +57,6 @@ class CssImportRewriter
 
     /**
      * Rewrites all imports to use the names from the cache.
-     *
-     * @param Asset  $asset
-     * @param string $fileContent
-     *
-     * @return string
      */
     public function rewriteRelativeImports (Asset $asset, string $fileContent) : string
     {
@@ -84,11 +73,6 @@ class CssImportRewriter
 
     /**
      * Rewrites the path to fix the local path to an update one.
-     *
-     * @param Asset  $asset
-     * @param string $path
-     *
-     * @return string
      */
     private function rewritePathInStaticImport (Asset $asset, string $path) : string
     {

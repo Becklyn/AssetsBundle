@@ -28,8 +28,6 @@ class DependencyLoader
 
 
     /**
-     * @param NamespaceRegistry    $namespaceRegistry
-     * @param LoggerInterface|null $logger
      */
     public function __construct (NamespaceRegistry $namespaceRegistry, ?LoggerInterface $logger = null)
     {
@@ -46,8 +44,6 @@ class DependencyLoader
 
     /**
      * Imports all dependencies from the given dependencies file.
-     *
-     * @param string $assetPathToMap
      */
     public function importFile (string $assetPathToMap) : void
     {
@@ -82,9 +78,6 @@ class DependencyLoader
 
     /**
      * Imports dependencies from the given map.
-     *
-     * @param string $basePath
-     * @param array  $dependencyMap
      */
     public function importMap (string $basePath, array $dependencyMap) : void
     {
@@ -104,7 +97,6 @@ class DependencyLoader
 
 
     /**
-     * @return array
      */
     public function getDependencyMap () : array
     {

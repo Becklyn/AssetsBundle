@@ -30,9 +30,6 @@ class EmbedController
 
 
     /**
-     * @param FileLoader           $loader
-     * @param AssetMimeTypeGuesser $mimeTypeGuesser
-     * @param bool                 $isDebug
      */
     public function __construct (FileLoader $loader, AssetMimeTypeGuesser $mimeTypeGuesser, bool $isDebug)
     {
@@ -43,9 +40,7 @@ class EmbedController
 
 
     /**
-     * @param string $path
      *
-     * @return Response
      */
     public function embed (string $namespace, string $path) : Response
     {

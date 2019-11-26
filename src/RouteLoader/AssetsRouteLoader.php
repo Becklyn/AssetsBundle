@@ -19,7 +19,6 @@ class AssetsRouteLoader extends Loader
 
 
     /**
-     * @param string $outputDir
      */
     public function __construct (string $outputDir)
     {

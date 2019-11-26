@@ -11,12 +11,6 @@ abstract class FileType
 {
     /**
      * Processes the file content for development.
-     *
-     * @param Asset  $asset
-     * @param string $filePath
-     * @param string $fileContent
-     *
-     * @return string
      */
     public function processForDev (Asset $asset, string $filePath, string $fileContent) : string
     {
@@ -26,11 +20,6 @@ abstract class FileType
 
     /**
      * Processes the file content for production.
-     *
-     * @param Asset  $asset
-     * @param string $fileContent
-     *
-     * @return string
      */
     public function processForProd (Asset $asset, string $fileContent) : string
     {
@@ -40,8 +29,6 @@ abstract class FileType
 
     /**
      * Returns whether the file should be loaded deferred.
-     *
-     * @return bool
      */
     public function importDeferred () : bool
     {
@@ -53,8 +40,6 @@ abstract class FileType
      * Returns the element for embedding this file type.
      *
      * @throws NotEmbeddableFileTypeException
-     *
-     * @return HtmlElement
      */
     public function buildElementForEmbed (AssetEmbed $embed) : HtmlElement
     {
@@ -64,8 +49,6 @@ abstract class FileType
 
     /**
      * Flag whether the file name of the dumped file should contain the hash.
-     *
-     * @return bool
      */
     public function shouldIncludeHashInFileName () : bool
     {
@@ -75,8 +58,6 @@ abstract class FileType
 
     /**
      * Returns whether the file type is compressible via HZIP.
-     *
-     * @return bool
      */
     public function shouldBeGzipCompressed () : bool
     {

@@ -44,8 +44,6 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
     /**
      * Appends the entries config entry.
      *
-     * @param string $description
-     *
      * @return ArrayNodeDefinition|NodeDefinition
      */
     public static function appendNamespaces (string $description)

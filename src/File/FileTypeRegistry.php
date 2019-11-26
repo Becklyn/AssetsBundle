@@ -23,8 +23,7 @@ class FileTypeRegistry
 
 
     /**
-     * @param GenericFile $genericFileType
-     * @param array       $specializedFileTypes the mapping of `extension => FileType` of all specialized file types
+     * @param array $specializedFileTypes the mapping of `extension => FileType` of all specialized file types
      */
     public function __construct (GenericFile $genericFileType, array $specializedFileTypes = [])
     {
@@ -35,10 +34,6 @@ class FileTypeRegistry
 
     /**
      * Returns the file type for an asset.
-     *
-     * @param Asset $asset
-     *
-     * @return FileType
      */
     public function getFileType (Asset $asset) : FileType
     {
@@ -48,10 +43,6 @@ class FileTypeRegistry
 
     /**
      * Returns the file type by file extension.
-     *
-     * @param string $extension
-     *
-     * @return FileType
      */
     public function getByFileExtension (string $extension) : FileType
     {
@@ -61,10 +52,6 @@ class FileTypeRegistry
 
     /**
      * Returns whether the given asset should be imported deferred.
-     *
-     * @param Asset $asset
-     *
-     * @return bool
      */
     public function importDeferred (Asset $asset) : bool
     {

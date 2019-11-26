@@ -26,8 +26,6 @@ class FileLoader
 
 
     /**
-     * @param NamespaceRegistry $namespaceRegistry
-     * @param FileTypeRegistry  $fileTypeRegistry
      */
     public function __construct (NamespaceRegistry $namespaceRegistry, FileTypeRegistry $fileTypeRegistry)
     {
@@ -39,13 +37,10 @@ class FileLoader
     /**
      * Loads an asset's file content.
      *
-     * @param Asset $asset
-     * @param bool  $mode  one of the MODE_* constants
+     * @param bool $mode one of the MODE_* constants
      *
      * @throws AssetsException
      * @throws FileNotFoundException
-     *
-     * @return string
      */
     public function loadFile (Asset $asset, ?bool $mode) : string
     {
@@ -87,8 +82,6 @@ class FileLoader
 
     /**
      * Returns the file path for the given asset.
-     *
-     * @param Asset $asset
      *
      * @throws AssetsException
      *

@@ -6,6 +6,7 @@ use Becklyn\AssetsBundle\Helper\AssetHelper;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Becklyn\AssetsBundle\Twig\AssetsTwigExtension;
 use PHPUnit\Framework\TestCase;
+use Twig\TwigFunction;
 
 class AssetsTwigExtensionTest extends TestCase
 {
@@ -24,7 +25,7 @@ class AssetsTwigExtensionTest extends TestCase
 
         $extension = new AssetsTwigExtension($htmlReferences, $helper);
         $functions = \array_map(
-            function (\Twig_SimpleFunction $f)
+            function (TwigFunction $f)
             {
                 return $f->getName();
             },

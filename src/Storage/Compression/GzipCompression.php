@@ -19,7 +19,6 @@ class GzipCompression
 
 
     /**
-     * @return array|null
      */
     private function getCompressor () : ?array
     {
@@ -34,7 +33,6 @@ class GzipCompression
 
 
     /**
-     * @return array|null
      */
     private function discoverCompressor () : ?array
     {
@@ -64,8 +62,6 @@ class GzipCompression
 
     /**
      * Tries to compress the given file and writes the output to the same path with added ".gz".
-     *
-     * @param string $filePath
      *
      * @return bool whether the file was compressed
      */
