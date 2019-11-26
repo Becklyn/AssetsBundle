@@ -1,0 +1,5 @@
+{
+    "require": {
+        "becklyn/php-cs": "^3.0.3"
+    }
+}

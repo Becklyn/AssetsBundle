@@ -6,12 +6,12 @@ use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Symfony\Component\Config\Definition\Exception\Exception;
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
+use Symfony\Component\Mime\MimeTypes;
 
 class AssetMimeTypeGuesser
 {
     /**
-     * @var array
+     * @var string[]
      */
     private static $mimeTypes = [
         'txt' => 'text/plain',
@@ -77,7 +77,7 @@ class AssetMimeTypeGuesser
 
 
     /**
-     * @var MimeTypeGuesser
+     * @var MimeTypes
      */
     private $coreGuesser;
 
@@ -89,21 +89,16 @@ class AssetMimeTypeGuesser
 
 
     /**
-     * @param NamespaceRegistry $namespaceRegistry
      */
     public function __construct (NamespaceRegistry $namespaceRegistry)
     {
-        $this->coreGuesser = MimeTypeGuesser::getInstance();
+        $this->coreGuesser = MimeTypes::getDefault();
         $this->namespaceRegistry = $namespaceRegistry;
     }
 
 
     /**
      * Guesses the mime type.
-     *
-     * @param Asset $asset
-     *
-     * @return string
      */
     public function guess (Asset $asset) : string
     {
@@ -117,7 +112,7 @@ class AssetMimeTypeGuesser
             }
 
             $filePath = $this->namespaceRegistry->getFilePath($asset);
-            return $this->coreGuesser->guess($filePath);
+            return $this->coreGuesser->guessMimeType($filePath);
         }
         catch (AssetsException | Exception $e)
         {

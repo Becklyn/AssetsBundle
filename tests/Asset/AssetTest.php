@@ -3,6 +3,7 @@
 namespace Tests\Becklyn\AssetsBundle\Asset;
 
 use Becklyn\AssetsBundle\Asset\Asset;
+use Becklyn\AssetsBundle\Exception\AssetsException;
 use PHPUnit\Framework\TestCase;
 
 class AssetTest extends TestCase
@@ -59,7 +60,6 @@ class AssetTest extends TestCase
 
     /**
      * @dataProvider provideFailedCreateFromPath
-     * @expectedException \Becklyn\AssetsBundle\Exception\AssetsException
      *
      * @param string $path
      *
@@ -67,6 +67,7 @@ class AssetTest extends TestCase
      */
     public function testFailedCreateFromPath (string $path) : void
     {
+        $this->expectException(AssetsException::class);
         Asset::createFromAssetPath($path);
     }
 

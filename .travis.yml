@@ -1,8 +1,5 @@
 language: php
-
-cache:
-    directories:
-        - $HOME/.composer/cache/files
+sudo: false
 
 git:
     depth: 1
@@ -12,17 +9,19 @@ php:
     - "7.3"
 
 before_install:
-    - composer require php-coveralls/php-coveralls --prefer-dist --no-interaction --no-progress
-    - composer global require localheinz/composer-normalize --prefer-dist --no-interaction --no-progress
+    - composer self-update --stable
+    - composer require php-coveralls/php-coveralls
+    - composer global require localheinz/composer-normalize bamarni/composer-bin-plugin --prefer-dist --no-interaction --no-progress
 
 install:
     - composer install --prefer-dist --no-interaction --no-progress
+    - composer bin all install --prefer-dist --no-interaction --no-progress
+    - mkdir -p build/logs
 
 script:
-    - mkdir -p build/logs
     - composer normalize --indent-size 4 --indent-style space --dry-run
-    - php vendor/bin/php-cs-fixer fix --diff --config vendor/becklyn/php-cs/.php_cs.dist --dry-run --no-interaction
-    - php vendor/bin/phpstan analyse -l 4 --memory-limit 4G --ansi -c phpstan.neon . --no-interaction --no-progress
+    - ./vendor/bin/php-cs-fixer fix --diff --config vendor-bin/test/vendor/becklyn/php-cs/.php_cs.dist --dry-run --no-interaction
+    - ./vendor/bin/phpstan analyse -l 4 --memory-limit 4G --ansi -c vendor-bin/test/vendor/becklyn/php-cs/phpstan/lib.neon . --no-interaction --no-progress
     - ./vendor/bin/simple-phpunit -c phpunit.xml --coverage-clover build/logs/clover.xml
 
 after_script:
