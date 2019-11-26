@@ -17,7 +17,6 @@ class AssetsRegistry implements ServiceSubscriberInterface
 
 
     /**
-     * @param ContainerInterface $locator
      */
     public function __construct (ContainerInterface $locator)
     {
@@ -28,11 +27,7 @@ class AssetsRegistry implements ServiceSubscriberInterface
     /**
      * Gets the asset from the cache and adds it, if it is missing.
      *
-     * @param Asset $asset
-     *
      * @throws AssetsException
-     *
-     * @return Asset
      */
     public function get (Asset $asset) : Asset
     {
@@ -91,11 +86,7 @@ class AssetsRegistry implements ServiceSubscriberInterface
     /**
      * Adds an asset to the registry.
      *
-     * @param Asset $asset
-     *
      * @throws AssetsException
-     *
-     * @return Asset
      */
     private function addAsset (Asset $asset) : Asset
     {

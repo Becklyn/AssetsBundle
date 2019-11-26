@@ -47,11 +47,6 @@ class DebugCommand extends Command
 
 
     /**
-     * @param AssetsFinder      $finder
-     * @param NamespaceRegistry $namespaceRegistry
-     * @param Filesystem        $filesystem
-     * @param NamespacesPrinter $namespacesPrinter
-     * @param string            $projectDir
      */
     public function __construct (
         AssetsFinder $finder,
@@ -88,7 +83,6 @@ class DebugCommand extends Command
 
 
     /**
-     * @param SymfonyStyle $io
      */
     private function printFindableAssets (SymfonyStyle $io) : void
     {
@@ -124,10 +118,6 @@ class DebugCommand extends Command
 
     /**
      * Makes the path relative to the project dir.
-     *
-     * @param string $path
-     *
-     * @return string
      */
     private function makePathRelative (string $path) : string
     {

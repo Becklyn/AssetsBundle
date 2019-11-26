@@ -45,11 +45,8 @@ class AssetStorage
 
 
     /**
-     * @param FileLoader       $fileLoader
-     * @param FileTypeRegistry $fileTypeRegistry
-     * @param GzipCompression  $compression
-     * @param string           $publicPath       the absolute path to the public/ (or web/) directory
-     * @param string           $outputDir        the output dir relative to the public/ directory
+     * @param string $publicPath the absolute path to the public/ (or web/) directory
+     * @param string $outputDir  the output dir relative to the public/ directory
      */
     public function __construct (
         FileLoader $fileLoader,
@@ -70,11 +67,7 @@ class AssetStorage
     /**
      * Imports the given asset.
      *
-     * @param Asset $asset
-     *
      * @throws AssetsException
-     *
-     * @return Asset
      */
     public function import (Asset $asset) : Asset
     {

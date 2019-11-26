@@ -9,8 +9,6 @@ class FilePath
      *
      * @param string $source the path to the source
      * @param string $target the relative path to the target
-     *
-     * @return string
      */
     public function resolvePath (string $source, string $target) : string
     {
@@ -53,10 +51,6 @@ class FilePath
 
     /**
      * Transforms a dir path to path segments.
-     *
-     * @param string $path
-     *
-     * @return array
      */
     private function toDirectoryFragments (string $path) : array
     {
@@ -70,11 +64,6 @@ class FilePath
 
     /**
      * Builds a file path from the directory segments with the file name.
-     *
-     * @param array  $directories
-     * @param string $fileName
-     *
-     * @return string
      */
     private function buildFilePath (array $directories, string $fileName) : string
     {

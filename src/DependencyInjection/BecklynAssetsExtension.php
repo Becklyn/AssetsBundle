@@ -54,7 +54,6 @@ class BecklynAssetsExtension extends Extension
      * Prefixes the given paths automatically with the given prefix.
      *
      * @param array<string, string> $paths
-     * @param string                $prefix
      *
      * @return array<string, string>
      */
@@ -73,10 +72,6 @@ class BecklynAssetsExtension extends Extension
 
     /**
      * Initializes the dependency map.
-     *
-     * @param array            $config
-     * @param array            $prefixedNamespaces
-     * @param ContainerBuilder $container
      */
     private function initializeDependencyMap (array $config, array $prefixedNamespaces, ContainerBuilder $container) : void
     {

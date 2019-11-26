@@ -38,11 +38,6 @@ class DependencyMapFactory
 
 
     /**
-     * @param NamespaceRegistry $namespaceRegistry
-     * @param array             $dependencyFiles
-     * @param array             $precompiledDependencyMap
-     * @param bool              $isDebug
-     * @param LoggerInterface   $logger
      */
     public function __construct (
         NamespaceRegistry $namespaceRegistry,
@@ -61,7 +56,6 @@ class DependencyMapFactory
 
 
     /**
-     * @return DependencyMap
      */
     public function getDependencyMap () : DependencyMap
     {
@@ -76,8 +70,6 @@ class DependencyMapFactory
 
     /**
      * Regenerates the dependency map.
-     *
-     * @return DependencyMap
      */
     private function regenerateDependencyMap () : DependencyMap
     {

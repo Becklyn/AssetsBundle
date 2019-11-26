@@ -18,7 +18,6 @@ class AssetsFinder
 
 
     /**
-     * @param NamespaceRegistry $namespaces
      */
     public function __construct (NamespaceRegistry $namespaces)
     {

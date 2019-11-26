@@ -20,8 +20,6 @@ class NamespacesPrinter
 
 
     /**
-     * @param NamespaceRegistry $namespaceRegistry
-     * @param string            $projectDir
      */
     public function __construct (NamespaceRegistry $namespaceRegistry, string $projectDir)
     {
@@ -31,8 +29,6 @@ class NamespacesPrinter
 
 
     /**
-     * @param SymfonyStyle $io
-     *
      * @return bool whether the namespaces have an issue
      */
     public function printNamespaceInfo (SymfonyStyle $io) : bool
@@ -68,10 +64,6 @@ class NamespacesPrinter
 
     /**
      * Generates the table headers.
-     *
-     * @param bool $hasDuplicatePath
-     *
-     * @return array
      */
     private function generateTableHeaders (bool $hasDuplicatePath) : array
     {
@@ -88,10 +80,6 @@ class NamespacesPrinter
 
     /**
      * Returns whether the app has a duplicate path.
-     *
-     * @param array $pathMap
-     *
-     * @return bool
      */
     private function hasDuplicatePath (array $pathMap) : bool
     {
@@ -109,8 +97,6 @@ class NamespacesPrinter
 
     /**
      * Fetches and prepares the namespaces.
-     *
-     * @return array
      */
     private function fetchNamespaces (NamespaceRegistry $entryNamespaces) : array
     {
@@ -128,8 +114,6 @@ class NamespacesPrinter
     /**
      * Returns the path map.
      * It contains the mapping from relative paths to how often they are registered.
-     *
-     * @return array
      */
     private function getPathMap (array $namespaces) : array
     {
@@ -146,12 +130,6 @@ class NamespacesPrinter
 
     /**
      * Generates the table rows.
-     *
-     * @param array $namespaces
-     * @param bool  $hasDuplicatePath
-     * @param array $pathMap
-     *
-     * @return array
      */
     private function generateTableRows (array $namespaces, bool $hasDuplicatePath, array $pathMap) : array
     {
@@ -186,10 +164,6 @@ class NamespacesPrinter
 
     /**
      * Makes the path relative to the project dir.
-     *
-     * @param string $path
-     *
-     * @return string
      */
     private function makePathRelative (string $path) : string
     {

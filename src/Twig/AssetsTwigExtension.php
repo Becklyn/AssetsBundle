@@ -22,8 +22,6 @@ class AssetsTwigExtension extends AbstractExtension
 
 
     /**
-     * @param AssetHtmlGenerator $htmlReferences
-     * @param AssetHelper        $assetHelper
      */
     public function __construct (
         AssetHtmlGenerator $htmlReferences,

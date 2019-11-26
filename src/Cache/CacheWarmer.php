@@ -30,9 +30,6 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
 
 
     /**
-     * @param AssetsRegistry $registry
-     * @param AssetsFinder   $finder
-     * @param bool           $isDebug
      */
     public function __construct (AssetsRegistry $registry, AssetsFinder $finder, bool $isDebug)
     {
@@ -43,7 +40,6 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
 
 
     /**
-     * @param SymfonyStyle|null $io
      */
     public function clearCache (?SymfonyStyle $io) : void
     {
@@ -59,8 +55,6 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
 
     /**
      * Warms up the cache.
-     *
-     * @param SymfonyStyle|null $io
      *
      * @throws AssetsException
      */

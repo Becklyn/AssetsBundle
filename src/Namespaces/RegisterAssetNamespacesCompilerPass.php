@@ -19,7 +19,6 @@ class RegisterAssetNamespacesCompilerPass implements CompilerPassInterface
     private $mapping;
 
     /**
-     * @param array $mapping
      */
     public function __construct (array $mapping)
     {

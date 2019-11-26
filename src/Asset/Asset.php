@@ -48,8 +48,6 @@ class Asset
 
 
     /**
-     * @param string $namespace
-     * @param string $filePath
      */
     public function __construct (string $namespace, string $filePath)
     {
@@ -61,7 +59,6 @@ class Asset
 
     //region Accessors
     /**
-     * @return string
      */
     public function getNamespace () : string
     {
@@ -70,7 +67,6 @@ class Asset
 
 
     /**
-     * @return string
      */
     public function getFilePath () : string
     {
@@ -79,7 +75,6 @@ class Asset
 
 
     /**
-     * @return string|null
      */
     public function getHash () : ?string
     {
@@ -88,8 +83,6 @@ class Asset
 
 
     /**
-     * @param string|null $hash
-     * @param bool        $setFileNameHash
      */
     public function setHash (?string $hash, bool $setFileNameHash = true) : void
     {
@@ -123,8 +116,6 @@ class Asset
 
     /**
      * Returns the full asset path.
-     *
-     * @return string
      */
     public function getAssetPath () : string
     {
@@ -134,8 +125,6 @@ class Asset
 
     /**
      * Returns the final storage path, where the production file is dumped to.
-     *
-     * @return string
      */
     public function getDumpFilePath () : string
     {
@@ -155,8 +144,6 @@ class Asset
 
 
     /**
-     * @param string $assetPath
-     *
      * @throws AssetsException
      *
      * @return Asset
@@ -189,8 +176,6 @@ class Asset
 
     /**
      * Returns an asset at a relative path (in relation to the current asset).
-     *
-     * @param string $relativePath
      *
      * @return self
      */
