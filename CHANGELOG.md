@@ -1,3 +1,10 @@
+2.6.3
+=====
+
+*   Allow older versions of `Symfony/Mime` to be used with this lib. This re-establishes usage in Symfony 4.x projects again, as they most likely restricted the version
+    of Symfony components to 4.x.
+
+
 2.6.2
 =====
 
