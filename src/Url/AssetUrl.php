@@ -5,6 +5,8 @@ namespace Becklyn\AssetsBundle\Url;
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
 use Becklyn\AssetsBundle\Exception\AssetsException;
+use Becklyn\AssetsBundle\Exception\FileNotFoundException;
+use Becklyn\AssetsBundle\File\FileLoader;
 use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -36,13 +38,20 @@ class AssetUrl
 
 
     /**
+     * @var FileLoader
      */
-    public function __construct (AssetsRegistry $assetsRegistry, RouterInterface $router, bool $isDebug, ?LoggerInterface $logger)
+    private $fileLoader;
+
+
+    /**
+     */
+    public function __construct (AssetsRegistry $assetsRegistry, RouterInterface $router, FileLoader $fileLoader, bool $isDebug, ?LoggerInterface $logger)
     {
         $this->assetsRegistry = $assetsRegistry;
         $this->router = $router;
         $this->isDebug = $isDebug;
         $this->logger = $logger;
+        $this->fileLoader = $fileLoader;
     }
 
 
@@ -55,12 +64,25 @@ class AssetUrl
 
         try
         {
-            // always load asset to catch missing assets in dev
-            $cachedAsset = $this->assetsRegistry->get($asset);
-
-            // use dumped file path in prod
-            if (!$this->isDebug)
+            if ($this->isDebug)
             {
+                // in debug only check that the file exists, so we can eagerly throw an exception
+                if (!$this->fileLoader->fileForAssetExists($asset))
+                {
+                    throw new FileNotFoundException(\sprintf(
+                        "Asset '%s' not found at '%s'.",
+                        $asset->getAssetPath(),
+                        $this->fileLoader->getFilePath($asset)
+                    ));
+                }
+            }
+            else
+            {
+                // Only actually load the asset in production due to the importing of files being very expensive.
+                // Be aware that you will only catch missing assets in your browser dev tools 404 errors.
+                $cachedAsset = $this->assetsRegistry->get($asset);
+
+                // use dumped file path in prod
                 $asset = $cachedAsset;
                 $filePath = $cachedAsset->getDumpFilePath();
             }

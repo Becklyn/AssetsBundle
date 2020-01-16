@@ -83,12 +83,19 @@ class FileLoader
     /**
      * Returns the file path for the given asset.
      *
-     * @throws AssetsException
-     *
      * @return string
      */
     public function getFilePath (Asset $asset)
     {
         return $this->namespaceRegistry->getFilePath($asset);
+    }
+
+
+    /**
+     * Checks whether the file for the asset actually exists on disk.
+     */
+    public function fileForAssetExists (Asset $asset) : bool
+    {
+        return \is_file($this->getFilePath($asset));
     }
 }
