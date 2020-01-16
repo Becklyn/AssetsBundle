@@ -5,6 +5,7 @@ namespace Tests\Becklyn\AssetsBundle\Url;
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Asset\AssetsRegistry;
 use Becklyn\AssetsBundle\Exception\AssetsException;
+use Becklyn\AssetsBundle\File\FileLoader;
 use Becklyn\AssetsBundle\Url\AssetUrl;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -22,10 +23,15 @@ class AssetUrlTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $fileLoader = $this->getMockBuilder(FileLoader::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         return [
-            new AssetUrl($registry, $router, $isDebug, null),
+            new AssetUrl($registry, $router, $fileLoader, $isDebug, null),
             $router,
             $registry,
+            $fileLoader,
         ];
     }
 
@@ -35,10 +41,16 @@ class AssetUrlTest extends TestCase
         /**
          * @var AssetUrl
          * @var \PHPUnit_Framework_MockObject_MockObject $router
+         * @var \PHPUnit_Framework_MockObject_MockObject $registry
+         * @var \PHPUnit_Framework_MockObject_MockObject $fileLoader
          */
-        [$assetUrl, $router] = $this->buildObject(true);
+        [$assetUrl, $router, $registry, $fileLoader] = $this->buildObject(true);
 
         $asset = new Asset("namespace", "test.jpg");
+
+        $fileLoader
+            ->method("fileForAssetExists")
+            ->willReturn(true);
 
         $router
             ->expects(self::once())
@@ -141,7 +153,11 @@ class AssetUrlTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $assetUrl = new AssetUrl($registry, $router, false, $logger);
+        $fileLoader = $this->getMockBuilder(FileLoader::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $assetUrl = new AssetUrl($registry, $router, $fileLoader, false, $logger);
 
         $asset = new Asset("test", "abc.jpg");
 
@@ -173,20 +189,25 @@ class AssetUrlTest extends TestCase
     public function testMissingFileInDev () : void
     {
         /**
-         * @var AssetUrl
+         * @var AssetUrl $assetUrl
          * @var \PHPUnit_Framework_MockObject_MockObject $router
          * @var \PHPUnit_Framework_MockObject_MockObject $registry
+         * @var \PHPUnit_Framework_MockObject_MockObject $fileLoader
          */
-        [$assetUrl, $router, $registry] = $this->buildObject(true);
+        [$assetUrl, $router, $registry, $fileLoader] = $this->buildObject(true);
+
+        $fileLoader
+            ->method("fileForAssetExists")
+            ->willReturn(false);
+
+        $fileLoader
+            ->method("getFilePath")
+            ->willReturn("/some/path");
+
+        $this->expectException(AssetsException::class);
+        $this->expectExceptionMessage("Asset '@test/abc.jpg' not found at '/some/path'.");
 
         $asset = new Asset("test", "abc.jpg");
-
-        $registry
-            ->expects(self::once())
-            ->method("get")
-            ->with($asset)
-            ->willThrowException(new AssetsException());
-
         $assetUrl->generateUrl($asset);
     }
 }

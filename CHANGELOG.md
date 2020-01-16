@@ -1,3 +1,9 @@
+2.6.4
+=====
+
+*   (improvement) Add specialized existence check in `AssetUrl` in debug mode when creating URLs. It circumvents the file loading, this heavily improves performance in debug requests with a cold cache.
+
+
 2.6.3
 =====
 
