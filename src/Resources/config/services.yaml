@@ -14,10 +14,7 @@ services:
         public: true
 
     Becklyn\AssetsBundle\File\FileTypeRegistry:
-        $specializedFileTypes:
-            css: '@Becklyn\AssetsBundle\File\Type\CssFile'
-            js: '@Becklyn\AssetsBundle\File\Type\JavaScriptFile'
-            svg: '@Becklyn\AssetsBundle\File\Type\SvgFile'
+        $specializedFileTypes: !tagged_locator { tag: becklyn_assets.file_type, default_index_method: supportsExtension }
 
     Becklyn\AssetsBundle\Html\AssetHtmlGenerator:
         public: true

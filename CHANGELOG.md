@@ -1,3 +1,11 @@
+2.6.5
+=====
+
+*   (bug) Fixed a circular dependency issue.
+*   (improvement) The specialized file types are now properly autowired.
+*   (internal) Bump required Symfony version to 4.3+
+
+
 2.6.4
 =====
 

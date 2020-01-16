@@ -5,6 +5,8 @@ namespace Becklyn\AssetsBundle\File;
 use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\File\Type\FileType;
 use Becklyn\AssetsBundle\File\Type\GenericFile;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 class FileTypeRegistry
 {
@@ -17,18 +19,18 @@ class FileTypeRegistry
     /**
      * The file types mapped by file extension.
      *
-     * @var array<string,FileType>
+     * @var ContainerInterface
      */
-    private $fileTypes = [];
+    private $specializedFileTypes;
 
 
     /**
-     * @param array $specializedFileTypes the mapping of `extension => FileType` of all specialized file types
+     * @param ContainerInterface $specializedFileTypes the mapping of `extension => FileType` of all specialized file types
      */
-    public function __construct (GenericFile $genericFileType, array $specializedFileTypes = [])
+    public function __construct (GenericFile $genericFileType, ContainerInterface $specializedFileTypes)
     {
         $this->genericFileType = $genericFileType;
-        $this->fileTypes = $specializedFileTypes;
+        $this->specializedFileTypes = $specializedFileTypes;
     }
 
 
@@ -46,7 +48,13 @@ class FileTypeRegistry
      */
     public function getByFileExtension (string $extension) : FileType
     {
-        return $this->fileTypes[$extension] ?? $this->genericFileType;
+        try {
+            return $this->specializedFileTypes->get($extension);
+        }
+        catch (ServiceNotFoundException $exception)
+        {
+            return $this->genericFileType;
+        }
     }
 
 

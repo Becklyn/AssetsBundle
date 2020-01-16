@@ -9,6 +9,7 @@ use Becklyn\AssetsBundle\File\Type\FileType;
 use Becklyn\AssetsBundle\File\Type\GenericFile;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class FileLoaderTest extends TestCase
 {
@@ -36,7 +37,7 @@ class FileLoaderTest extends TestCase
             "bundles" => "{$this->fixtures}/public/bundles",
         ]);
 
-        $fileTypes = new FileTypeRegistry(new GenericFile());
+        $fileTypes = new FileTypeRegistry(new GenericFile(), new ServiceLocator([]));
 
         $this->loader = new FileLoader($this->namespaceRegistry, $fileTypes);
     }
@@ -100,9 +101,9 @@ class FileLoaderTest extends TestCase
             ->method("processForDev")
             ->willReturnArgument(2);
 
-        $fileTypes = new FileTypeRegistry(new GenericFile(), [
-            "css" => $testFileType,
-        ]);
+        $fileTypes = new FileTypeRegistry(new GenericFile(), new ServiceLocator([
+            "css" => function () use ($testFileType) { return $testFileType; },
+        ]));
 
         $loader = new FileLoader($this->namespaceRegistry, $fileTypes);
         $loader->loadFile(new Asset("bundles", "test/css/app.css"), FileLoader::MODE_DEV);
@@ -123,9 +124,9 @@ class FileLoaderTest extends TestCase
             ->method("processForProd")
             ->willReturnArgument(1);
 
-        $fileTypes = new FileTypeRegistry(new GenericFile(), [
-            "css" => $testFileType,
-        ]);
+        $fileTypes = new FileTypeRegistry(new GenericFile(), new ServiceLocator([
+            "css" => function () use ($testFileType) { return $testFileType; },
+        ]));
 
         $loader = new FileLoader($this->namespaceRegistry, $fileTypes);
         $loader->loadFile(new Asset("bundles", "test/css/app.css"), FileLoader::MODE_PROD);
@@ -145,9 +146,9 @@ class FileLoaderTest extends TestCase
             ->expects(self::never())
             ->method("processForProd");
 
-        $fileTypes = new FileTypeRegistry(new GenericFile(), [
-            "css" => $testFileType,
-        ]);
+        $fileTypes = new FileTypeRegistry(new GenericFile(), new ServiceLocator([
+            "css" => function () use ($testFileType) { return $testFileType; },
+        ]));
 
         $loader = new FileLoader($this->namespaceRegistry, $fileTypes);
         $loader->loadFile(new Asset("bundles", "test/css/app.css"), FileLoader::MODE_UNTOUCHED);
@@ -176,9 +177,9 @@ class FileLoaderTest extends TestCase
             ->method("processForProd")
             ->willReturnArgument(1);
 
-        $fileTypes = new FileTypeRegistry($genericFileType, [
-            "css" => $testFileType,
-        ]);
+        $fileTypes = new FileTypeRegistry($genericFileType, new ServiceLocator([
+            "css" => function () use ($testFileType) { return $testFileType; },
+        ]));
 
         $loader = new FileLoader($this->namespaceRegistry, $fileTypes);
         $loader->loadFile(new Asset("bundles", "test/js/test.js"), FileLoader::MODE_PROD);

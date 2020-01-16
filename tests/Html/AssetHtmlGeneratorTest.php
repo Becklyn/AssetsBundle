@@ -14,6 +14,7 @@ use Becklyn\AssetsBundle\File\Type\JavaScriptFile;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Becklyn\AssetsBundle\Url\AssetUrl;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Tests\Becklyn\AssetsBundle\CreateHashedAssetTrait;
 
 class AssetHtmlGeneratorTest extends TestCase
@@ -55,10 +56,10 @@ class AssetHtmlGeneratorTest extends TestCase
             ->method("rewriteRelativeImports")
             ->willReturnArgument(1);
 
-        $fileTypeRegistry = new FileTypeRegistry(new GenericFile(), [
-            "js" => new JavaScriptFile(),
-            "css" => new CssFile($importRewriter),
-        ]);
+        $fileTypeRegistry = new FileTypeRegistry(new GenericFile(), new ServiceLocator([
+            "js" => function () { return new JavaScriptFile(); },
+            "css" => function () use ($importRewriter) { return new CssFile($importRewriter); },
+        ]));
 
         $dependencyMapFactory = $this->getMockBuilder(DependencyMapFactory::class)
             ->disableOriginalConstructor()
