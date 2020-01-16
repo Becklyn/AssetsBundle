@@ -7,7 +7,7 @@ use Becklyn\AssetsBundle\Data\AssetEmbed;
 use Becklyn\AssetsBundle\File\Type\Css\CssImportRewriter;
 use Becklyn\HtmlBuilder\Node\HtmlElement;
 
-class CssFile extends FileType
+class CssFile extends SpecializedFileType
 {
     use GenericFileHeaderTrait;
 
@@ -79,5 +79,14 @@ class CssFile extends FileType
     public function shouldBeGzipCompressed () : bool
     {
         return true;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public static function supportsExtension () : string
+    {
+        return "css";
     }
 }

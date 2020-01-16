@@ -4,7 +4,7 @@ namespace Becklyn\AssetsBundle\File\Type;
 
 use Becklyn\AssetsBundle\Asset\Asset;
 
-class SvgFile extends FileType
+class SvgFile extends SpecializedFileType
 {
     use GenericFileHeaderTrait;
 
@@ -27,5 +27,14 @@ class SvgFile extends FileType
     public function shouldBeGzipCompressed () : bool
     {
         return true;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public static function supportsExtension () : string
+    {
+        return "svg";
     }
 }

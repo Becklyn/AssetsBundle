@@ -11,6 +11,7 @@ use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Becklyn\AssetsBundle\Storage\AssetStorage;
 use Becklyn\AssetsBundle\Storage\Compression\GzipCompression;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Filesystem\Filesystem;
 
 class AssetStorageTest extends TestCase
@@ -46,14 +47,17 @@ class AssetStorageTest extends TestCase
             "other" => "{$this->fixtures}/other",
         ]);
 
-        $fileTypeRegistry = new FileTypeRegistry(new GenericFile(), [
-            "js" => new class() extends FileType {
-                public function shouldIncludeHashInFileName () : bool
-                {
-                    return false;
-                }
-            },
-        ]);
+        $fileTypeRegistry = new FileTypeRegistry(new GenericFile(), new ServiceLocator([
+            "js" => function ()
+            {
+                return new class() extends FileType {
+                    public function shouldIncludeHashInFileName () : bool
+                    {
+                        return false;
+                    }
+                };
+            }
+        ]));
 
         $this->storage = new AssetStorage(
             new FileLoader($namespaces, $fileTypeRegistry),

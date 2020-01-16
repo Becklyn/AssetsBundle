@@ -6,7 +6,7 @@ use Becklyn\AssetsBundle\Asset\Asset;
 use Becklyn\AssetsBundle\Data\AssetEmbed;
 use Becklyn\HtmlBuilder\Node\HtmlElement;
 
-class JavaScriptFile extends FileType
+class JavaScriptFile extends SpecializedFileType
 {
     use GenericFileHeaderTrait;
 
@@ -50,5 +50,14 @@ class JavaScriptFile extends FileType
     public function shouldBeGzipCompressed () : bool
     {
         return true;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public static function supportsExtension () : string
+    {
+        return "js";
     }
 }
