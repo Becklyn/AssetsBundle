@@ -3,6 +3,7 @@
 namespace Becklyn\AssetsBundle\Command;
 
 use Becklyn\AssetsBundle\Command\Debug\NamespacesPrinter;
+use Becklyn\AssetsBundle\Dependency\DependencyMapFactory;
 use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\Finder\AssetsFinder;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
@@ -47,12 +48,19 @@ class DebugCommand extends Command
 
 
     /**
+     * @var DependencyMapFactory
+     */
+    private $dependencyMapFactory;
+
+
+    /**
      */
     public function __construct (
         AssetsFinder $finder,
         NamespaceRegistry $namespaceRegistry,
         Filesystem $filesystem,
         NamespacesPrinter $namespacesPrinter,
+        DependencyMapFactory $dependencyMapFactory,
         string $projectDir
     )
     {
@@ -62,6 +70,7 @@ class DebugCommand extends Command
         $this->filesystem = $filesystem;
         $this->projectDir = $projectDir;
         $this->namespacesPrinter = $namespacesPrinter;
+        $this->dependencyMapFactory = $dependencyMapFactory;
     }
 
 
@@ -73,11 +82,15 @@ class DebugCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->title("Debug Assets");
 
+        $io->section("Namespaces Info");
         $success = $this->namespacesPrinter->printNamespaceInfo($io);
+
+        $io->section("Dependency Map");
+        dump($this->dependencyMapFactory->getDependencyMap()->dumpDebugMap());
+
+        $io->section("All Findable Assets");
         $this->printFindableAssets($io);
-        return $success
-            ? 0
-            : 1;
+        return $success ? 0 : 1;
     }
 
 

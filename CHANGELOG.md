@@ -3,7 +3,9 @@
 
 *   (deprecation) Deprecate the option `dependency_maps` from the config. These are now automatically loaded for all namespaces
     from path `/js/_dependencies.json`.
-*   (bug) Always automatically load dependency maps for all extensions (and cache the map). 
+*   (bug) Always automatically load dependency maps for all extensions (and cache the map).
+*   (improvement) Add dump of dependency map to debug command output. 
+*   (improvement) Add proper section headlines to debug command output. 
 
 
 2.6.5

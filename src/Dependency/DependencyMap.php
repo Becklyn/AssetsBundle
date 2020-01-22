@@ -134,4 +134,16 @@ class DependencyMap
 
         return $map;
     }
+
+
+    /**
+     * Dumps the full dependency map
+     */
+    public function dumpDebugMap () : array
+    {
+        $map = $this->map;
+        \uksort($map, "strnatcasecmp");
+
+        return $map;
+    }
 }
