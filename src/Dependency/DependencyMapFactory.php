@@ -4,25 +4,17 @@ namespace Becklyn\AssetsBundle\Dependency;
 
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Psr\Log\LoggerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 
 class DependencyMapFactory
 {
+    private const DEPENDENCY_MAP_RELATIVE_PATH = "/js/_dependencies.json";
+    private const CACHE_KEY = "becklyn_assets.dependencies_map";
+
     /**
      * @var NamespaceRegistry
      */
     private $namespaceRegistry;
-
-
-    /**
-     * @var array
-     */
-    private $dependencyFiles;
-
-
-    /**
-     * @var array
-     */
-    private $precompiledDependencyMap;
 
 
     /**
@@ -38,20 +30,32 @@ class DependencyMapFactory
 
 
     /**
+     * The in-memory cached dependency map
+     *
+     * @var DependencyMap|null
+     */
+    private $map;
+
+
+    /**
+     * @var CacheInterface
+     */
+    private $cache;
+
+
+    /**
      */
     public function __construct (
         NamespaceRegistry $namespaceRegistry,
-        array $dependencyFiles,
-        array $precompiledDependencyMap,
+        CacheInterface $cache,
         bool $isDebug,
         LoggerInterface $logger
     )
     {
         $this->namespaceRegistry = $namespaceRegistry;
-        $this->dependencyFiles = $dependencyFiles;
-        $this->precompiledDependencyMap = $precompiledDependencyMap;
         $this->isDebug = $isDebug;
         $this->logger = $logger;
+        $this->cache = $cache;
     }
 
 
@@ -59,12 +63,17 @@ class DependencyMapFactory
      */
     public function getDependencyMap () : DependencyMap
     {
-        if (!$this->isDebug)
+        if (null === $this->map)
         {
-            return new DependencyMap($this->precompiledDependencyMap);
+            $this->map = !$this->isDebug
+                ? $this->cache->get(
+                    self::DEPENDENCY_MAP_RELATIVE_PATH,
+                    function () { return $this->regenerateDependencyMap(); }
+                )
+                : $this->regenerateDependencyMap();
         }
 
-        return $this->regenerateDependencyMap();
+        return $this->map;
     }
 
 
@@ -75,13 +84,14 @@ class DependencyMapFactory
     {
         $loader = new DependencyLoader($this->namespaceRegistry, $this->logger);
 
-        foreach ($this->dependencyFiles as $dependencyFile)
+        foreach ($this->namespaceRegistry as $namespace => $path)
         {
-            $loader->importFile($dependencyFile);
+            if (\is_file($path . self::DEPENDENCY_MAP_RELATIVE_PATH))
+            {
+                $loader->importFile("@{$namespace}" . self::DEPENDENCY_MAP_RELATIVE_PATH);
+            }
         }
 
-        return new DependencyMap(
-            $loader->getDependencyMap()
-        );
+        return new DependencyMap($loader->getDependencyMap());
     }
 }

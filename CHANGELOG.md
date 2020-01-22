@@ -2,7 +2,8 @@
 =====
 
 *   (deprecation) Deprecate the option `dependency_maps` from the config. These are now automatically loaded for all namespaces
-    from path `/js/_dependencies.json`. 
+    from path `/js/_dependencies.json`.
+*   (bug) Always automatically load dependency maps for all extensions (and cache the map). 
 
 
 2.6.5

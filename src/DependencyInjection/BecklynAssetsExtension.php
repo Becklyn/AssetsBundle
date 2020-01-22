@@ -45,8 +45,6 @@ class BecklynAssetsExtension extends Extension
 
         $container->getDefinition(AssetsRouteLoader::class)
             ->setArgument('$outputDir', $config["output_dir"]);
-
-        $this->initializeDependencyMap($config, $prefixedNamespaces, $container);
     }
 
 
@@ -67,24 +65,5 @@ class BecklynAssetsExtension extends Extension
         }
 
         return $result;
-    }
-
-
-    /**
-     * Initializes the dependency map.
-     */
-    private function initializeDependencyMap (array $config, array $prefixedNamespaces, ContainerBuilder $container) : void
-    {
-        $registry = new NamespaceRegistry($prefixedNamespaces);
-        $loader = new DependencyLoader($registry);
-
-        foreach ($config["dependency_maps"] as $dependencyMap)
-        {
-            $loader->importFile($dependencyMap);
-        }
-
-        $container->getDefinition(DependencyMapFactory::class)
-            ->setArgument('$dependencyFiles', $config["dependency_maps"])
-            ->setArgument('$precompiledDependencyMap', $loader->getDependencyMap());
     }
 }

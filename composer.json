@@ -21,6 +21,7 @@
         "ext-json": "*",
         "becklyn/html-builder": "^2.0",
         "psr/cache": "^1.0",
+        "symfony/cache-contracts": "^2.0",
         "symfony/config": "^4.3 || ^5.0",
         "symfony/console": "^4.3 || ^5.0",
         "symfony/dependency-injection": "^4.3 || ^5.0",
