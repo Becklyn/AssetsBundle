@@ -82,16 +82,8 @@ class DependencyMapFactory
      */
     private function regenerateDependencyMap () : DependencyMap
     {
+        // loader will automatically try to load the dependencies file for every namespace
         $loader = new DependencyLoader($this->namespaceRegistry, $this->logger);
-
-        foreach ($this->namespaceRegistry as $namespace => $path)
-        {
-            if (\is_file($path . self::DEPENDENCY_MAP_RELATIVE_PATH))
-            {
-                $loader->importFile("@{$namespace}" . self::DEPENDENCY_MAP_RELATIVE_PATH);
-            }
-        }
-
         return new DependencyMap($loader->getDependencyMap());
     }
 }
