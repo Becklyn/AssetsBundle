@@ -31,6 +31,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                     ->info("The relative path to the assets output dir. Relative to `public_path`.")
                 ->end()
                 ->arrayNode("dependency_maps")
+                    ->setDeprecated("The dependency_maps option is deprecated, as the the maps will always be automatically loaded.")
                     ->scalarPrototype()->end()
                     ->defaultValue([])
                     ->info("The paths to the dependency maps. In asset notation: e.g. `@namespace/js/_dependencies.json`")

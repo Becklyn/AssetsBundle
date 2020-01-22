@@ -1,3 +1,10 @@
+2.6.6
+=====
+
+*   (deprecation) Deprecate the option `dependency_maps` from the config. These are now automatically loaded for all namespaces
+    from path `/js/_dependencies.json`. 
+
+
 2.6.5
 =====
 
