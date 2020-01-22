@@ -87,6 +87,7 @@ class DebugCommand extends Command
         $io->newLine(2);
 
         $io->section("Dependency Map");
+
         foreach ($this->dependencyMapFactory->getDependencyMap()->dumpDebugMap() as $file => $dependencies)
         {
             $io->writeln("<fg=blue>{$file}</>");

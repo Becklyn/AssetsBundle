@@ -2,8 +2,6 @@
 
 namespace Becklyn\AssetsBundle\DependencyInjection;
 
-use Becklyn\AssetsBundle\Dependency\DependencyLoader;
-use Becklyn\AssetsBundle\Dependency\DependencyMapFactory;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
 use Becklyn\AssetsBundle\Storage\AssetStorage;
