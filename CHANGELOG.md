@@ -1,3 +1,9 @@
+2.6.7
+=====
+
+*   (bug) Fix invalid cache key.
+
+
 2.6.6
 =====
 

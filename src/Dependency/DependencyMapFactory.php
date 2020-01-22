@@ -8,7 +8,6 @@ use Symfony\Contracts\Cache\CacheInterface;
 
 class DependencyMapFactory
 {
-    private const DEPENDENCY_MAP_RELATIVE_PATH = "/js/_dependencies.json";
     private const CACHE_KEY = "becklyn_assets.dependencies_map";
 
     /**
@@ -67,7 +66,7 @@ class DependencyMapFactory
         {
             $this->map = !$this->isDebug
                 ? $this->cache->get(
-                    self::DEPENDENCY_MAP_RELATIVE_PATH,
+                    self::CACHE_KEY,
                     function () { return $this->regenerateDependencyMap(); }
                 )
                 : $this->regenerateDependencyMap();
