@@ -84,9 +84,15 @@ class DebugCommand extends Command
 
         $io->section("Namespaces Info");
         $success = $this->namespacesPrinter->printNamespaceInfo($io);
+        $io->newLine(2);
 
         $io->section("Dependency Map");
-        dump($this->dependencyMapFactory->getDependencyMap()->dumpDebugMap());
+        foreach ($this->dependencyMapFactory->getDependencyMap()->dumpDebugMap() as $file => $dependencies)
+        {
+            $io->writeln("<fg=blue>{$file}</>");
+            $io->listing($dependencies);
+        }
+        $io->newLine(2);
 
         $io->section("All Findable Assets");
         $this->printFindableAssets($io);
@@ -99,7 +105,6 @@ class DebugCommand extends Command
      */
     private function printFindableAssets (SymfonyStyle $io) : void
     {
-        $io->section("Findable Assets");
         $assets = $this->finder->findAssets();
         $rows = [];
 
