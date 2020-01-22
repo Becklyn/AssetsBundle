@@ -50,17 +50,19 @@ class DependencyLoader
         try {
             $filePath = $this->namespaceRegistry->getFilePath(Asset::createFromAssetPath($assetPathToMap));
 
-            if (\is_file($filePath))
+            if (!\is_file($filePath))
             {
-                $map = \json_decode(\file_get_contents($filePath), true);
+                return;
+            }
 
-                if (null !== $map)
-                {
-                    $this->importMap(
-                        \dirname($assetPathToMap),
-                        $map
-                    );
-                }
+            $map = \json_decode(\file_get_contents($filePath), true);
+
+            if (null !== $map)
+            {
+                $this->importMap(
+                    \dirname($assetPathToMap),
+                    $map
+                );
             }
         }
         catch (AssetsException $e)
@@ -93,6 +95,7 @@ class DependencyLoader
                 }
             }
         }
+
     }
 
 
