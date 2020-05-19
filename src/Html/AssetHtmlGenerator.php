@@ -52,13 +52,20 @@ class AssetHtmlGenerator
 
 
     /**
+     * @var bool
+     */
+    private $allowCors;
+
+
+    /**
      */
     public function __construct (
         AssetsRegistry $registry,
         AssetUrl $assetUrl,
         FileTypeRegistry $fileTypeRegistry,
         bool $isDebug,
-        DependencyMapFactory $dependencyMapFactory
+        DependencyMapFactory $dependencyMapFactory,
+        bool $allowCors
     )
     {
         $this->registry = $registry;
@@ -67,6 +74,7 @@ class AssetHtmlGenerator
         $this->isDebug = $isDebug;
         $this->dependencyMap = $dependencyMapFactory->getDependencyMap();
         $this->htmlBuilder = new HtmlBuilder();
+        $this->allowCors = $allowCors;
     }
 
 
@@ -142,6 +150,11 @@ class AssetHtmlGenerator
 
                     $embed->setAttribute("integrity", $integrityHash);
                 }
+            }
+
+            if ($this->allowCors)
+            {
+                $embed->setAttribute("crossorigin", "crossorigin");
             }
 
             try
