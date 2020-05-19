@@ -38,7 +38,7 @@ class AssetHtmlGeneratorTest extends TestCase
     }
 
 
-    protected function buildGenerator (bool $isDebug)
+    protected function buildGenerator (bool $isDebug, bool $allowCors = false)
     {
         $registry = $this->getMockBuilder(AssetsRegistry::class)
             ->disableOriginalConstructor()
@@ -73,7 +73,7 @@ class AssetHtmlGeneratorTest extends TestCase
             ->method("generateUrl")
             ->willReturnCallback(function (Asset $asset) { return $asset->getAssetPath(); });
 
-        $generator = new AssetHtmlGenerator($registry, $assetUrl, $fileTypeRegistry, $isDebug, $dependencyMapFactory);
+        $generator = new AssetHtmlGenerator($registry, $assetUrl, $fileTypeRegistry, $isDebug, $dependencyMapFactory, $allowCors);
         return [$generator, $registry, $assetUrl, $fileTypeRegistry];
     }
 
@@ -313,5 +313,23 @@ class AssetHtmlGeneratorTest extends TestCase
 
         $html = $generator->linkAssets($assets);
         self::assertSame($expectedOutput, $html);
+    }
+
+
+    /**
+     *
+     */
+    public function testAllowCors () : void
+    {
+        /**
+         * @var AssetHtmlGenerator
+         * @var \PHPUnit_Framework_MockObject_MockObject $registry
+         */
+        [$generator] = $this->buildGenerator(false, true);
+
+        self::assertSame(
+            '<script crossorigin="anonymous" defer src="http://example.org/test.js"></script>',
+            $generator->linkAssets(["http://example.org/test.js"])
+        );
     }
 }

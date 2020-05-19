@@ -1,7 +1,7 @@
 2.6.8
 =====
 
-*   (improvement) Add global allow_cors option for assets.
+*   (improvement) Add global `allow_cors` option for assets.
 
 
 2.6.7

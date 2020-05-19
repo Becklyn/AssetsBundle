@@ -65,7 +65,7 @@ class AssetHtmlGenerator
         FileTypeRegistry $fileTypeRegistry,
         bool $isDebug,
         DependencyMapFactory $dependencyMapFactory,
-        bool $allowCors
+        bool $allowCors = false
     )
     {
         $this->registry = $registry;
@@ -154,7 +154,7 @@ class AssetHtmlGenerator
 
             if ($this->allowCors)
             {
-                $embed->setAttribute("crossorigin", "crossorigin");
+                $embed->setAttribute("crossorigin", "anonymous");
             }
 
             try
