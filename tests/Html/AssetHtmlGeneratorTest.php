@@ -38,46 +38,6 @@ class AssetHtmlGeneratorTest extends TestCase
     }
 
 
-    protected function buildGenerator (bool $isDebug, bool $allowCors = false)
-    {
-        $registry = $this->getMockBuilder(AssetsRegistry::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $assetUrl = $this->getMockBuilder(AssetUrl::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $importRewriter = $this->getMockBuilder(CssImportRewriter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $importRewriter
-            ->method("rewriteRelativeImports")
-            ->willReturnArgument(1);
-
-        $fileTypeRegistry = new FileTypeRegistry(new GenericFile(), new ServiceLocator([
-            "js" => function () { return new JavaScriptFile(); },
-            "css" => function () use ($importRewriter) { return new CssFile($importRewriter); },
-        ]));
-
-        $dependencyMapFactory = $this->getMockBuilder(DependencyMapFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $dependencyMapFactory
-            ->method("getDependencyMap")
-            ->willReturn(new DependencyMap());
-
-        $assetUrl
-            ->method("generateUrl")
-            ->willReturnCallback(function (Asset $asset) { return $asset->getAssetPath(); });
-
-        $generator = new AssetHtmlGenerator($registry, $assetUrl, $fileTypeRegistry, $isDebug, $dependencyMapFactory, $allowCors);
-        return [$generator, $registry, $assetUrl, $fileTypeRegistry];
-    }
-
-
     public function testDebugJS () : void
     {
         /**
@@ -331,5 +291,45 @@ class AssetHtmlGeneratorTest extends TestCase
             '<script crossorigin="anonymous" defer src="http://example.org/test.js"></script>',
             $generator->linkAssets(["http://example.org/test.js"])
         );
+    }
+
+
+    protected function buildGenerator (bool $isDebug, bool $allowCors = false)
+    {
+        $registry = $this->getMockBuilder(AssetsRegistry::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $assetUrl = $this->getMockBuilder(AssetUrl::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $importRewriter = $this->getMockBuilder(CssImportRewriter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $importRewriter
+            ->method("rewriteRelativeImports")
+            ->willReturnArgument(1);
+
+        $fileTypeRegistry = new FileTypeRegistry(new GenericFile(), new ServiceLocator([
+            "js" => function () { return new JavaScriptFile(); },
+            "css" => function () use ($importRewriter) { return new CssFile($importRewriter); },
+        ]));
+
+        $dependencyMapFactory = $this->getMockBuilder(DependencyMapFactory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $dependencyMapFactory
+            ->method("getDependencyMap")
+            ->willReturn(new DependencyMap());
+
+        $assetUrl
+            ->method("generateUrl")
+            ->willReturnCallback(function (Asset $asset) { return $asset->getAssetPath(); });
+
+        $generator = new AssetHtmlGenerator($registry, $assetUrl, $fileTypeRegistry, $isDebug, $dependencyMapFactory, $allowCors);
+        return [$generator, $registry, $assetUrl, $fileTypeRegistry];
     }
 }
