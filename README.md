@@ -115,6 +115,8 @@ becklyn_assets:
     public_path: '%kernel.project_dir%/public' 
     # relative path to the directory, where the assets are copied to (relative to `public_path`)
     output_dir: 'assets' 
+    # allow crossorigin assets e.g needed for basic auth if using safari browser
+    allow_cors: true
 ```
 
 Commands

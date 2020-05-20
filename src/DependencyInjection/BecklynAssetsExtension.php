@@ -2,6 +2,7 @@
 
 namespace Becklyn\AssetsBundle\DependencyInjection;
 
+use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 use Becklyn\AssetsBundle\RouteLoader\AssetsRouteLoader;
 use Becklyn\AssetsBundle\Storage\AssetStorage;
@@ -43,6 +44,9 @@ class BecklynAssetsExtension extends Extension
 
         $container->getDefinition(AssetsRouteLoader::class)
             ->setArgument('$outputDir', $config["output_dir"]);
+
+        $container->getDefinition(AssetHtmlGenerator::class)
+            ->setArgument('$allowCors', $config["allow_cors"]);
     }
 
 
