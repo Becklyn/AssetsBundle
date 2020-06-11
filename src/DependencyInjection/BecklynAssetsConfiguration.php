@@ -34,7 +34,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                     ->defaultFalse()
                 ->end()
                 ->arrayNode("dependency_maps")
-                    ->setDeprecated("The `becklyn_assets.dependency_maps` option is deprecated, as the the maps will always be automatically loaded.")
+                    ->setDeprecated("becklyn/assets-bundle", "2.6.6", "The %path%.%node% option is deprecated, as the the maps will always be automatically loaded.")
                     ->scalarPrototype()->end()
                     ->defaultValue([])
                     ->info("The paths to the dependency maps. In asset notation: e.g. `@namespace/js/_dependencies.json`")
