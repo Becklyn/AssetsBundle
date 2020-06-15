@@ -130,13 +130,15 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
     /**
      * @inheritdoc
      */
-    public function warmUp ($cacheDir) : void
+    public function warmUp ($cacheDir) : array
     {
         if (!$this->isDebug)
         {
             $this->clearCache(null);
             $this->fillCache(null);
         }
+
+        return [];
     }
 
 

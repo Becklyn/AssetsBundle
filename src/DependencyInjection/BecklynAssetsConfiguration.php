@@ -108,7 +108,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
      */
     private function formatDeprecationMessage (string $bundle, string $version, string $message) : array
     {
-        return method_exists(BaseNode::class, 'getDeprecation')
+        return \method_exists(BaseNode::class, 'getDeprecation')
             ? [$bundle, $version, $message]
             : [$message];
     }
