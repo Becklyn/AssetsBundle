@@ -1,3 +1,9 @@
+2.6.9
+=====
+
+*   (bug) Fix small BC break in older symfony versions.
+
+
 2.6.8
 =====
 

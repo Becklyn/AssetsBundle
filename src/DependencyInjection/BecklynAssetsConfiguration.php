@@ -3,6 +3,7 @@
 namespace Becklyn\AssetsBundle\DependencyInjection;
 
 use Becklyn\AssetsBundle\Asset\Asset;
+use Symfony\Component\Config\Definition\BaseNode;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -34,7 +35,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
                     ->defaultFalse()
                 ->end()
                 ->arrayNode("dependency_maps")
-                    ->setDeprecated("becklyn/assets-bundle", "2.6.6", "The %path%.%node% option is deprecated, as the the maps will always be automatically loaded.")
+                    ->setDeprecated(...$this->formatDeprecationMessage("becklyn/assets-bundle", "2.6.6", "The %path%.%node% option is deprecated, as the the maps will always be automatically loaded."))
                     ->scalarPrototype()->end()
                     ->defaultValue([])
                     ->info("The paths to the dependency maps. In asset notation: e.g. `@namespace/js/_dependencies.json`")
@@ -95,5 +96,20 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
             ->end()
             ->info($description)
             ->defaultValue([]);
+    }
+
+    /**
+     * Returns the correct deprecation param's as an array for setDeprecated.
+     *
+     * Symfony/Config v5.1 introduces a deprecation notice when calling
+     * setDeprecation() with less than 3 args and the getDeprecation method was
+     * introduced at the same time. By checking if getDeprecation() exists,
+     * we can determine the correct param count to use when calling setDeprecated.
+     */
+    private function formatDeprecationMessage (string $bundle, string $version, string $message) : array
+    {
+        return method_exists(BaseNode::class, 'getDeprecation')
+            ? [$bundle, $version, $message]
+            : [$message];
     }
 }
