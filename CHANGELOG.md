@@ -5,6 +5,7 @@
 *   (internal) Fix Symfony deprecations.
 *   (internal) Replace TravisCI with GitHub Actions.
 *   (improvement) Add missing property types and return types.
+*   (internal) Remove support for Symfony 4.4.
 
 
 2.6.9
