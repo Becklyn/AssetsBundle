@@ -67,7 +67,7 @@ class NamespaceRegistry implements \IteratorAggregate
     /**
      * @return \ArrayIterator|\Traversable
      */
-    public function getIterator ()
+    public function getIterator () : \Traversable
     {
         return new \ArrayIterator($this->namespaces);
     }
