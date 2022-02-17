@@ -17,14 +17,16 @@ class AssetsRouteLoader extends Loader
 
     public function __construct (string $outputDir)
     {
+        parent::__construct();
+
         $this->outputDir = $outputDir;
     }
 
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function load ($resource, $type = null)
+    public function load ($resource, $type = null) : RouteCollection
     {
         $collection = new RouteCollection();
 
@@ -48,7 +50,7 @@ class AssetsRouteLoader extends Loader
     /**
      * @inheritdoc
      */
-    public function supports ($resource, $type = null)
+    public function supports ($resource, $type = null) : bool
     {
         return "becklyn-assets" === $type;
     }
