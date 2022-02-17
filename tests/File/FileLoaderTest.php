@@ -3,6 +3,7 @@
 namespace Tests\Becklyn\AssetsBundle\File;
 
 use Becklyn\AssetsBundle\Asset\Asset;
+use Becklyn\AssetsBundle\Exception\AssetsException;
 use Becklyn\AssetsBundle\File\FileLoader;
 use Becklyn\AssetsBundle\File\FileTypeRegistry;
 use Becklyn\AssetsBundle\File\Type\FileType;
@@ -78,11 +79,11 @@ class FileLoaderTest extends TestCase
      * @dataProvider dataProviderInvalid
      *
      * @param Asset $asset
-     *
-     * @expectedException \Becklyn\AssetsBundle\Exception\AssetsException
      */
     public function testInvalid (Asset $asset) : void
     {
+        $this->expectException(AssetsException::class);
+
         $this->loader->loadFile($asset, FileLoader::MODE_UNTOUCHED);
     }
 

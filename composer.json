@@ -35,6 +35,7 @@
         "twig/twig": "^3.3.8"
     },
     "require-dev": {
+        "dms/phpunit-arraysubset-asserts": "^0.4.0",
         "symfony/phpunit-bridge": "^5.4.3"
     },
     "conflict": {

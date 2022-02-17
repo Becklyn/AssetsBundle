@@ -7,9 +7,12 @@ use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Becklyn\AssetsBundle\Twig\AssetsTwigExtension;
 use PHPUnit\Framework\TestCase;
 use Twig\TwigFunction;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 class AssetsTwigExtensionTest extends TestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * Assert that the exposed twig functions don't change.
      */
@@ -25,14 +28,11 @@ class AssetsTwigExtensionTest extends TestCase
 
         $extension = new AssetsTwigExtension($htmlReferences, $helper);
         $functions = \array_map(
-            function (TwigFunction $f)
-            {
-                return $f->getName();
-            },
+            static fn (TwigFunction $f) => $f->getName(),
             $extension->getFunctions()
         );
 
-        self::assertArraySubset([
+        $this->assertArraySubset([
             "asset",
             "asset_inline",
             "assets_link",

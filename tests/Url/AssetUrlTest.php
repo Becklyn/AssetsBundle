@@ -183,11 +183,11 @@ class AssetUrlTest extends TestCase
      * Missing file in dev:.
      *
      * Throw exception
-     *
-     * @expectedException \Becklyn\AssetsBundle\Exception\AssetsException
      */
     public function testMissingFileInDev () : void
     {
+        $this->expectException(AssetsException::class);
+
         /**
          * @var AssetUrl $assetUrl
          * @var \PHPUnit_Framework_MockObject_MockObject $router

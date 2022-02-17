@@ -122,7 +122,8 @@ class AssetHtmlGeneratorTest extends TestCase
             );
 
         $html = $generator->linkAssets(["@a/first.js", "@b/second.js"]);
-        self::assertContains(\sprintf('integrity="%s-hash', Asset::HASH_ALGORITHM), $html);
+
+        self::assertStringContainsString(\sprintf('integrity="%s-hash', Asset::HASH_ALGORITHM), $html);
     }
 
 
@@ -144,7 +145,7 @@ class AssetHtmlGeneratorTest extends TestCase
             );
 
         $html = $generator->linkAssets(["@a/first.css", "@b/second.css"]);
-        self::assertContains(\sprintf('integrity="%s-hash', Asset::HASH_ALGORITHM), $html);
+        self::assertStringContainsString(\sprintf('integrity="%s-hash', Asset::HASH_ALGORITHM), $html);
     }
 
 
