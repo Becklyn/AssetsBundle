@@ -1,3 +1,9 @@
+2.7.1
+=====
+
+*   (improvement) Add missing return type for `CacheWarmer::isOptional()`.
+
+
 2.7.0
 =====
 

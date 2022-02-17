@@ -104,7 +104,7 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
     /**
      * @inheritdoc
      */
-    public function isOptional ()
+    public function isOptional () : bool
     {
         return true;
     }
