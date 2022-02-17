@@ -10,36 +10,12 @@ class DependencyMapFactory
 {
     private const CACHE_KEY = "becklyn_assets.dependencies_map";
 
-    /**
-     * @var NamespaceRegistry
-     */
-    private $namespaceRegistry;
-
-
-    /**
-     * @var bool
-     */
-    private $isDebug;
-
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-
-    /**
-     * The in-memory cached dependency map
-     *
-     * @var DependencyMap|null
-     */
-    private $map;
-
-
-    /**
-     * @var CacheInterface
-     */
-    private $cache;
+    private NamespaceRegistry $namespaceRegistry;
+    private bool $isDebug;
+    private LoggerInterface $logger;
+    /** The in-memory cached dependency map */
+    private ?DependencyMap $map = null;
+    private CacheInterface $cache;
 
 
     /**

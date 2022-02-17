@@ -10,14 +10,9 @@ use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
 class AssetsRegistry implements ServiceSubscriberInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $locator;
+    private ContainerInterface $locator;
 
 
-    /**
-     */
     public function __construct (ContainerInterface $locator)
     {
         $this->locator = $locator;
@@ -115,9 +110,8 @@ class AssetsRegistry implements ServiceSubscriberInterface
 
 
     /**
-     * @return array
      */
-    public static function getSubscribedServices ()
+    public static function getSubscribedServices () : array
     {
         return [
             AssetsCache::class,

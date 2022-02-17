@@ -1,53 +1,44 @@
 {
     "name": "becklyn/assets-bundle",
-    "type": "symfony-bundle",
     "description": "High-performance asset handling for symfony projects.",
+    "license": "BSD-3-Clause",
+    "type": "symfony-bundle",
     "keywords": [
         "becklyn",
         "asset",
         "assets",
         "symfony"
     ],
-    "homepage": "https://github.com/Becklyn/AssetsBundle",
-    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Becklyn Studios",
             "homepage": "https://becklyn.com/"
         }
     ],
+    "homepage": "https://github.com/Becklyn/AssetsBundle",
     "require": {
-        "php": "^7.2",
+        "php": ">=7.4",
         "ext-json": "*",
         "becklyn/html-builder": "^2.0",
         "psr/cache": "^1.0",
         "symfony/cache-contracts": "^2.0",
-        "symfony/config": "^4.3 || ^5.0",
-        "symfony/console": "^4.3 || ^5.0",
-        "symfony/dependency-injection": "^4.3 || ^5.0",
-        "symfony/filesystem": "^4.3 || ^5.0",
-        "symfony/finder": "^4.3 || ^5.0",
-        "symfony/http-kernel": "^4.3 || ^5.0",
-        "symfony/mime": "^4.3 || ^5.0",
-        "symfony/process": "^4.3 || ^5.0",
-        "symfony/routing": "^4.3 || ^5.0",
+        "symfony/config": "^4.4 || ^5.0",
+        "symfony/console": "^4.4 || ^5.0",
+        "symfony/dependency-injection": "^4.4 || ^5.0",
+        "symfony/filesystem": "^4.4 || ^5.0",
+        "symfony/finder": "^4.4 || ^5.0",
+        "symfony/http-kernel": "^4.4 || ^5.0",
+        "symfony/mime": "^4.4 || ^5.0",
+        "symfony/process": "^4.4 || ^5.0",
+        "symfony/routing": "^4.4 || ^5.0",
         "symfony/service-contracts": "^1.1 || ^2.0",
         "twig/twig": "^2.9 || ^3.0"
-    },
-    "conflict": {
-        "symfony/asset": "*"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^5.0"
     },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.x-dev",
-            "dev-next": "2.x-dev"
-        }
+    "conflict": {
+        "symfony/asset": "*"
     },
     "autoload": {
         "psr-4": {
@@ -57,6 +48,15 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\Becklyn\\AssetsBundle\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.x-dev",
+            "dev-next": "2.x-dev"
         }
     }
 }

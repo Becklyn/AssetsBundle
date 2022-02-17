@@ -10,12 +10,10 @@ use Becklyn\AssetsBundle\Exception\AssetsException;
  */
 class NamespaceRegistry implements \IteratorAggregate
 {
-    const THROW_ON_MISSING = true;
-    const IGNORE_MISSING = false;
+    public const THROW_ON_MISSING = true;
+    public const IGNORE_MISSING = false;
 
-    /**
-     * @var array<string,string>
-     */
+    /** @var array<string,string> */
     private $namespaces = [];
 
 

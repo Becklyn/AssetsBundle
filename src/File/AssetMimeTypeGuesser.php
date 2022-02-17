@@ -10,10 +10,7 @@ use Symfony\Component\Mime\MimeTypes;
 
 class AssetMimeTypeGuesser
 {
-    /**
-     * @var string[]
-     */
-    private static $mimeTypes = [
+    private static array $mimeTypes = [
         'txt' => 'text/plain',
         'htm' => 'text/html',
         'html' => 'text/html',
@@ -76,20 +73,10 @@ class AssetMimeTypeGuesser
     ];
 
 
-    /**
-     * @var MimeTypes
-     */
-    private $coreGuesser;
+    private MimeTypes $coreGuesser;
+    private NamespaceRegistry $namespaceRegistry;
 
 
-    /**
-     * @var NamespaceRegistry
-     */
-    private $namespaceRegistry;
-
-
-    /**
-     */
     public function __construct (NamespaceRegistry $namespaceRegistry)
     {
         $this->coreGuesser = MimeTypes::getDefault();

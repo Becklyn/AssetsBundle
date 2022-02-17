@@ -2,6 +2,7 @@
 
 namespace Becklyn\AssetsBundle\Asset;
 
+use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
 /**
@@ -9,25 +10,13 @@ use Psr\Cache\CacheItemPoolInterface;
  */
 class AssetsCache
 {
-    const CACHE_KEY = "becklyn.assets.cache";
+    public const CACHE_KEY = "becklyn.assets.cache";
 
 
-    /**
-     * @var CacheItemPoolInterface
-     */
-    private $cachePool;
-
-
-    /**
-     * @var \Psr\Cache\CacheItemInterface
-     */
-    private $cacheItem;
-
-
-    /**
-     * @var array<string, Asset>
-     */
-    private $assets = [];
+    private CacheItemPoolInterface $cachePool;
+    private CacheItemInterface $cacheItem;
+    /** @var array<string, Asset> */
+    private $assets;
 
 
     /**

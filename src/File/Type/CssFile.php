@@ -11,14 +11,9 @@ class CssFile extends SpecializedFileType
 {
     use GenericFileHeaderTrait;
 
-    /**
-     * @var CssImportRewriter
-     */
-    private $importRewriter;
+    private CssImportRewriter $importRewriter;
 
 
-    /**
-     */
     public function __construct (CssImportRewriter $importRewriter)
     {
         $this->importRewriter = $importRewriter;

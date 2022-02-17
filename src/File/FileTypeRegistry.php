@@ -10,18 +10,9 @@ use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 class FileTypeRegistry
 {
-    /**
-     * @var GenericFile
-     */
-    private $genericFileType;
-
-
-    /**
-     * The file types mapped by file extension.
-     *
-     * @var ContainerInterface
-     */
-    private $specializedFileTypes;
+    private GenericFile $genericFileType;
+    /** The file types mapped by file extension. */
+    private ContainerInterface $specializedFileTypes;
 
 
     /**

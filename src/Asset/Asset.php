@@ -16,39 +16,18 @@ class Asset
     public const HASH_ALGORITHM = "sha256";
 
     //region Fields
-    /**
-     * @var string
-     */
-    private $namespace;
-
-
-    /**
-     * @var string
-     */
-    private $filePath;
-
+    private string $namespace;
+    private string $filePath;
+    private ?string $hash = null;
+    private ?string $fileNameHash = null;
 
     /**
-     * @var string|null
-     */
-    private $hash;
-
-
-    /**
-     * @var string|null
-     */
-    private $fileNameHash;
-
-
-    /**
-     * @var string
+     * @var array|string|string[]
      */
     private $fileType;
     //endregion
 
 
-    /**
-     */
     public function __construct (string $namespace, string $filePath)
     {
         $this->namespace = $namespace;
@@ -58,32 +37,24 @@ class Asset
 
 
     //region Accessors
-    /**
-     */
     public function getNamespace () : string
     {
         return $this->namespace;
     }
 
 
-    /**
-     */
     public function getFilePath () : string
     {
         return $this->filePath;
     }
 
 
-    /**
-     */
     public function getHash () : ?string
     {
         return $this->hash;
     }
 
 
-    /**
-     */
     public function setHash (?string $hash, bool $setFileNameHash = true) : void
     {
         if ($setFileNameHash && null !== $hash)
@@ -105,7 +76,7 @@ class Asset
 
 
     /**
-     * @return mixed
+     * @return array|string|string[]
      */
     public function getFileType ()
     {

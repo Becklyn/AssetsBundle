@@ -11,10 +11,8 @@ class DependencyMap
     private const MODERN = 1;
     private const LEGACY = 2;
 
-    /**
-     * @var string[][]
-     */
-    private $map = [];
+    /** @var string[][] */
+    private array $map;
 
 
     /**

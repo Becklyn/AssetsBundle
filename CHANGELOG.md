@@ -1,3 +1,12 @@
+2.7.0
+=====
+
+*   (feature) Add support for PHP 8.
+*   (internal) Fix Symfony deprecations.
+*   (internal) Replace TravisCI with GitHub Actions.
+*   (improvement) Add missing property types and return types.
+
+
 2.6.9
 =====
 

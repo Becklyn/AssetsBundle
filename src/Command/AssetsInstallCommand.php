@@ -14,14 +14,9 @@ class AssetsInstallCommand extends Command
     public static $defaultName = "becklyn:assets:install";
 
 
-    /**
-     * @var CacheWarmer
-     */
-    private $cacheWarmer;
+    private CacheWarmer $cacheWarmer;
 
 
-    /**
-     */
     public function __construct (CacheWarmer $cacheWarmer)
     {
         parent::__construct(self::$defaultName);

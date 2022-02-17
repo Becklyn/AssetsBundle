@@ -14,7 +14,7 @@ class BecklynAssetsConfiguration implements ConfigurationInterface
     /**
      * @inheritdoc
      */
-    public function getConfigTreeBuilder ()
+    public function getConfigTreeBuilder () : TreeBuilder
     {
         $treeBuilder = new TreeBuilder("becklyn_assets");
 

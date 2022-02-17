@@ -9,20 +9,10 @@ use Twig\TwigFunction;
 
 class AssetsTwigExtension extends AbstractExtension
 {
-    /**
-     * @var AssetHtmlGenerator
-     */
-    private $htmlReferences;
+    private AssetHtmlGenerator $htmlReferences;
+    private AssetHelper $assetHelper;
 
 
-    /**
-     * @var AssetHelper
-     */
-    private $assetHelper;
-
-
-    /**
-     */
     public function __construct (
         AssetHtmlGenerator $htmlReferences,
         AssetHelper $assetHelper
@@ -36,7 +26,7 @@ class AssetsTwigExtension extends AbstractExtension
     /**
      * @inheritdoc
      */
-    public function getFunctions ()
+    public function getFunctions () : array
     {
         return [
             new TwigFunction("asset", [$this->assetHelper, "getUrl"]),

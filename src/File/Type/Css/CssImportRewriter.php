@@ -9,20 +9,10 @@ use Becklyn\AssetsBundle\Url\AssetUrl;
 
 class CssImportRewriter
 {
-    /**
-     * @var AssetsCache
-     */
-    private $cache;
+    private AssetsCache $cache;
+    private AssetUrl $assetUrl;
 
 
-    /**
-     * @var AssetUrl
-     */
-    private $assetUrl;
-
-
-    /**
-     */
     public function __construct (AssetsCache $cache, AssetUrl $assetUrl)
     {
         $this->cache = $cache;

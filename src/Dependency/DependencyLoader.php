@@ -9,26 +9,11 @@ use Psr\Log\LoggerInterface;
 
 class DependencyLoader
 {
-    /**
-     * @var array
-     */
-    private $dependencyMap = [];
+    private array $dependencyMap = [];
+    private NamespaceRegistry $namespaceRegistry;
+    private ?LoggerInterface $logger;
 
 
-    /**
-     * @var NamespaceRegistry
-     */
-    private $namespaceRegistry;
-
-
-    /**
-     * @var LoggerInterface|null
-     */
-    private $logger;
-
-
-    /**
-     */
     public function __construct (NamespaceRegistry $namespaceRegistry, ?LoggerInterface $logger = null)
     {
         $this->namespaceRegistry = $namespaceRegistry;

@@ -11,26 +11,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EmbedController
 {
-    /**
-     * @var FileLoader
-     */
-    private $loader;
+    private FileLoader $loader;
+    private AssetMimeTypeGuesser $mimeTypeGuesser;
+    private bool $isDebug;
 
 
-    /**
-     * @var AssetMimeTypeGuesser
-     */
-    private $mimeTypeGuesser;
-
-
-    /**
-     * @var bool
-     */
-    private $isDebug;
-
-
-    /**
-     */
     public function __construct (FileLoader $loader, AssetMimeTypeGuesser $mimeTypeGuesser, bool $isDebug)
     {
         $this->mimeTypeGuesser = $mimeTypeGuesser;
@@ -39,9 +24,6 @@ class EmbedController
     }
 
 
-    /**
-     *
-     */
     public function embed (string $namespace, string $path) : Response
     {
         if (!$this->isDebug)

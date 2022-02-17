@@ -11,14 +11,9 @@ use Symfony\Component\Finder\Finder;
  */
 class AssetsFinder
 {
-    /**
-     * @var NamespaceRegistry
-     */
-    private $namespaces;
+    private NamespaceRegistry $namespaces;
 
 
-    /**
-     */
     public function __construct (NamespaceRegistry $namespaces)
     {
         $this->namespaces = $namespaces;

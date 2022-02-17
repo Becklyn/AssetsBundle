@@ -14,34 +14,11 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class AssetStorage
 {
-    /**
-     * @var FileLoader
-     */
-    private $fileLoader;
-
-
-    /**
-     * @var FileTypeRegistry
-     */
-    private $fileTypeRegistry;
-
-
-    /**
-     * @var GzipCompression
-     */
-    private $compression;
-
-
-    /**
-     * @var string
-     */
-    private $storagePath;
-
-
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
+    private FileLoader $fileLoader;
+    private FileTypeRegistry $fileTypeRegistry;
+    private GzipCompression $compression;
+    private string $storagePath;
+    private Filesystem $filesystem;
 
 
     /**

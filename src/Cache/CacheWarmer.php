@@ -11,26 +11,11 @@ use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
 {
-    /**
-     * @var AssetsRegistry
-     */
-    private $registry;
+    private AssetsRegistry $registry;
+    private AssetsFinder $finder;
+    private bool $isDebug;
 
 
-    /**
-     * @var AssetsFinder
-     */
-    private $finder;
-
-
-    /**
-     * @var bool
-     */
-    private $isDebug;
-
-
-    /**
-     */
     public function __construct (AssetsRegistry $registry, AssetsFinder $finder, bool $isDebug)
     {
         $this->registry = $registry;
@@ -39,8 +24,6 @@ class CacheWarmer implements CacheWarmerInterface, CacheClearerInterface
     }
 
 
-    /**
-     */
     public function clearCache (?SymfonyStyle $io) : void
     {
         $this->registry->clear();

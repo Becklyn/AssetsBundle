@@ -11,54 +11,21 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Filesystem\Filesystem;
 
 class DebugCommand extends Command
 {
     public static $defaultName = "becklyn:assets:debug";
 
-    /**
-     * @var AssetsFinder
-     */
-    private $finder;
+    private AssetsFinder $finder;
+    private NamespaceRegistry $namespaceRegistry;
+    private string $projectDir;
+    private NamespacesPrinter $namespacesPrinter;
+    private DependencyMapFactory $dependencyMapFactory;
 
 
-    /**
-     * @var NamespaceRegistry
-     */
-    private $namespaceRegistry;
-
-
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-
-    /**
-     * @var string
-     */
-    private $projectDir;
-
-
-    /**
-     * @var NamespacesPrinter
-     */
-    private $namespacesPrinter;
-
-
-    /**
-     * @var DependencyMapFactory
-     */
-    private $dependencyMapFactory;
-
-
-    /**
-     */
     public function __construct (
         AssetsFinder $finder,
         NamespaceRegistry $namespaceRegistry,
-        Filesystem $filesystem,
         NamespacesPrinter $namespacesPrinter,
         DependencyMapFactory $dependencyMapFactory,
         string $projectDir
@@ -67,7 +34,6 @@ class DebugCommand extends Command
         parent::__construct();
         $this->finder = $finder;
         $this->namespaceRegistry = $namespaceRegistry;
-        $this->filesystem = $filesystem;
         $this->projectDir = $projectDir;
         $this->namespacesPrinter = $namespacesPrinter;
         $this->dependencyMapFactory = $dependencyMapFactory;
@@ -102,8 +68,6 @@ class DebugCommand extends Command
 
 
 
-    /**
-     */
     private function printFindableAssets (SymfonyStyle $io) : void
     {
         $assets = $this->finder->findAssets();

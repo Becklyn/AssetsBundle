@@ -6,50 +6,29 @@ use Becklyn\AssetsBundle\Data\AssetEmbed;
 
 class AssetDependency
 {
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var bool
-     */
-    private $modern = false;
-
-    /**
-     * @var bool
-     */
-    private $legacy = false;
+    private string $name;
+    private bool $modern = false;
+    private bool $legacy = false;
 
 
-    /**
-     */
     public function __construct (string $name)
     {
         $this->name = $name;
     }
 
 
-    /**
-     *
-     */
     public function setModern () : void
     {
         $this->modern = true;
     }
 
 
-    /**
-     *
-     */
     public function setLegacy () : void
     {
         $this->legacy = true;
     }
 
 
-    /**
-     */
     public function getAssetEmbed () : AssetEmbed
     {
         $attributes = [];

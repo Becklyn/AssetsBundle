@@ -1,0 +1,44 @@
+on: [push, pull_request]
+
+name: CI
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                php-versions: ['7.4', '8.0', '8.1']
+        name: PHP ${{ matrix.php-versions }} Testing
+        steps:
+            - uses: actions/checkout@v2
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php-versions }}
+                  extensions: mbstring, intl
+                  ini-values: post_max_size=256M, max_execution_time=180
+                  coverage: xdebug
+
+            - name: Composer Install
+              run: composer install
+
+            - name: Composer Plugins
+              run: composer global require ergebnis/composer-normalize bamarni/composer-bin-plugin php-coveralls/php-coveralls --no-interaction --prefer-dist --no-progress --no-suggest --no-suggest
+
+            - name: Composer Vendor-Bin Dependencies
+              run: composer bin all install --no-interaction --prefer-dist --no-progress --no-suggest
+
+            - name: Create Build Logs Directory
+              run: mkdir -p build/logs
+
+            - name: Composer Normalize
+              run: composer normalize --indent-size 4 --indent-style space --dry-run
+
+            - name: PHP Cs Fixer
+              run: ./vendor/bin/php-cs-fixer fix --diff --config vendor-bin/test/vendor/becklyn/php-cs/.php_cs.dist.php --dry-run --no-interaction
+
+            - name: PhpStan
+              run: ./vendor/bin/phpstan analyse --memory-limit 4G --ansi -c vendor-bin/test/vendor/becklyn/php-cs/phpstan/lib.neon src --no-interaction --no-progress
+
+            - name: PhpUnit
+              run: ./vendor/bin/simple-phpunit -c phpunit.xml --testdox

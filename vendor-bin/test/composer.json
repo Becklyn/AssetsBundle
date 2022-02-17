@@ -1,5 +1,5 @@
 {
     "require": {
-        "becklyn/php-cs": "^6"
+        "becklyn/php-cs": ">=18"
     }
 }

@@ -13,39 +13,20 @@ use Symfony\Component\Routing\RouterInterface;
 
 class AssetUrl
 {
-    /**
-     * @var AssetsRegistry
-     */
-    private $assetsRegistry;
+    private AssetsRegistry $assetsRegistry;
+    private RouterInterface $router;
+    private bool $isDebug;
+    private ?LoggerInterface $logger;
+    private FileLoader $fileLoader;
 
 
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-
-    /**
-     * @var bool
-     */
-    private $isDebug;
-
-
-    /**
-     * @var LoggerInterface|null
-     */
-    private $logger;
-
-
-    /**
-     * @var FileLoader
-     */
-    private $fileLoader;
-
-
-    /**
-     */
-    public function __construct (AssetsRegistry $assetsRegistry, RouterInterface $router, FileLoader $fileLoader, bool $isDebug, ?LoggerInterface $logger)
+    public function __construct (
+        AssetsRegistry $assetsRegistry,
+        RouterInterface $router,
+        FileLoader $fileLoader,
+        bool $isDebug,
+        ?LoggerInterface $logger
+    )
     {
         $this->assetsRegistry = $assetsRegistry;
         $this->router = $router;

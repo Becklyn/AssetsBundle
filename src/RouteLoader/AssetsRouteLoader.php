@@ -12,14 +12,9 @@ class AssetsRouteLoader extends Loader
 {
     public const ROUTE_NAME = "becklyn_assets.embed";
 
-    /**
-     * @var string
-     */
-    private $outputDir;
+    private string $outputDir;
 
 
-    /**
-     */
     public function __construct (string $outputDir)
     {
         $this->outputDir = $outputDir;

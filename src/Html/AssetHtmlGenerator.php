@@ -15,50 +15,15 @@ use Becklyn\HtmlBuilder\Builder\HtmlBuilder;
 
 class AssetHtmlGenerator
 {
-    /**
-     * @var AssetsRegistry
-     */
-    private $registry;
+    private AssetsRegistry $registry;
+    private AssetUrl $assetUrl;
+    private FileTypeRegistry $fileTypeRegistry;
+    private bool $isDebug;
+    private DependencyMap $dependencyMap;
+    private HtmlBuilder $htmlBuilder;
+    private bool $allowCors;
 
 
-    /**
-     * @var AssetUrl
-     */
-    private $assetUrl;
-
-
-    /**
-     * @var FileTypeRegistry
-     */
-    private $fileTypeRegistry;
-
-
-    /**
-     * @var bool
-     */
-    private $isDebug;
-
-
-    /**
-     * @var DependencyMap
-     */
-    private $dependencyMap;
-
-
-    /**
-     * @var HtmlBuilder
-     */
-    private $htmlBuilder;
-
-
-    /**
-     * @var bool
-     */
-    private $allowCors;
-
-
-    /**
-     */
     public function __construct (
         AssetsRegistry $registry,
         AssetUrl $assetUrl,
@@ -78,8 +43,6 @@ class AssetHtmlGenerator
     }
 
 
-    /**
-     */
     public function getRegistry () : AssetsRegistry
     {
         return $this->registry;

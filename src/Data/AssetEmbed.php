@@ -7,22 +7,9 @@ use Becklyn\HtmlBuilder\Node\HtmlAttributes;
 class AssetEmbed
 {
     //region Fields
-    /**
-     * @var string
-     */
-    private $assetPath;
-
-
-    /**
-     * @var HtmlAttributes
-     */
-    private $attributes;
-
-
-    /**
-     * @var string|null
-     */
-    private $url;
+    private string $assetPath;
+    private HtmlAttributes $attributes;
+    private ?string $url = null;
     //endregion
 
 

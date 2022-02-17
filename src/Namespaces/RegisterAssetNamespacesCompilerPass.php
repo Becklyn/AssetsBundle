@@ -13,13 +13,10 @@ class RegisterAssetNamespacesCompilerPass implements CompilerPassInterface
     /**
      * Mapping from namespace => path.
      * {@see EntryNamespaces::addNamespace()}.
-     *
-     * @var array
      */
-    private $mapping;
+    private array $mapping;
 
-    /**
-     */
+
     public function __construct (array $mapping)
     {
         $this->mapping = $mapping;

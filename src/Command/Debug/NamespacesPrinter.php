@@ -7,20 +7,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class NamespacesPrinter
 {
-    /**
-     * @var NamespaceRegistry
-     */
-    private $namespaceRegistry;
+    private NamespaceRegistry $namespaceRegistry;
+    private string $projectDir;
 
 
-    /**
-     * @var string
-     */
-    private $projectDir;
-
-
-    /**
-     */
     public function __construct (NamespaceRegistry $namespaceRegistry, string $projectDir)
     {
         $this->namespaceRegistry = $namespaceRegistry;

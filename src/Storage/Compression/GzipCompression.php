@@ -6,20 +6,10 @@ use Symfony\Component\Process\Process;
 
 class GzipCompression
 {
-    /**
-     * @var bool
-     */
-    private $initialized = false;
+    private bool $initialized = false;
+    private ?array $compressor = null;
 
 
-    /**
-     * @var array|null
-     */
-    private $compressor;
-
-
-    /**
-     */
     private function getCompressor () : ?array
     {
         if (!$this->initialized)
@@ -32,8 +22,6 @@ class GzipCompression
     }
 
 
-    /**
-     */
     private function discoverCompressor () : ?array
     {
         // Mapping of command names to their required parameters

@@ -16,20 +16,10 @@ use Becklyn\AssetsBundle\Url\AssetUrl;
  */
 class AssetHelper
 {
-    /**
-     * @var FileLoader
-     */
-    private $fileLoader;
+    private FileLoader $fileLoader;
+    private AssetUrl $assetUrl;
 
 
-    /**
-     * @var AssetUrl
-     */
-    private $assetUrl;
-
-
-    /**
-     */
     public function __construct (FileLoader $fileLoader, AssetUrl $assetUrl)
     {
         $this->fileLoader = $fileLoader;

@@ -9,24 +9,14 @@ use Becklyn\AssetsBundle\Namespaces\NamespaceRegistry;
 
 class FileLoader
 {
-    const MODE_PROD = true;
-    const MODE_DEV = false;
-    const MODE_UNTOUCHED = null;
+    public const MODE_PROD = true;
+    public const MODE_DEV = false;
+    public const MODE_UNTOUCHED = null;
 
-    /**
-     * @var NamespaceRegistry
-     */
-    private $namespaceRegistry;
+    private NamespaceRegistry $namespaceRegistry;
+    private FileTypeRegistry $fileTypeRegistry;
 
 
-    /**
-     * @var FileTypeRegistry
-     */
-    private $fileTypeRegistry;
-
-
-    /**
-     */
     public function __construct (NamespaceRegistry $namespaceRegistry, FileTypeRegistry $fileTypeRegistry)
     {
         $this->namespaceRegistry = $namespaceRegistry;
