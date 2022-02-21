@@ -19,15 +19,15 @@
     "require": {
         "php": ">=7.4",
         "ext-json": "*",
-        "becklyn/html-builder": "^2.2.0",
-        "psr/cache": "^1.0.1",
-        "symfony/cache-contracts": "^2.5.0",
+        "becklyn/html-builder": "^2.2.1",
+        "psr/cache": "^1.0.1 || ^2.0.0 || ^3.0.0",
+        "symfony/cache-contracts": "^2.5.0 || ^3.0.0",
         "symfony/config": "^5.4.3 || ^6.0.3",
         "symfony/console": "^5.4.3 || ^6.0.3",
         "symfony/dependency-injection": "^5.4.3 || ^6.0.3",
         "symfony/filesystem": "^5.4.3 || ^6.0.3",
         "symfony/finder": "^5.4.3 || ^6.0.3",
-        "symfony/http-kernel": "^5.4.4 || ^6.0.3",
+        "symfony/http-kernel": "^5.4.4 || ^6.0.4",
         "symfony/mime": "^5.4.3 || ^6.0.3",
         "symfony/process": "^5.4.3 || ^6.0.3",
         "symfony/routing": "^5.4.3 || ^6.0.3",
@@ -36,7 +36,7 @@
     },
     "require-dev": {
         "dms/phpunit-arraysubset-asserts": "^0.4.0",
-        "symfony/phpunit-bridge": "^5.4.3"
+        "symfony/phpunit-bridge": "^v5.4.3 || ^v6.0.3"
     },
     "conflict": {
         "symfony/asset": "*"

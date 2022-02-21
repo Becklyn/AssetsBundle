@@ -1,3 +1,8 @@
+2.7.2
+=====
+
+*   (bug) Require correct version of `symfony/cache-contracts` to be fully Symfony 6 compatible.
+
 2.7.1
 =====
 
