@@ -20,6 +20,7 @@
         "php": ">=7.4",
         "ext-json": "*",
         "becklyn/html-builder": "^2.0",
+        "dms/phpunit-arraysubset-asserts": "^0.4.0",
         "psr/cache": "^1.0",
         "symfony/cache-contracts": "^2.0",
         "symfony/config": "^4.4 || ^5.0",

@@ -78,11 +78,10 @@ class FileLoaderTest extends TestCase
      * @dataProvider dataProviderInvalid
      *
      * @param Asset $asset
-     *
-     * @expectedException \Becklyn\AssetsBundle\Exception\AssetsException
      */
     public function testInvalid (Asset $asset) : void
     {
+        $this->expectException(\Becklyn\AssetsBundle\Exception\AssetsException::class);
         $this->loader->loadFile($asset, FileLoader::MODE_UNTOUCHED);
     }
 

@@ -5,11 +5,14 @@ namespace Tests\Becklyn\AssetsBundle\Twig;
 use Becklyn\AssetsBundle\Helper\AssetHelper;
 use Becklyn\AssetsBundle\Html\AssetHtmlGenerator;
 use Becklyn\AssetsBundle\Twig\AssetsTwigExtension;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use PHPUnit\Framework\TestCase;
 use Twig\TwigFunction;
 
 class AssetsTwigExtensionTest extends TestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * Assert that the exposed twig functions don't change.
      */

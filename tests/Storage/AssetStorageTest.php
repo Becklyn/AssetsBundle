@@ -89,7 +89,7 @@ class AssetStorageTest extends TestCase
         $expectedOutputFilePath = "test/css/app2.zu+_RiyZqaqqHgSHa3Xv.css";
         $outputPath = "{$this->outDir}/assets/other/{$expectedOutputFilePath}";
 
-        self::assertFileNotExists($outputPath);
+        self::assertFileDoesNotExist($outputPath);
         $asset = $this->storage->import(new Asset("other", "test/css/app2.css"));
         self::assertFileExists($outputPath);
 
@@ -111,7 +111,7 @@ class AssetStorageTest extends TestCase
         $expectedOutputFilePath = "test/js/test.js";
         $outputPath = "{$this->outDir}/assets/bundles/{$expectedOutputFilePath}";
 
-        self::assertFileNotExists($outputPath);
+        self::assertFileDoesNotExist($outputPath);
         $asset = $this->storage->import(new Asset("bundles", "test/js/test.js"));
         self::assertFileExists($outputPath);
 
@@ -144,6 +144,6 @@ class AssetStorageTest extends TestCase
         self::assertFileExists("{$assetsDir}/test/a");
         self::assertDirectoryExists($assetsDir);
         $this->storage->removeAllStoredFiles();
-        self::assertDirectoryNotExists($assetsDir);
+        self::assertDirectoryDoesNotExist($assetsDir);
     }
 }
