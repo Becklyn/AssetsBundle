@@ -24,7 +24,7 @@ class AssetsRouteLoader extends Loader
     /**
      * @inheritdoc
      */
-    public function load ($resource, $type = null)
+    public function load ($resource, $type = null) : mixed
     {
         $collection = new RouteCollection();
 
@@ -48,7 +48,7 @@ class AssetsRouteLoader extends Loader
     /**
      * @inheritdoc
      */
-    public function supports ($resource, $type = null)
+    public function supports ($resource, $type = null) : bool
     {
         return "becklyn-assets" === $type;
     }
