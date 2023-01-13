@@ -116,8 +116,6 @@ class Asset
 
     /**
      * @throws AssetsException
-     *
-     * @return Asset
      */
     public static function createFromAssetPath (string $assetPath) : self
     {
