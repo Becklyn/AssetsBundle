@@ -7,7 +7,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                php-versions: ['7.4', '8.0', '8.1']
+                php-versions: ['8.1']
         name: PHP ${{ matrix.php-versions }} Testing
         steps:
             - uses: actions/checkout@v2
@@ -21,6 +21,11 @@ jobs:
 
             - name: Composer Install
               run: composer install
+
+            - name: Allow Composer Plugins
+              run: |
+                  composer global config --no-plugins allow-plugins.ergebnis/composer-normalize true
+                  composer global config --no-plugins allow-plugins.bamarni/composer-bin-plugin true
 
             - name: Composer Plugins
               run: composer global require ergebnis/composer-normalize bamarni/composer-bin-plugin php-coveralls/php-coveralls --no-interaction --prefer-dist --no-progress --no-suggest --no-suggest
